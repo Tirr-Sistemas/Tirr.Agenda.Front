@@ -73,7 +73,7 @@ const ChoiceServicePage = () => {
         <div key={category.title} className="mb-4">
           
           {/* TÍTULO DA CATEGORIA */}
-          <h6 className="text-muted mb-2">{category.title}</h6>
+          <h6 className="text-muted mb-2 fw-light">{category.title}</h6>
 
           <div className="row g-2">
             {category.services?.map((service) => {
@@ -96,9 +96,9 @@ const ChoiceServicePage = () => {
                         className="tirr__page__img rounded-circle"
                       />
                       
-                      <div className="d-flex flex-column align-items-start">
+                      <div className="d-flex flex-column align-items-start text-start">
                         <h5 className="fw-bold font-size-17">{service.name}</h5>
-                        <p className="text-muted small">{service.description}</p>
+                        <p className="text-muted small fw-light">{service.description}</p>
                       </div>
                     </div>
                     
@@ -115,13 +115,13 @@ const ChoiceServicePage = () => {
       ))}
 
       {/* FOOTER ACTION */}
-      <div className="mt-4 d-flex justify-content-end">
+      <div className="mt-4 d-flex justify-content-end w-100">
         <button
-          className="btn btn-primary"
+          className="btn btn-primary w-100 p-3 font-size-17 fw-bold"
           disabled={!selectedService}
           onClick={handleContinue}
         >
-          Continuar
+          Próximo
         </button>
       </div>
     </div>

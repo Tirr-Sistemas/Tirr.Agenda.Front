@@ -96,7 +96,7 @@ const ValidationPage = () => {
       <div className="border-0 rounded-4 p-1 mb-4 d-flex flex-column gap-4">
 
         {/* DATE & TIME */}
-        <div className="tirr__validaditon-page__info-container">
+        <div className="tirr__validaditon-page__info-container fw-light">
           <p>Dia escolhido</p>
           <div className="tirr__validaditon-page__info-item">
             <CalendarIcon />
@@ -111,7 +111,7 @@ const ValidationPage = () => {
         </div>
 
         {/* CLIENT */}
-        <div className="tirr__validaditon-page__info-container">
+        <div className="tirr__validaditon-page__info-container fw-light">
           <p>Seus dados</p>
           <div className="tirr__validaditon-page__info-item">
             <UserIcon />
@@ -146,7 +146,7 @@ const ValidationPage = () => {
         </div>
 
         {/* SERVIÇO */}
-        <div className="tirr__validaditon-page__info-container">
+        <div className="tirr__validaditon-page__info-container fw-light">
           <p>Serviço escolhido</p>
           <div className="tirr__validaditon-page__info-item">
             <div className="d-flex align-items-center flex-grow-1 gap-2">

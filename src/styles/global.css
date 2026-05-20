@@ -26,6 +26,7 @@
     --bs-secondary: var(--color-gray-light);
     --bs-light: var(--color-gray-lighter);
     --bs-dark: var(--color-text-dark);
+    --bs-dark-rgb: 74, 74, 61;
 
     --bs-border-color: var(--color-gray-light);
     --bs-link-color: var(--color-primary);

@@ -32,16 +32,16 @@ const Header = () => {
           return (
             <div key={step.id} className={`d-flex align-items-center ${stepActual ? "flex-grow-1" : ""}`}>
               <div
-                className={` tirr__header__content-item rounded-circle d-flex align-items-center justify-content-center  ${
+                className={` tirr__header__content-item rounded-circle d-flex align-items-center justify-content-center fw-bold ${
                   stepActual || stepCompleted 
                     ? "bg-warning text-white border-0"
-                    : "bg-white text-muted border"
+                    : "bg-white text-gray-light border"
                 }`}
               >
                 {stepCompleted ? <CheckIcon /> : step.id}
               </div>
               {stepActual && (
-                <span className="ms-2 fw-semibold text-dark small text-nowrap animate-fade-in">
+                <span className="ms-2 fw-semibold small text-nowrap animate-fade-in">
                   {step.label}
                 </span>
               )}

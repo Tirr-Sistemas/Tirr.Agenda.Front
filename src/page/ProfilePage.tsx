@@ -64,8 +64,8 @@ const ProfilePage = () => {
     <div className="container py-5 px-3">
 
       {/* ================= HEADER ================= */}
-      <div className="mb-3">
-        <h6 className="text-muted">
+      <div className="mb-2">
+        <h6 className="text-muted fw-light">
           Queremos te conhecer melhor
         </h6>
       </div>

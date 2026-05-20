@@ -282,29 +282,26 @@ const ChoiceDataAndTimePage = () => {
 
   };
 
+                console.log("🚀 ~ ChoiceDataAndTimePage ~ selectedDate:", selectedDate)
   return (
     <div className="container py-5 px-3 d-flex gap-5 flex-column justify-content-center align-items-center tirr__calendar-time-page__calendar-container">
-
       {/* CALENDÁRIO */}
       <div>
 
         <div className="mb-2 w-100">
-          <h6 className="fs-6 text-muted">
+          <h6 className="fs-6 text-muted fw-light">
             Vamos encontrar o dia ideal para você
           </h6>
         </div>
 
-        <div className="bg-white rounded-3 py-2">
-
+        <div className="bg-white rounded-3 py-2" style={{minHeight: '330px'}}>
           {/* HEADER */}
           <div className="d-flex justify-content-between align-items-center mb-3 px-3">
-
             <h6 className="text-uppercase">
               {MONTHS[month]} {year}
             </h6>
 
             <div className="d-flex gap-1">
-
               <button
                 className="btn"
                 disabled={disabledButton}
@@ -319,18 +316,16 @@ const ChoiceDataAndTimePage = () => {
               >
                 <CarretRightIcon />
               </button>
-
             </div>
 
           </div>
 
           {/* WEEK */}
           <div className="d-flex mb-2 text-center">
-
             {DAY_WEEK.map((d) => (
               <div
                 key={d}
-                className="flex-fill fw-semi text-muted small"
+                className="flex-fill text-muted small fw-semibold font-size-12"
               >
                 {d}
               </div>
@@ -340,7 +335,6 @@ const ChoiceDataAndTimePage = () => {
 
           {/* DAYS */}
           <div className="d-flex flex-wrap text-center">
-
             {days.map((day, index) => {
 
               if (!day) {
@@ -417,140 +411,132 @@ const ChoiceDataAndTimePage = () => {
       </div>
 
       {/* HORÁRIOS */}
-      <div>
+      {selectedDate && (
+        <div className="w-100">
+          <div className="mb-4">
 
-        <div className="mb-4">
-
-          <div className="mb-2 w-100">
-            <p className="fs-6 text-muted">
-              Escolha o horário que combina com você
-            </p>
-          </div>
-
-          <div className="bg-white rounded-3 py-2 p-3">
-
-            {/* DATE */}
-            <div className="d-flex align-items-center p-2">
-
-              <h6 className="text-uppercase">
-
-                {selectedDate
-                  ? `${selectedDate.getDate()} ${MONTHS[
-                  selectedDate.getMonth()
-                  ]
-                  } ${selectedDate.getFullYear()
-                  }`
-                  : "Selecione um dia"}
-
-              </h6>
-
+            <div className="mb-2 w-100">
+              <p className="fs-6 text-muted fw-light">
+                Escolha o horário que combina com você
+              </p>
             </div>
 
-            {/* PERIOD */}
-            <div className="d-flex flex-inline w-100 p-1 bg-light rounded-4 gap-1 my-3">
+            <div className="bg-white rounded-3 py-2 p-3 " style={{minHeight: '330px'}}>
+              {/* DATE */}
+              <div className="d-flex align-items-center p-2">
+                <h6 className="text-uppercase">
+                  {selectedDate
+                    ? `${selectedDate.getDate()} ${MONTHS[
+                    selectedDate.getMonth()
+                    ]
+                    } ${selectedDate.getFullYear()
+                    }`
+                    : ""}
+                </h6>
+              </div>
 
-              <button
-                disabled={!selectedDate}
-                onClick={() => {
-                  setSelectedPeriod(
+              {/* PERIOD */}
+              <div className="d-flex flex-inline w-100 p-1 bg-light rounded-4 gap-1 my-3">
+                <button
+                  disabled={!selectedDate}
+                  onClick={() => {
+                    setSelectedPeriod(
+                      HOURS_PERIOD.PERIOD_DAY
+                    );
+                  }}
+                  className={`btn w-50 rounded-3 border-0 d-flex gap-1 align-items-center justify-content-center text-center ${selectedPeriod ===
                     HOURS_PERIOD.PERIOD_DAY
-                  );
-                }}
-                className={`btn w-50 rounded-4 border-0 d-flex gap-1 align-items-center justify-content-center text-center ${selectedPeriod ===
-                  HOURS_PERIOD.PERIOD_DAY
-                  ? "btn-primary"
-                  : "btn-outline-primary"
-                  }`}
-              >
-                <SunIcon />
-                Dia
-              </button>
-
-              <button
-                disabled={!selectedDate}
-                onClick={() => {
-                  setSelectedPeriod(
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+                    }`}
+                >
+                  <SunIcon />
+                  Dia
+                </button>
+                <button
+                  disabled={!selectedDate}
+                  onClick={() => {
+                    setSelectedPeriod(
+                      HOURS_PERIOD.PERIOD_NIGHT
+                    );
+                  }}
+                  className={`btn w-50 rounded-3 text-dark border-0 d-flex gap-1 align-items-center justify-content-center text-center ${selectedPeriod ===
                     HOURS_PERIOD.PERIOD_NIGHT
-                  );
-                }}
-                className={`btn w-50 rounded-4 border-0 d-flex gap-1 align-items-center justify-content-center text-center ${selectedPeriod ===
-                  HOURS_PERIOD.PERIOD_NIGHT
-                  ? "btn-primary"
-                  : "btn-outline-primary"
-                  }`}
+                    ? "text-dark"
+                    : "btn-outline-primary"
+                    }`}
+                >
+                  <MoonIcon />
+                  Noite
+                </button>
+              </div>
+
+              {/* HOURS */}
+              <div 
+                className="d-grid gap-2 my-4" 
+                style={{ gridTemplateColumns: "repeat(auto-fit, minmax(70px, 1fr))"}}
               >
-                <MoonIcon />
-                Noite
-              </button>
+                {filteredHours.map((h) => {
+                  const isSelected =
+                    hour === h;
 
-            </div>
+                  return (
+                    <button
+                      key={h}
+                      disabled={!selectedDate}
+                      className={`btn border-dark ${isSelected
+                        ? "btn-primary border-0"
+                        : "bg-white"
+                        }`}
+                      onClick={() => {
+                        setHour(h);
+                      }}
+                    >
+                      {h}
+                    </button>
+                  );
 
-            {/* HOURS */}
-            <div className="d-flex flex-wrap gap-2 my-4">
+                })}
+              </div>
 
-              {filteredHours.map((h) => {
+              {/* EMPTY */}
+              {!hoursIsLoading &&
+                selectedDate &&
+                filteredHours.length === 0 && (
+                  <div className="text-center small text-muted py-3">
+                    Nenhum horário disponível.
+                  </div>
+                )}
 
-                const isSelected =
-                  hour === h;
-
-                return (
-                  <button
-                    key={h}
-                    disabled={!selectedDate}
-                    className={`btn border-dark ${isSelected
-                      ? "btn-primary border-0"
-                      : "bg-white"
-                      }`}
-                    onClick={() => {
-                      setHour(h);
-                    }}
-                  >
-                    {h}
-                  </button>
-                );
-
-              })}
-
-            </div>
-
-            {/* EMPTY */}
-            {!hoursIsLoading &&
-              selectedDate &&
-              filteredHours.length === 0 && (
+              {/* LOADING */}
+              {hoursIsLoading && (
                 <div className="text-center small text-muted py-3">
-                  Nenhum horário disponível.
+                  Carregando horários...
                 </div>
               )}
 
-            {/* LOADING */}
-            {hoursIsLoading && (
-              <div className="text-center small text-muted py-3">
-                Carregando horários...
-              </div>
-            )}
+            </div>
 
           </div>
-
         </div>
-
-      </div>
+      )}
 
       {/* ACTIONS */}
-      <div className="d-flex w-100 justify-content-between">
+      <div className="d-flex w-100 justify-content-between gap-2">
 
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-outline-secondary btn-outline-primary w-100 p-3 font-size-17 fw-bold"
           onClick={back}
         >
           Voltar
         </button>
 
         <button
-          className="btn btn-primary"
+          className="btn btn-primary w-100 p-3 font-size-17 fw-bold"
           disabled={!selectedDate || !hour}
           onClick={handleContinue}
         >
-          Continuar
+          Próximo
         </button>
 
       </div>
