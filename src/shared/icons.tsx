@@ -99,8 +99,8 @@ const SunIcon = (props: React.SVGProps<SVGSVGElement>) => {
 const CarretLeftIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg
-            width={7}
-            height={11}
+            width={10}
+            height={16}
             viewBox="0 0 7 11"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +110,7 @@ const CarretLeftIcon = (props: React.SVGProps<SVGSVGElement>) => {
                 fillRule="evenodd"
                 clipRule="evenodd"
                 d="M5.24044 1.22624e-08L6.26874 1.0283L2.05662 5.24042L6.26874 9.45254L5.24044 10.4808L1.53213e-05 5.24042L5.24044 1.22624e-08Z"
-                fill="#4A4A3D"
+                fill={props.fill || "#4A4A3D"}
             />
         </svg>
 
@@ -124,8 +124,8 @@ const CarretLeftIcon = (props: React.SVGProps<SVGSVGElement>) => {
 const CarretRightIcon = (props: React.SVGProps<SVGSVGElement>) => {
     return (
         <svg
-            width={7}
-            height={11}
+            width={10}
+            height={16}
             viewBox="0 0 7 11"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

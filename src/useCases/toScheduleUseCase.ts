@@ -121,13 +121,14 @@ const toScheduleUseCase = async (input: ToScheduleUseCaseArgs): Promise<boolean>
     const [hours, minutes] = schedule.chosenHour.split(":")
 
     const dataAgendamento = new Date(
-      schedule.chosenYear,
-      schedule.chosenMonth,
-      schedule.chosenDay,
-      Number(hours),
-      Number(minutes)
-    ).toISOString()
-    debugger
+      Date.UTC(
+        schedule.chosenYear,
+        schedule.chosenMonth,
+        schedule.chosenDay,
+        Number(hours),
+        Number(minutes)
+      )
+    ).toISOString()  
     await API_AGENDA.criarAgendamento({
       servico: parseInt(schedule.chosenService.id),
       funcionario: 1,

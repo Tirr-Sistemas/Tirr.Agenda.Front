@@ -1,4 +1,4 @@
-import { formatToBRL } from "@/utils/formatToBRL"
+// import { formatToBRL } from "@/utils/formatToBRL"
 
 export class ServiceModel {
   public id: string
@@ -7,13 +7,13 @@ export class ServiceModel {
   public description: string
   public price: number
 
-  /**
-   * Preço formatado em moeda (BRL).
-   *
-   * Campo derivado do price.
-   * Ex: "R$ 45,00"
-   */
-  public priceFormatted: string
+  // /**
+  //  * Preço formatado em moeda (BRL).
+  //  *
+  //  * Campo derivado do price.
+  //  * Ex: "R$ 45,00"
+  //  */
+  // public priceFormatted: string
 
   constructor(data: ServiceModel.Input) {
     this.id = data.id
@@ -22,10 +22,10 @@ export class ServiceModel {
     this.description = data.description
     this.price = data.price
 
-    /**
-     * Campo derivado calculado no momento da criação.
-     */
-    this.priceFormatted = formatToBRL(data.price)
+    // /**
+    //  * Campo derivado calculado no momento da criação.
+    //  */
+    // this.priceFormatted = formatToBRL(data.price)
 
     this.assertValid()
   }
