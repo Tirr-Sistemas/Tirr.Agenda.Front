@@ -72,15 +72,15 @@ const ProfilePage = () => {
 
       {/* ================= FORM ================= */}
       <form
-        className="d-flex flex-column gap-4"
+        className="d-flex flex-column gap-5 mb-6"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="bg-white border-0 rounded-4 px-4 py-4 d-flex flex-column gap-3">
           {/* NAME */}
           <div className="mb-3">
-            <label className="form-label">Nome</label>
+            <label className="form-label font-size-15">Nome</label>
             <input
-              className="form-control rounded-0 border-0 border-bottom bg-white"
+              className="form-control rounded-0 border-0 tirr__profile-page__border-color border-bottom bg-white"
               placeholder="Digite seu nome"
               {...register("name", { required: true })}
             />
@@ -91,10 +91,10 @@ const ProfilePage = () => {
 
           {/* EMAIL */}
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label font-size-15">Email</label>
             <input
               type="email"
-              className="form-control rounded-0 border-0 border-bottom bg-white"
+              className="form-control rounded-0 tirr__profile-page__border-color  border-0 border-bottom bg-white"
               placeholder="Digite seu email"
               {...register("email", {
                 required: true,
@@ -108,10 +108,10 @@ const ProfilePage = () => {
 
           {/* PHONE */}
           <div className="mb-3">
-            <label className="form-label">Telefone</label>
+            <label className="form-label font-size-15">Telefone</label>
             <input
               type="tel" 
-              className="form-control rounded-0 border-0 border-bottom bg-white"
+              className="form-control rounded-0 border-0 tirr__profile-page__border-color  border-bottom bg-white"
               placeholder="Digite seu telefone"
               {...register("phone", {
                 required: true,
@@ -132,11 +132,11 @@ const ProfilePage = () => {
         
 
         {/* ================= NAVIGATION ================= */}
-        <div className="d-flex justify-content-between mt-4">
+        <div className="d-flex justify-content-between gap-2 fixed-bottom bg-light p-3 d-flex justify-content-end w-100 shadow-lg">
 
           <button
             type="button"
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-primary w-100 p-3 font-size-17 fw-bold"
             onClick={back}
             disabled={isFirstPage}
           >
@@ -145,10 +145,10 @@ const ProfilePage = () => {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary w-100 font-size-17 fw-bold"
             disabled={!isValid}
           >
-            {isLastPage ? "Finalizar" : "Avançar"}
+            {isLastPage ? "Finalizar" : "Próximo"}
           </button>
 
         </div>

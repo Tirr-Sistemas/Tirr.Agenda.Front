@@ -35,13 +35,13 @@ const Header = () => {
                 className={` tirr__header__content-item rounded-circle d-flex align-items-center justify-content-center fw-bold ${
                   stepActual || stepCompleted 
                     ? "bg-warning text-white border-0"
-                    : "bg-white text-gray-light border"
+                    : "bg-white text-gray-light border tirr__header__border-color"
                 }`}
               >
                 {stepCompleted ? <CheckIcon /> : step.id}
               </div>
               {stepActual && (
-                <span className="ms-2 fw-semibold small text-nowrap animate-fade-in">
+                <span className="ms-2 fw-medium small text-nowrap animate-fade-in">
                   {step.label}
                 </span>
               )}

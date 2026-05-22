@@ -1,4 +1,5 @@
 import { ScheduleRoutes } from "@/config";
+import { MONTHS } from "@/constants/calendar";
 import useScheduleNavigation from "@/hook/useNavigation";
 import usePromise from "@/hook/usePromise";
 import { CalendarIcon, MailIcon, PhoneIcon, UserIcon } from "@/shared/icons";
@@ -91,7 +92,7 @@ const ValidationPage = () => {
   }
 
   return (
-    <div className="container py-5 px-3">
+    <div className="container py-5 px-3 mb-6">
       {/* ================= SUMMARY ================= */}
       <div className="border-0 rounded-4 p-1 mb-4 d-flex flex-column gap-4">
 
@@ -103,7 +104,7 @@ const ValidationPage = () => {
             <div>
               <p className="fw-semibold">Data selecionada</p>
               <p className="mb-0 font-size-13">
-                {schedule.chosenDay} de {schedule.chosenMonth} às {schedule.chosenHour}H
+                {schedule.chosenDay} de {schedule.chosenMonth && MONTHS[schedule.chosenMonth]} às {schedule.chosenHour}H
               </p>
             </div>
           </div>
@@ -140,9 +141,6 @@ const ValidationPage = () => {
               </p>
             </div>
           </div>
-          {/* <p className="mb-0">
-            {schedule.chosenDay?.toLocaleDateString()} às {schedule.chosenHour}
-          </p> */}
         </div>
 
         {/* SERVIÇO */}
@@ -160,16 +158,15 @@ const ValidationPage = () => {
                 </p>
               </div>
             </div>
-            <p className="fw-bold text-primary">{schedule?.chosenService?.priceFormatted}</p>
+            <p className="fw-bold text-primary">R$ {schedule?.chosenService?.price}</p>
           </div>
         </div>
       </div>
 
       {/* ================= ACTIONS ================= */}
-      <div className="d-flex justify-content-between">
-
+      <div className="d-flex justify-content-between gap-2 fixed-bottom bg-light p-3 d-flex justify-content-end w-100 shadow-lg">
         <button
-          className="btn btn-outline-secondary"
+          className="btn btn-outline-primary w-100 p-3 font-size-17 fw-bold"
           onClick={back}
           disabled={isScheduling}
         >
@@ -177,7 +174,7 @@ const ValidationPage = () => {
         </button>
 
         <button
-          className="btn btn-success"
+          className="btn btn-primary w-100 font-size-17 fw-bold"
           onClick={handleConfirm}
           disabled={isScheduling}
         >

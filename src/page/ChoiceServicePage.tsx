@@ -62,60 +62,62 @@ const ChoiceServicePage = () => {
   };
 
   return (
-    <div className="container py-5 px-3">
-      {/* LOADING */}
-      {serviceIsLoading && (
-        <div className="alert alert-info">Carregando serviços...</div>
-      )}
+    <div className="py-5 px-3 d-flex flex-column mb-6">
+      <div>
+        {/* LOADING */}
+        {serviceIsLoading && (
+          <div className="alert alert-info">Carregando serviços...</div>
+        )}
 
-      {/* LISTA DE SERVIÇOS */}
-      {categories?.map((category) => (
-        <div key={category.title} className="mb-4">
-          
-          {/* TÍTULO DA CATEGORIA */}
-          <h6 className="text-muted mb-2 fw-light">{category.title}</h6>
+        {/* LISTA DE SERVIÇOS */}
+        {categories?.map((category) => (
+          <div key={category.title} className="mb-4">
+            
+            {/* TÍTULO DA CATEGORIA */}
+            <h6 className="text-muted mb-2 fw-light">{category.title}</h6>
 
-          <div className="row g-2">
-            {category.services?.map((service) => {
-              const isSelected = selectedService?.id === service.id;
+            <div className="row g-2">
+              {category.services?.map((service) => {
+                const isSelected = selectedService?.id === service.id;
 
-              return (
-                <div className="col-12 col-md-6 col-lg-4" key={service.id}>
-                  <div
-                    onClick={() => handleSelectService(service)}
-                    className={`bg-white rounded-4 d-flex flex-inline align-items-center text-center justify-content-between p-3 h-100 cursor-pointer transition ${
-                      isSelected ? "border-primary shadow-sm border" : ""
-                    }`}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="d-flex align-items-center flex-grow-1 gap-2">
-                      {/* IMAGEM */}
-                      <img
-                        src={service.image}
-                        alt={service.name}
-                        className="tirr__page__img rounded-circle"
-                      />
+                return (
+                  <div className="col-12 col-md-6 col-lg-4" key={service.id}>
+                    <div
+                      onClick={() => handleSelectService(service)}
+                      className={`bg-white rounded-4 d-flex flex-inline align-items-center text-center justify-content-between p-3 h-100 cursor-pointer transition ${
+                        isSelected ? "border-primary shadow-sm tirr__page__btn-outline-border" : ""
+                      }`}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <div className="d-flex align-items-center flex-grow-1 gap-2">
+                        {/* IMAGEM */}
+                        <img
+                          src={service.image}
+                          alt={service.name}
+                          className="tirr__page__img rounded-circle"
+                        />
+                        
+                        <div className="d-flex flex-column align-items-start text-start gap-1">
+                          <h5 className="fw-bold font-size-17">{service.name}</h5>
+                          <p className="text-muted font-size-13 fw-light">{service.description}</p>
+                        </div>
+                      </div>
                       
-                      <div className="d-flex flex-column align-items-start text-start">
-                        <h5 className="fw-bold font-size-17">{service.name}</h5>
-                        <p className="text-muted small fw-light">{service.description}</p>
+                      {/* INFO */}
+                      <div className="fw-bold text-primary">
+                        R$ {service.price}
                       </div>
                     </div>
-                    
-                    {/* INFO */}
-                    <div className="fw-bold text-primary">
-                      {service.priceFormatted}
-                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* FOOTER ACTION */}
-      <div className="mt-4 d-flex justify-content-end w-100">
+      <div className="mt-4 d-flex justify-content-end w-100 fixed-bottom bg-light p-3 d-flex justify-content-end w-100 shadow-lg">
         <button
           className="btn btn-primary w-100 p-3 font-size-17 fw-bold"
           disabled={!selectedService}

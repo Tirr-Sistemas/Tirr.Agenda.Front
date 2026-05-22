@@ -16,6 +16,7 @@
 
     /* Bootstrap core */
     --bs-font-sans-serif: Poppins;
+    --bs-border-width: 2px;
 
     --bs-primary: var(--color-primary);
     --bs-body-color: var(--default-text-color);
@@ -45,13 +46,12 @@
     --bs-btn-hover-border-color: #0a58ca;
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #0a58ca;
+    --bs-btn-active-bg: #ecb306;
     --bs-btn-active-border-color: #0a53be;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: var(--color-primary);
     --bs-btn-disabled-border-color: var(--color-primary);
-
     color: var(--bs-btn-color) !important;
 }
 
@@ -82,10 +82,18 @@
     --bs-gradient: none;
 }
 
+.btn {
+    --bs-btn-border-radius: 8px;
+}
+
 .btn:hover {
     color: var(--bs-btn-hover-color);
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+.mb-6 {
+  margin-bottom: 4rem !important;
 }
 
 * {
@@ -115,6 +123,10 @@ html {
     background-color: var(--bg-color);
 }
 
+.tirr__header__border-color {
+    border-color: var(--bs-light) !important;
+}
+
 .tirr__header {
     top: 0;
     width: 100%;
@@ -137,8 +149,41 @@ html {
     object-fit: cover;
 }
 
+.tirr__page__btn-outline-border {
+    outline: 1px solid var(--color-primary);
+}
+
+
 .tirr__calendar-time-page__calendar-container {
     max-width: 440px;
+}
+
+.tirr__calendar-time-page__btn-hours {
+    --bs-btn-border-radius: 13px !important;
+    font-size: 14px;
+    padding: 8px
+}
+
+.tirr__calendar-time-page__calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+    display: grid;
+    column-gap: 14px;
+    row-gap: 6px;
+    padding-inline: 12px;
+}
+
+.tirr__calendar-time-page_btn-date-icons {
+    border: none;
+    background-color: #fff;
+    color: #fff;
+    padding: 0.45rem;
+}
+
+.tirr__calendar-time-page_btn-date-icons:disabled {
+    color: var(--bs-btn-disabled-color);
+    pointer-events: none;
+    opacity: var(--bs-btn-disabled-opacity);
+
 }
 
 .tirr__calendar-time-page__calendar-item {
@@ -163,4 +208,8 @@ html {
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+.tirr__profile-page__border-color {
+    border-color: #E2E4E5 !important;
 }
