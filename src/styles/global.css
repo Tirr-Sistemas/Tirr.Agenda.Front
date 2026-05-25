@@ -165,11 +165,18 @@ html {
 }
 
 .tirr__calendar-time-page__calendar-grid {
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     display: grid;
     column-gap: 14px;
     row-gap: 6px;
     padding-inline: 12px;
+}
+
+@media (max-width: 399px) {
+    .tirr__calendar-time-page__calendar-grid {
+        column-gap: 6px;
+        padding-inline: 8px;
+    }
 }
 
 .tirr__calendar-time-page_btn-date-icons {

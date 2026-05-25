@@ -1,4 +1,6 @@
 import { ScheduleFlow, type ScheduleRoute } from "@/config";
+import useGlobalContext from "@/store";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 /**
@@ -25,7 +27,7 @@ const useScheduleNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  /**
+   /**
    * =====================================================
    * PÁGINA ATUAL
    * =====================================================
@@ -33,6 +35,18 @@ const useScheduleNavigation = () => {
    * Rota atual tipada dentro do fluxo de agendamento.
    */
   const currentPage = location.pathname as ScheduleRoute;
+
+  const numberPage = ScheduleFlow.indexOf(currentPage)
+
+  const { schedule } = useGlobalContext();
+
+  useEffect(() => {
+    const isStatesEmpty = (!schedule || Object.keys(schedule).length === 0) && numberPage > 0;
+    
+    if (isStatesEmpty) {
+      navigate(ScheduleFlow[0], { replace: true });
+    }
+  }, [schedule, numberPage, navigate]);
 
   /**
    * =====================================================
@@ -76,8 +90,6 @@ const useScheduleNavigation = () => {
       navigate(prevPage);
     }
   };
-
-  const numberPage = ScheduleFlow.indexOf(currentPage)
 
   return {
     /**

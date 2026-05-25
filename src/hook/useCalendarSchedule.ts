@@ -183,92 +183,35 @@ const useCalendarSchedule =
      * Adiciona preview do próximo mês
      */
     const days = useMemo(() => {
+      const currentMonthDays = calendarGenerate(month, year);
 
-      const currentMonthDays =
-        calendarGenerate(
-          month,
-          year
-        );
+      const remainder = currentMonthDays.length % 7;
+      const remaining = remainder === 0 ? 0 : 7 - remainder;
 
       /**
        * ===============================================
-       * QUANTIDADE FINAL FIXA
+       * FORMATAR MÊS ATUAL
        * ===============================================
        */
-      const TOTAL_DAYS = 42;
+      const formattedCurrentMonth = currentMonthDays.map((day) => {
+        if (!day) return null;
+        return { day, month, year, isPreview: false };
+      });
 
       /**
        * ===============================================
-       * QUANTOS ESPAÇOS FALTAM
+       * PREENCHER O FINAL (MÊS SEGUINTE)
        * ===============================================
        */
-      const remaining =
-        TOTAL_DAYS -
-        currentMonthDays.length;
+      const nextMonthDate = new Date(year, month + 1);
+      const nextMonthPreview = Array.from({ length: remaining }, (_, index) => ({
+        day: index + 1,
+        month: nextMonthDate.getMonth(),
+        year: nextMonthDate.getFullYear(),
+        isPreview: true,
+      }));
 
-      /**
-       * ===============================================
-       * NEXT MONTH
-       * ===============================================
-       */
-      const nextMonthDate =
-        new Date(
-          year,
-          month + 1
-        );
-
-      const nextMonth =
-        nextMonthDate.getMonth();
-
-      const nextYear =
-        nextMonthDate.getFullYear();
-
-      /**
-       * ===============================================
-       * CURRENT MONTH FORMAT
-       * ===============================================
-       */
-      const formattedCurrentMonth =
-        currentMonthDays.map(
-          (day) => {
-
-            if (!day) {
-              return null;
-            }
-
-            return {
-              day,
-              month,
-              year,
-              isPreview: false
-            };
-
-          }
-        );
-
-      /**
-       * ===============================================
-       * NEXT MONTH PREVIEW
-       * ===============================================
-       */
-      const nextMonthPreview =
-        Array.from(
-          {
-            length: remaining
-          },
-          (_, index) => ({
-            day: index + 1,
-            month: nextMonth,
-            year: nextYear,
-            isPreview: true
-          })
-        );
-
-      return [
-        ...formattedCurrentMonth,
-        ...nextMonthPreview
-      ];
-
+      return [...formattedCurrentMonth, ...nextMonthPreview];
     }, [month, year]);
 
     /**

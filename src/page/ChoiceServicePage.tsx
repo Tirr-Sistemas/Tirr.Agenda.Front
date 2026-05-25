@@ -55,7 +55,6 @@ const ChoiceServicePage = () => {
    */
   const handleContinue = () => {
     if (!selectedService) return;
-
     updateSchedule({chosenService:selectedService})
 
     next();
