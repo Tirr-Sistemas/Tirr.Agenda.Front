@@ -148,7 +148,9 @@ const ValidationPage = () => {
           <p>Serviço escolhido</p>
           <div className="tirr__validaditon-page__info-item">
             <div className="d-flex align-items-center flex-grow-1 gap-2">
-               <img
+              <img
+                src={schedule?.chosenService?.image}
+                alt={schedule?.chosenService?.name}
                 className="tirr__page__img rounded-circle bg-gray-light"
               />
               <div>
