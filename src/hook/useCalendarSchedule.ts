@@ -297,7 +297,7 @@ const useCalendarSchedule =
         mounted = false;
       };
       
-    }, [year, month, savedDate]);
+    }, [year, month]);
 
     /**
      * =====================================================
