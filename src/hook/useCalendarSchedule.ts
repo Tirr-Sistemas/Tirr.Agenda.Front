@@ -268,8 +268,16 @@ const useCalendarSchedule =
       const loadAvailability =
         async () => {
 
-          setSelectedDate(null);
-          setHour("");
+          //SE FOR O MESMO MÊS E ANO NÃO RESETA OS ESTADOS 
+          const isSameSavedMonth = savedDate && 
+                             savedDate.getMonth() === month && 
+                             savedDate.getFullYear() === year;
+
+          if (!isSameSavedMonth) {
+            setSelectedDate(null);
+            setHour("");
+            setSelectedPeriod(1)
+          }
 
           await loadDays({
             employerId: 1,
@@ -288,8 +296,8 @@ const useCalendarSchedule =
       return () => {
         mounted = false;
       };
-
-    }, [year, month]);
+      
+    }, [year, month, savedDate]);
 
     /**
      * =====================================================
@@ -305,7 +313,7 @@ const useCalendarSchedule =
             return;
           }
 
-          setHour("");
+          // setHour("");
 
           await loadHours({
             employerId: 1,
@@ -322,6 +330,21 @@ const useCalendarSchedule =
       loadHoursByDay();
 
     }, [selectedDate]);
+
+    /**
+     * Altera o período (Dia/Noite) automaticamente baseado no horário
+     */
+    useEffect(() => {
+      if (hour) {
+        const hourNumber = Number(hour.split(":")[0]);
+        
+        if (hourNumber >= 17) {
+          setSelectedPeriod(HOURS_PERIOD.PERIOD_NIGHT);
+        } else {
+          setSelectedPeriod(HOURS_PERIOD.PERIOD_DAY);
+        }
+      }
+    }, [hour]);
 
     /**
      * =====================================================
