@@ -227,11 +227,11 @@ const ChoiceDataAndTimePage = () => {
                         HOURS_PERIOD.PERIOD_NIGHT
                       );
                     }}
-                    className={`btn w-50 text-dark border-0 d-flex gap-1 align-items-center justify-content-center text-center tirr__calendar-time-page__btn-hours ${
+                    className={`btn w-50 border-0 d-flex gap-1 align-items-center justify-content-center text-center tirr__calendar-time-page__btn-hours ${
                       selectedPeriod ===
                       HOURS_PERIOD.PERIOD_NIGHT
-                        ? "btn-primary text-dark"
-                        : "btn-outline-primary"
+                        ? "btn-primary"
+                        : "btn-outline-primary text-dark"
                     }`}
                   >
                     <MoonIcon />

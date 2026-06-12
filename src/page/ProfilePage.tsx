@@ -23,7 +23,7 @@ type FormData = {
 };
 
 const ProfilePage = () => {
-  const { updateSchedule } = useGlobalContext();
+  const { schedule, updateSchedule } = useGlobalContext();
   const { next, back, isFirstPage, isLastPage } = useScheduleNavigation();
 
   /**
@@ -37,6 +37,11 @@ const ProfilePage = () => {
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: "onChange",
+    defaultValues: {
+      name: schedule?.name ?? "",
+      email: schedule?.email ?? "",
+      phone: schedule?.phone ?? "",
+    },
   });
 
   /**
