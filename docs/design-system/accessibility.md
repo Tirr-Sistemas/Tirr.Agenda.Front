@@ -7,6 +7,8 @@
 - Inputs possuem `type` apropriado para `email` e `tel`.
 - Imagens de servico possuem `alt` com o nome do servico.
 - Botao de notificacoes do admin possui `aria-label`.
+- A rota administrativa possui protecao de sessao e redireciona para `/login` sem token valido.
+- A tela de login possui `label` associado, `autocomplete`, mensagem de erro com `role="alert"` e controle nomeado para exibir ou ocultar senha.
 - `react-hook-form` bloqueia submit invalido no formulario de perfil.
 
 ## Riscos encontrados
@@ -70,6 +72,8 @@ O codigo usa Bootstrap, que fornece estilos de foco para varios controles. Contu
 - Botoes de icone de calendario.
 - Menu mobile administrativo.
 - Itens de menu customizados do admin.
+
+O menu administrativo agora possui `aria-label="Menu administrativo"`.
 
 Sugestao:
 

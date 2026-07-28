@@ -10,8 +10,9 @@ Componentes compartilhados existentes:
 | Icones SVG | `src/shared/icons.tsx` | Icones internos para agendamento | Mail, Calendar, Moon, Sun, CarretLeft, CarretRight, Check, Phone, User |
 | `Button` | `src/shared/Button/index.tsx` | Arquivo reservado para botao compartilhado | Vazio |
 Item ativo, notificacao com badge |
-| `MobileMenu` | `src/page/administrator/MobileMenu.tsx` | Menu inferior administrativo mobile | Classes `active` e `hovered` aplicadas, mas sem CSS encontrado |
-| `Dashboard` | `src/page/administrator/Dashboard.tsx` | Tela administrativa com calendario | Navegacao anterior/proximo e calendario |
+| `MobileMenu` | `src/page/administrator/MobileMenu.tsx` | Navegacao administrativa responsiva: barra inferior mobile e barra lateral desktop | Item ativo, hover, foco e identificacao da conta |
+| `TopBar` | `src/page/administrator/TopBar.tsx` | Contexto da tela administrativa e acoes globais | Titulo e descricao por rota, notificacoes e logout |
+| `Dashboard` | `src/page/administrator/Dashboard.tsx` | Agenda administrativa com resumo e calendario | Dia/semana, navegacao por data e retorno para hoje |
 
 Paginas do fluxo publico:
 
@@ -237,22 +238,25 @@ Sugestao:
 
 - Extrair `FixedActionBar`.
 
-## Menus administrativos
+## Navegacao administrativa
 
 ### MobileMenu
 
 Arquivo: `src/page/administrator/MobileMenu.tsx`
 
-Padrao:
+Padrao atual:
 
-- Nav fixo inferior com `height: 80px`, fundo branco, `shadow-lg`.
-- Itens com icone Bootstrap e label `font-size-12`.
-- Aplica classes `active` e `hovered`.
+- Mobile: nav fixo inferior com altura de `80px`.
+- Desktop: a mesma navegacao torna-se uma barra lateral fixa de `232px`.
+- Itens usam icones Bootstrap, label e estado `.active` com fundo `--color-gray-lighter`.
+- A barra lateral apresenta marca e identificacao da conta.
 
-Problema:
+## Superficies administrativas
 
-- Nao ha CSS encontrado para `.tirr__admin__mobile-menu__item.active`, `.hovered` ou `.tirr__admin__mobile-menu__label`.
+Componentes implicitos em `src/page/administrator`:
 
-Sugestao:
-
-- Definir estados visuais do menu mobile ou remover classes sem estilo.
+- `tirr__admin__stat-card`: resumo compacto com icone, contexto e valor.
+- `tirr__admin__panel`: superficie principal com borda discreta e raio de `8px`.
+- `tirr__admin__status`: badge de estado; `is-active` usa a cor primaria.
+- `tirr__admin__icon-button`: acao apenas com icone, nomeada por `aria-label`.
+- `tirr__admin__search`: campo de busca para listas operacionais.

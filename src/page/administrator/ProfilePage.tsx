@@ -1,8 +1,8 @@
 const PROFILE_ITEMS = [
-  { label: "Estabelecimento", value: "Tirr Sistema Agenda" },
-  { label: "Responsavel", value: "Administrador" },
-  { label: "Contato", value: "(19) 99999-9999" },
-  { label: "Email", value: "contato@tirragenda.com" },
+  { label: "Estabelecimento", value: "Tirr Sistema Agenda", icon: "bi-shop" },
+  { label: "Responsavel", value: "Administrador", icon: "bi-person" },
+  { label: "Contato", value: "(19) 99999-9999", icon: "bi-telephone" },
+  { label: "E-mail", value: "contato@tirragenda.com", icon: "bi-envelope" },
 ] as const;
 
 const BUSINESS_HOURS = [
@@ -11,54 +11,29 @@ const BUSINESS_HOURS = [
   { day: "Domingo", hours: "Fechado" },
 ] as const;
 
-const ProfilePage = () => {
-  return (
-    <div className="tirr__admin__page container-fluid bg-light min-vh-100 py-3">
-      <section className="bg-white rounded-4 p-3 shadow-sm mb-3">
-        <div className="d-flex align-items-center gap-3 mb-3">
-          <div className="tirr__admin__profile-avatar bg-primary text-white">
-            <i className="bi bi-person-fill font-size-24" />
-          </div>
+const ProfilePage = () => (
+  <div className="tirr__admin__page tirr__admin__profile-page">
+    <section className="tirr__admin__profile-hero">
+      <span className="tirr__admin__profile-avatar">A</span>
+      <div><p className="tirr__admin__overline">Conta principal</p><h2>Administrador</h2><span>Acesso gerencial</span></div>
+    </section>
 
-          <div>
-            <h2 className="font-size-17 fw-bold">Administrador</h2>
-            <p className="text-muted font-size-13">Acesso gerencial</p>
-          </div>
-        </div>
-
-        <div className="d-flex flex-column gap-2">
-          {PROFILE_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className="border rounded-3 p-3 d-flex align-items-center justify-content-between gap-3"
-            >
-              <span className="text-muted font-size-13">{item.label}</span>
-              <strong className="font-size-13 text-end">{item.value}</strong>
-            </div>
-          ))}
+    <div className="tirr__admin__profile-grid">
+      <section className="tirr__admin__panel">
+        <div className="tirr__admin__panel-header"><div><p className="tirr__admin__overline">Informacoes</p><h2>Dados do estabelecimento</h2></div></div>
+        <div className="tirr__admin__details-list">
+          {PROFILE_ITEMS.map((item) => <div key={item.label} className="tirr__admin__detail-row"><span className="tirr__admin__detail-icon"><i className={`bi ${item.icon}`} /></span><span><small>{item.label}</small><strong>{item.value}</strong></span></div>)}
         </div>
       </section>
 
-      <section className="bg-white rounded-4 p-3 shadow-sm">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <h2 className="font-size-16 fw-bold">Horario de atendimento</h2>
-          <span className="badge bg-primary font-size-12">Online</span>
-        </div>
-
-        <div className="d-flex flex-column gap-2">
-          {BUSINESS_HOURS.map((item) => (
-            <div
-              key={item.day}
-              className="border rounded-3 p-3 d-flex align-items-center justify-content-between"
-            >
-              <span className="font-size-13">{item.day}</span>
-              <strong className="font-size-13">{item.hours}</strong>
-            </div>
-          ))}
+      <section className="tirr__admin__panel">
+        <div className="tirr__admin__panel-header"><div><p className="tirr__admin__overline">Disponibilidade</p><h2>Horario de atendimento</h2></div><span className="tirr__admin__status is-active">Online</span></div>
+        <div className="tirr__admin__hours-list">
+          {BUSINESS_HOURS.map((item) => <div key={item.day}><span>{item.day}</span><strong className={item.hours === "Fechado" ? "text-muted" : ""}>{item.hours}</strong></div>)}
         </div>
       </section>
     </div>
-  );
-};
+  </div>
+);
 
 export default ProfilePage;

@@ -35,6 +35,18 @@ const __AUTH_UTILS__ = () => {
     document.cookie = `${COOKIE_NAME}=${token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
   };
 
+  const createSessionToken = (email: string) => {
+    const header = btoa(JSON.stringify({ alg: "none", typ: "JWT" }));
+    const payload = btoa(
+      JSON.stringify({
+        sub: email,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 8,
+      })
+    );
+
+    return `${header}.${payload}.local`;
+  };
+
   /**
    * @description
    * Remove o token do cookie, efetivamente deslogando o usuário.
@@ -95,6 +107,7 @@ const __AUTH_UTILS__ = () => {
   return {
     getToken,
     setToken,
+    createSessionToken,
     removeToken,
     isTokenValid,
     logout,

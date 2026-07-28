@@ -6,6 +6,7 @@ import Dashboard from "./page/administrator/Dashboard";
 import MobileMenu from "./page/administrator/MobileMenu";
 import ProfilePage from "./page/administrator/ProfilePage";
 import ServicesPage from "./page/administrator/ServicesPage";
+import LoginPage from "./page/LoginPage";
 
 import ChoiceDataAndTimePage from "./page/scheduler/ChoiceDataAndTimePage";
 import ChoiceServicePage from "./page/scheduler/ChoiceServicePage";
@@ -14,6 +15,7 @@ import ValidationPage from "./page/scheduler/ValidationPage";
 
 import TopBar from "./page/administrator/TopBar";
 import Header from "./shared/Header";
+import RequireAuth from "./shared/RequireAuth";
 
 /**
  * Layout público
@@ -32,17 +34,21 @@ const PublicLayout = () => (
  */
 const AdminLayout = () => (
   <div className="tirr__admin-layout">
-    <TopBar/>
-    <main>
-      <Outlet />
-    </main>
     <MobileMenu />
+    <div className="tirr__admin__workspace">
+      <TopBar />
+      <main>
+        <Outlet />
+      </main>
+    </div>
   </div>
 );
 
 const Routing = () => {
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
+
       {/* Rotas Públicas */}
       <Route element={<PublicLayout />}>
         <Route index element={<ChoiceServicePage />} />
@@ -69,11 +75,13 @@ const Routing = () => {
       </Route>
 
       {/* Rotas Administrativas */}
-      <Route path="/administrador" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="clientes" element={<ClientsPage />} />
-        <Route path="servicos" element={<ServicesPage />} />
-        <Route path="perfil" element={<ProfilePage />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/administrador" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="clientes" element={<ClientsPage />} />
+          <Route path="servicos" element={<ServicesPage />} />
+          <Route path="perfil" element={<ProfilePage />} />
+        </Route>
       </Route>
     </Routes>
   );

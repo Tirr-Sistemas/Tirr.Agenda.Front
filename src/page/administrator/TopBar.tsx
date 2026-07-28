@@ -1,5 +1,7 @@
 import { useLocation } from "react-router";
 
+import { authUtils } from "@/utils/auth";
+
 const PAGE_META = {
   "/administrador": {
     title: "Agenda",
@@ -24,22 +26,33 @@ const TopBar = () => {
   const page = PAGE_META[pathname as keyof typeof PAGE_META] ?? PAGE_META["/administrador"];
 
   return (
-    <header className="tirr__topbar d-flex align-items-center justify-content-between px-3">
+    <header className="tirr__topbar">
       <div>
-        <h1 className="font-size-18 fw-bold">{page.title}</h1>
-        <p className="text-muted font-size-12">{page.description}</p>
+        <h1>{page.title}</h1>
+        <p>{page.description}</p>
       </div>
 
-      <button
-        type="button"
-        className="tirr__admin__topbar-notification"
-        aria-label="Notificacoes"
-      >
-        <i className="bi bi-bell-fill font-size-20"></i>
-        <span className="tirr__admin__topbar-badge font-size-12 bg-primary">
-          8
-        </span>
-      </button>
+      <div className="d-flex align-items-center gap-2">
+        <button
+          type="button"
+          className="tirr__admin__topbar-notification"
+          aria-label="Notificacoes"
+        >
+          <i className="bi bi-bell-fill font-size-20"></i>
+          <span className="tirr__admin__topbar-badge">
+            8
+          </span>
+        </button>
+        <button
+          type="button"
+          className="tirr__admin__topbar-logout"
+          onClick={authUtils.logout}
+          aria-label="Sair da area administrativa"
+          title="Sair"
+        >
+          <i className="bi bi-box-arrow-right font-size-20" />
+        </button>
+      </div>
     </header>
   );
 };

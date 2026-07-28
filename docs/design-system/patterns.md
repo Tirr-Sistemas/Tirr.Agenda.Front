@@ -46,11 +46,11 @@ Arquivo: `src/routing.tsx` e `src/page/administrator/Dashboard.tsx`
 
 Estrutura:
 
-- `AdminLayout` com `main`.
-- Dashboard em `container-fluid bg-light min-vh-100 py-3`.
-- Header administrativo absoluto.
-- Calendario ocupando `calc(100vh - 210px)`.
-- Menu mobile fixo inferior.
+- `AdminLayout` usa nav administrativo e uma area de trabalho com top bar e `main`.
+- Em telas desktop, a navegacao fica fixa na lateral esquerda com `232px`.
+- Em telas menores, a navegacao passa para a parte inferior com `80px`.
+- Conteudo usa largura maxima de `1440px`, espacamento responsivo e superfices administrativas de raio `8px`.
+- Dashboard, clientes e servicos iniciam com cards de resumo para leitura rapida.
 
 ## Padrao de superficie
 
@@ -124,13 +124,10 @@ Fluxo publico:
 
 Admin:
 
-- Header com abas `Hoje` e `Mes`.
-- Mobile menu com Agenda, Clientes, Servicos e Perfil.
-- Dashboard tem botoes de dia anterior/proximo.
-
-Problemas:
-
-- `MobileMenu` inicia `active` como `"home"`, mas nenhum item tem id `"home"`, entao nenhum item nasce ativo.
+- Top bar contextual por rota com titulo, descricao, notificacoes e logout.
+- Navegacao responsiva com Agenda, Clientes, Servicos e Perfil.
+- Dashboard tem seletor Dia/Semana, navegacao por data e atalho Hoje.
+- Clientes oferecem busca local por nome, e-mail ou telefone.
 
 ## Padrao de calendario
 
@@ -145,7 +142,7 @@ Admin:
 
 - Usa React Big Calendar.
 - Header nativo oculto com `.rbc-time-header { display: none; }`.
-- Eventos amarelos com sombra e radius `12px`.
+- Eventos amarelos sem sombra e radius `8px`, alinhados aos paineis administrativos.
 - Linha atual vermelha `#ff4d4f`.
 - Scrollbar customizada.
 

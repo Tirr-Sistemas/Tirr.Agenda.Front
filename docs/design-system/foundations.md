@@ -132,8 +132,7 @@ Componentes implicitos montados direto nas paginas:
 - O componente `Button` compartilhado esta vazio, enquanto botoes sao repetidos em varias paginas.
 - O rodape fixo de acoes repete a mesma composicao com classes duplicadas.
 - O card de servico existe como markup local, nao como componente.
-- Ha valores hardcoded fora dos tokens, incluindo azuis do Bootstrap em `.btn-primary`, cinzas do admin/calendario e vermelho da linha atual do calendario.
-- `.btn-primary` declara hover azul (`#0b5ed7`, `#0a58ca`), mas `.btn:hover` sobrescreve hover para `var(--color-primary)`, criando regra conflitante.
+- Ha valores hardcoded fora dos tokens, incluindo cinzas do admin/calendario e vermelho da linha atual do calendario.
 - Classes `cursor-pointer`, `transition` e `animate-fade-in` sao usadas, mas nao foram encontradas definicoes locais.
 - O menu mobile aplica classes `active` e `hovered`, mas nao ha CSS especifico encontrado para estes estados.
 - Existem seletores aparentemente nao usados, como `.calendar-top-bar` e `.tirr__calendar-time-page__calendar-container`.
@@ -145,5 +144,5 @@ Componentes implicitos montados direto nas paginas:
 - Extrair `ServiceCard`, `SummaryInfoItem`, `CalendarPanel` e `PeriodSegmentedControl` a partir dos markups existentes.
 - Manter Bootstrap como base e reservar classes `tirr__` para padroes que o Bootstrap nao cobre.
 - Consolidar valores hardcoded em tokens somente depois de validacao visual; ate la, documenta-los como valores encontrados, nao como tokens.
-- Corrigir a regra de hover de `.btn-primary` para usar o mesmo sistema de cor primaria ja declarado.
+- Manter o hover e active de `.btn-primary` nos tokens `--color-primary-hover` e `--color-primary-active`, como aplicado na interface atual.
 - Definir ou remover classes usadas sem implementacao local.
