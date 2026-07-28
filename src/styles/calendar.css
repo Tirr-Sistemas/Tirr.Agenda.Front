@@ -1,0 +1,130 @@
+/* Remove header */
+.rbc-time-header {
+  display: none;
+}
+
+/* Calendário */
+.rbc-calendar {
+      border: none;
+    outline: none;
+}
+
+/* Linha de horário */
+.rbc-time-content {
+  border-top: none;
+}
+
+/* Coluna das horas */
+.rbc-time-gutter {
+  background: #fafafa;
+}
+
+.rbc-time-gutter .rbc-timeslot-group {
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.rbc-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #868e96;
+}
+
+/* Espaçamento das linhas */
+.rbc-timeslot-group {
+  min-height: 70px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+/* Eventos */
+.rbc-event {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 8px 10px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  font-weight: 600;
+  background-color: var(--color-primary) !important;
+}
+
+.rbc-event-label {
+  display: none;
+}
+
+/* Evento selecionado */
+.rbc-selected {
+  opacity: 0.9;
+}
+
+/* Linha atual */
+.rbc-current-time-indicator {
+  height: 3px;
+  background: #ff4d4f;
+}
+
+/* Hoje */
+.rbc-today {
+  background: #fafcff !important;
+}
+
+/* Remove bordas verticais */
+.rbc-time-content > * + * > * {
+  border-left: 1px solid #f1f3f5;
+}
+
+/* Scroll */
+.rbc-time-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.rbc-time-content::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 999px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .rbc-label {
+    font-size: 11px;
+  }
+
+  .rbc-event {
+    font-size: 12px;
+    padding: 6px 8px !important;
+  }
+
+  .rbc-timeslot-group {
+    min-height: 60px;
+  }
+}
+
+.calendar-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.calendar-top-bar__title {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.calendar-top-bar__button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #f8f9fa;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.calendar-top-bar__button:hover {
+  background: #e9ecef;
+}

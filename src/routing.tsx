@@ -1,26 +1,82 @@
-import { Route, Routes } from "react-router"
-import { ScheduleRoutes } from "./config"
-import ChoiceDataAndTimePage from "./page/ChoiceDataAndTimePage"
-import ChoiceServicePage from "./page/ChoiceServicePage"
-import ProfilePage from "./page/ProfilePage"
-import ValidationPage from "./page/ValidationPage"
-import Header from "./shared/Header"
+import { Outlet, Route, Routes } from "react-router";
 
-const Routing = () => {
+import { ScheduleRoutes } from "./config";
+import ClientsPage from "./page/administrator/ClientsPage";
+import Dashboard from "./page/administrator/Dashboard";
+import MobileMenu from "./page/administrator/MobileMenu";
+import ProfilePage from "./page/administrator/ProfilePage";
+import ServicesPage from "./page/administrator/ServicesPage";
 
-  return <>
+import ChoiceDataAndTimePage from "./page/scheduler/ChoiceDataAndTimePage";
+import ChoiceServicePage from "./page/scheduler/ChoiceServicePage";
+import SchedulerProfilePage from "./page/scheduler/ProfilePage";
+import ValidationPage from "./page/scheduler/ValidationPage";
+
+import TopBar from "./page/administrator/TopBar";
+import Header from "./shared/Header";
+
+/**
+ * Layout público
+ */
+const PublicLayout = () => (
+  <>
     <Header />
-    <main>
-      <Routes>
-        <Route index element={<ChoiceServicePage />} />
-        <Route path={ScheduleRoutes.SERVICE} element={<ChoiceServicePage />} />
-        <Route path={ScheduleRoutes.DATE_TIME} element={<ChoiceDataAndTimePage />} />
-        <Route path={ScheduleRoutes.PROFILE} element={<ProfilePage />} />
-        <Route path={ScheduleRoutes.CONFIRMATION} element={<ValidationPage />} />
-      </Routes>
+    <main className="container py-4">
+      <Outlet />
     </main>
   </>
+);
 
-}
+/**
+ * Layout administrativo
+ */
+const AdminLayout = () => (
+  <div className="tirr__admin-layout">
+    <TopBar/>
+    <main>
+      <Outlet />
+    </main>
+    <MobileMenu />
+  </div>
+);
 
-export default Routing
+const Routing = () => {
+  return (
+    <Routes>
+      {/* Rotas Públicas */}
+      <Route element={<PublicLayout />}>
+        <Route index element={<ChoiceServicePage />} />
+
+        <Route
+          path={ScheduleRoutes.SERVICE}
+          element={<ChoiceServicePage />}
+        />
+
+        <Route
+          path={ScheduleRoutes.DATE_TIME}
+          element={<ChoiceDataAndTimePage />}
+        />
+
+        <Route
+          path={ScheduleRoutes.PROFILE}
+          element={<SchedulerProfilePage />}
+        />
+
+        <Route
+          path={ScheduleRoutes.CONFIRMATION}
+          element={<ValidationPage />}
+        />
+      </Route>
+
+      {/* Rotas Administrativas */}
+      <Route path="/administrador" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="clientes" element={<ClientsPage />} />
+        <Route path="servicos" element={<ServicesPage />} />
+        <Route path="perfil" element={<ProfilePage />} />
+      </Route>
+    </Routes>
+  );
+};
+
+export default Routing;

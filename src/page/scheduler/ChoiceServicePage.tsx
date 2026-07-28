@@ -3,7 +3,7 @@ import usePromise from "@/hook/usePromise";
 import type { CategoryModel } from "@/model/CategoryModel";
 import type { ServiceModel } from "@/model/ServiceModel";
 import useGlobalContext from "@/store";
-import loadServiceUseCase from "@/useCases/loadServiceUseCase";
+import loadServiceUseCase from "@/useCases/scheduler/loadServiceUseCase";
 import { useEffect, useState } from "react";
 
 /**

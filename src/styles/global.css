@@ -220,3 +220,116 @@ html {
 .tirr__profile-page__border-color {
     border-color: #E2E4E5 !important;
 }
+
+/* ADMIN */
+
+.tirr__admin__mobile-menu {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  left: 0;
+  background-color: white;
+  z-index: 200;
+}
+
+.tirr__admin__mobile-menu__item {
+  border: none;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  min-width: 64px;
+}
+
+.tirr__admin__mobile-menu__item {
+    color: var(--default-text-color);
+}
+
+.tirr__admin__mobile-menu__item:hover,
+.tirr__admin__mobile-menu__item.active {
+    color: var(--color-primary);
+}
+
+.tirr__admin__mobile-menu__item.active {
+    font-weight: 700;
+}
+
+.tirr__admin__mobile-menu__label {
+    margin: 0;
+}
+
+.tirr__admin-layout main {
+    height: calc(100vh - (80px + 40px));
+    overflow: auto;
+}
+
+.tirr__admin__header-menu {
+    background-color: var(--bg-color);
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 50px;
+}
+
+.tirr__admin__header-menu__item {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  color: #6c757d;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.tirr__admin__header-menu__item.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.tirr__admin__header-menu__notification {
+  position: relative;
+  border: none;
+  background: transparent;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tirr__admin__profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tirr__admin__header-menu__badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tirr__topbar {
+    height: 40px;
+}

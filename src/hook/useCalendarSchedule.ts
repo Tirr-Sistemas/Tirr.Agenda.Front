@@ -3,18 +3,18 @@ import { useEffect, useMemo, useState } from "react";
 import { DAY_WEEK, MONTHS } from "@/constants/calendar";
 import { HOURS_PERIOD } from "@/constants/hours";
 
-import usePromise from "@/hook/usePromise";
 import useScheduleNavigation from "@/hook/useNavigation";
+import usePromise from "@/hook/usePromise";
 
 import useGlobalContext from "@/store";
 
 import loadDaysUseCase, {
-  LoadDaysUseCaseArgs
-} from "@/useCases/loadDaysUseCase";
+    LoadDaysUseCaseArgs
+} from "@/useCases/scheduler/loadDaysUseCase";
 
 import loadHoursUseCase, {
-  LoadHoursUseCaseArgs
-} from "@/useCases/loadHoursUseCase";
+    LoadHoursUseCaseArgs
+} from "@/useCases/scheduler/loadHoursUseCase";
 
 import { calendarGenerate } from "@/utils/calendarGenerate";
 import { isValidDate } from "@/utils/date";

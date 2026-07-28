@@ -4,7 +4,7 @@ import useScheduleNavigation from "@/hook/useNavigation";
 import usePromise from "@/hook/usePromise";
 import { CalendarIcon, MailIcon, PhoneIcon, UserIcon } from "@/shared/icons";
 import useGlobalContext from "@/store";
-import toScheduleUseCase, { type ToScheduleUseCaseArgs } from "@/useCases/toScheduleUseCase";
+import toScheduleUseCase, { type ToScheduleUseCaseArgs } from "@/useCases/scheduler/toScheduleUseCase";
 
 /**
  * =========================================================

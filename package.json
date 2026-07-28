@@ -17,10 +17,14 @@
     "test:debug": "vitest --inspect-brk --no-file-parallelism"
   },
   "dependencies": {
+    "@types/react-big-calendar": "^1.16.3",
     "add": "^2.0.6",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "dayjs": "^1.11.21",
     "react": "^19.2.4",
+    "react-big-calendar": "^1.20.0",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.72.1",
     "react-router": "^7.14.1",
