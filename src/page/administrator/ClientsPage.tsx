@@ -36,13 +36,6 @@ const ClientsPage = () => {
 
   return (
     <div className="tirr__admin__page container-fluid bg-light min-vh-100 py-3">
-      <div className="mb-3">
-        <h1 className="font-size-20 fw-bold">Clientes</h1>
-        <p className="text-muted font-size-13">
-          Acompanhe contatos, recorrencia e ultimo servico agendado.
-        </p>
-      </div>
-
       <div className="row g-2 mb-3">
         <div className="col-6">
           <div className="bg-white rounded-4 p-3 shadow-sm">

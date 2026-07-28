@@ -263,44 +263,8 @@ html {
 }
 
 .tirr__admin-layout main {
-    height: calc(100vh - (80px + 40px));
+    height: calc(100vh - (80px + 72px));
     overflow: auto;
-}
-
-.tirr__admin__header-menu {
-    background-color: var(--bg-color);
-    z-index: 1000;
-    position: fixed;
-    width: 100%;
-    left: 0;
-    top: 0;
-    height: 50px;
-}
-
-.tirr__admin__header-menu__item {
-  border: none;
-  background: transparent;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 500;
-  color: #6c757d;
-  transition: all 0.2s ease;
-  text-decoration: none;
-}
-
-.tirr__admin__header-menu__item.active {
-  background: var(--color-primary);
-  color: #fff;
-}
-
-.tirr__admin__header-menu__notification {
-  position: relative;
-  border: none;
-  background: transparent;
-  color: #343a40;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .tirr__admin__profile-avatar {
@@ -312,7 +276,17 @@ html {
     justify-content: center;
 }
 
-.tirr__admin__header-menu__badge {
+.tirr__admin__topbar-notification {
+  position: relative;
+  border: none;
+  background: transparent;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tirr__admin__topbar-badge {
   position: absolute;
   top: -4px;
   right: -8px;
@@ -331,5 +305,7 @@ html {
 }
 
 .tirr__topbar {
-    height: 40px;
+    height: 72px;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--color-gray-lighter);
 }

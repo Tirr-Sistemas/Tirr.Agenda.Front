@@ -14,13 +14,6 @@ const BUSINESS_HOURS = [
 const ProfilePage = () => {
   return (
     <div className="tirr__admin__page container-fluid bg-light min-vh-100 py-3">
-      <div className="mb-3">
-        <h1 className="font-size-20 fw-bold">Perfil</h1>
-        <p className="text-muted font-size-13">
-          Informacoes principais da conta administrativa.
-        </p>
-      </div>
-
       <section className="bg-white rounded-4 p-3 shadow-sm mb-3">
         <div className="d-flex align-items-center gap-3 mb-3">
           <div className="tirr__admin__profile-avatar bg-primary text-white">
