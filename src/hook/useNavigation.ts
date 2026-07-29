@@ -34,17 +34,34 @@ const useScheduleNavigation = () => {
    * @description
    * Rota atual tipada dentro do fluxo de agendamento.
    */
-  const currentPage = location.pathname as ScheduleRoute;
+  const currentPage = (location.pathname === "/" ? ScheduleFlow[0] : location.pathname) as ScheduleRoute;
 
-  const numberPage = ScheduleFlow.indexOf(currentPage)
+  const numberPage = Math.max(0, ScheduleFlow.indexOf(currentPage));
 
   const { schedule } = useGlobalContext();
 
   useEffect(() => {
-    const isStatesEmpty = (!schedule || Object.keys(schedule).length === 0) && numberPage > 0;
-    
-    if (isStatesEmpty) {
-      navigate(ScheduleFlow[0], { replace: true });
+    const hasService = Boolean(schedule.chosenService);
+    const hasDateAndTime =
+      typeof schedule.chosenDay === "number" &&
+      typeof schedule.chosenMonth === "number" &&
+      typeof schedule.chosenYear === "number" &&
+      Boolean(schedule.chosenHour);
+    const hasProfile =
+      Boolean(schedule.name?.trim()) &&
+      Boolean(schedule.email?.trim()) &&
+      Boolean(schedule.phone?.trim());
+
+    const firstIncompleteStep = !hasService
+      ? 0
+      : !hasDateAndTime
+        ? 1
+        : !hasProfile
+          ? 2
+          : 3;
+
+    if (numberPage > firstIncompleteStep) {
+      navigate(ScheduleFlow[firstIncompleteStep], { replace: true });
     }
   }, [schedule, numberPage, navigate]);
 

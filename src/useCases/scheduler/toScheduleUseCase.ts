@@ -129,15 +129,15 @@ const toScheduleUseCase = async (input: ToScheduleUseCaseArgs): Promise<boolean>
         Number(minutes)
       )
     ).toISOString()  
-    await API_AGENDA.criarAgendamento({
+    const response = await API_AGENDA.criarAgendamento({
       servico: parseInt(schedule.chosenService.id),
       funcionario: 1,
       nomeCliente: schedule.name,
       contato: schedule.phone,
       dataAgendamento
-    })
+    });
 
-    return true;
+    return response?.sucesso ?? typeof response?.id === "number";
     
   } catch (error) {
     console.error("Erro no use case de agendamento:", error);

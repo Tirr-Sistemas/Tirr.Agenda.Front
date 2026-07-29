@@ -110,3 +110,13 @@ export interface PostToScheduleDto {
    */
   phone: string;
 }
+
+export interface GetAppointmentResponseDto {
+  id: string;
+  chosenServiceId: string;
+  chosenDay: string;
+  chosenHour: string;
+  name: string;
+  email: string;
+  phone: string;
+}

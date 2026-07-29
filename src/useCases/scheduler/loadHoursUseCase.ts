@@ -121,7 +121,11 @@ const loadHoursUseCase = async ({
    * @description
    * Interrompe execução caso a API não retorne horários.
    */
-  if (!response?.result) {
+  if (!response || response.statusCode >= 400) {
+    throw new Error("Nao foi possivel carregar os horarios");
+  }
+
+  if (!response.result) {
     return [];
   }
 

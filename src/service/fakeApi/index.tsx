@@ -29,7 +29,11 @@ const ROUTES = {
  */
 import axios, { type AxiosInstance } from "axios";
 import { authUtils } from "../../utils/auth";
-import type { GetCategoryResponseDto, PostToScheduleDto } from "./types";
+import type {
+    GetAppointmentResponseDto,
+    GetCategoryResponseDto,
+    PostToScheduleDto,
+} from "./types";
 
 const api: AxiosInstance = axios.create({
     baseURL: "http://localhost:3000/",
@@ -114,6 +118,22 @@ export const FAKE_API_CONNECTOR = {
             return response.data;
         } catch (error) {
             console.error("Erro ao buscar serviços:", error);
+            throw error;
+        }
+    },
+
+    getAppointments: async (): Promise<GetAppointmentResponseDto[]> => {
+        try {
+            const response = await api.get<GetAppointmentResponseDto[]>(
+                ROUTES.APPOINTMENTS,
+                {
+                    headers: DEFAULT_HEADERS,
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            console.error("Erro ao buscar agendamentos:", error);
             throw error;
         }
     },

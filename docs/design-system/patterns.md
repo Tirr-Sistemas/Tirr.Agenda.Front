@@ -1,180 +1,82 @@
 # Patterns
 
-## Padrao de nomenclatura
+## Nomenclatura
 
-Padrao predominante encontrado:
+O codigo usa classes proprietarias com prefixo `tirr__`, em conjunto com utilitarios Bootstrap.
 
-- Classes especificas com prefixo `tirr__`.
-- Utilitarios Bootstrap para composicao.
-- Sobrescrita de Bootstrap em `src/styles/global.css`.
+Exemplos atuais:
 
-Exemplos:
+- `tirr__scheduler-topbar`
+- `tirr__scheduler-content-grid`
+- `tirr__scheduler-panel`
+- `tirr__booking-summary`
+- `tirr__admin__navigation`
+- `tirr__admin__panel`
 
-- `.tirr__header`
-- `.tirr__header__content-item`
-- `.tirr__page__img`
-- `.tirr__calendar-time-page__calendar-grid`
-- `.tirr__validaditon-page__info-item`
-- `.tirr__admin__header-menu__item`
+O padrao predominante e bloco e elemento com `__`. Classes de estado usam `is-*`, como `is-selected`, `is-current`, `is-complete` e `is-navigation-collapsed`.
 
-Inconsistencia de escrita:
+## Jornada publica
 
-- `.tirr__validaditon-page__*` parece conter erro de digitacao em `validation`.
-- `.tirr__calendar-time-page_btn-date-icons` usa um underscore antes de `btn`, diferente do padrao com `__`.
+Fluxo real:
 
-## Layout publico de agendamento
+1. `/agenda-servico`
+2. `/agenda-dia-e-hora`
+3. `/agenda-perfil`
+4. `/agenda-confirmacao`
 
-Arquivo: `src/routing.tsx`
+`useScheduleNavigation` calcula a primeira etapa incompleta e redireciona apenas quando o usuario tenta acessar uma etapa posterior sem os dados necessarios. A guarda considera servico, data/hora e dados pessoais; janeiro e valido como mes `0`.
 
-Estrutura:
+## Padrao de pagina publica
 
-- `Header` fixo/sticky no topo.
-- `main.container.py-4`.
-- Cada etapa usa conteudo vertical com espacamento inferior para rodape.
-- Acoes principais ficam em `fixed-bottom`.
-
-Fluxo:
-
-1. Escolha do servico.
-2. Dia e horario.
-3. Dados pessoais.
-4. Confirmacao.
-
-## Layout administrativo
-
-Arquivo: `src/routing.tsx` e `src/page/administrator/Dashboard.tsx`
-
-Estrutura:
-
-- `AdminLayout` usa nav administrativo e uma area de trabalho com top bar e `main`.
-- Em telas desktop, a navegacao fica fixa na lateral esquerda com `232px`.
-- Em telas menores, a navegacao passa para a parte inferior com `80px`.
-- Conteudo usa largura maxima de `1440px`, espacamento responsivo e superfices administrativas de raio `8px`.
-- Dashboard, clientes e servicos iniciam com cards de resumo para leitura rapida.
-
-## Padrao de superficie
-
-Superficies encontradas:
-
-- Cards e paineis brancos: `bg-white`.
-- Fundo geral: `bg-light`, `bg-default` ou `--bg-color`.
-- Paineis de calendario: `bg-white rounded-3`.
-- Formularios/cards principais: `bg-white rounded-4`.
-- Itens de resumo: fundo branco, radius `1rem`, padding `1rem`.
+- `SchedulerPageHeader` abre cada etapa com contexto e titulo.
+- O desktop organiza conteudo e `BookingSummary` em duas colunas.
+- O resumo passa para baixo do conteudo em telas menores.
+- `FixedActionBar` reserva a mesma area para avancar, voltar e confirmar.
+- A top bar permanece fixa e o conteudo recebe foco apos navegacao.
 
 ## Padrao de selecao
 
-Selecionado:
-
-- Servico selecionado: `border-primary shadow-sm tirr__page__btn-outline-border`.
-- Dia/horario selecionado: `btn-primary border-0`.
-- Periodo selecionado: `btn-primary`.
-- Header admin ativo: `.active` com `background: var(--color-primary)` e `color: #fff`.
-
-Nao selecionado:
-
-- Servico sem classes extras.
-- Dia/horario com `bg-white`.
-- Periodo com `btn-outline-primary`.
-- Step futuro com `bg-white text-gray-light border`.
-
-## Padrao de loading e vazio
-
-Loading:
-
-- Servicos: `alert alert-info` com texto `Carregando servicos...`.
-- Dias: `text-center small text-muted py-2`.
-- Horarios: `text-center small text-muted py-3`.
-- Confirmacao: botao troca texto para `Agendando...`.
-
-Vazio:
-
-- Horarios: `Nenhum horario disponivel.`
-- Confirmacao sem dados: `Nenhum agendamento encontrado.`
-
-Problema:
-
-- Feedback de loading usa padroes visuais diferentes entre paginas.
-
-Sugestao:
-
-- Criar um padrao unico de `InlineStatus` ou `EmptyState` baseado nas classes ja usadas.
-
-## Padrao de formulario
-
-Encontrado em `ProfilePage.tsx`:
-
-- Formulario vertical.
-- Labels com `font-size-15`.
-- Inputs com borda inferior.
-- Erros abaixo do campo em `small.text-danger`.
-- Submit desabilitado enquanto formulario invalido.
-
-Sugestao:
-
-- Extrair campos para componente reutilizavel antes de adicionar novos formularios.
-
-## Padrao de navegacao
-
-Fluxo publico:
-
-- Header mostra progresso por etapas.
-- Botoes `Voltar` e `Proximo` no rodape.
-- Confirmacao troca acao primaria para `Agendar`.
-
-Admin:
-
-- Top bar contextual por rota com titulo, descricao, notificacoes e logout.
-- Navegacao responsiva com Agenda, Clientes, Servicos e Perfil.
-- Dashboard tem seletor Dia/Semana, navegacao por data e atalho Hoje.
-- Clientes oferecem busca local por nome, e-mail ou telefone.
-
-## Padrao de calendario
-
-Fluxo publico:
-
-- Calendario mensal customizado.
-- Dias indisponiveis ficam `disabled`.
-- Dias preview recebem `opacity-25`.
-- Navegacao mensal por setas.
-
-Admin:
-
-- Usa React Big Calendar.
-- Header nativo oculto com `.rbc-time-header { display: none; }`.
-- Eventos amarelos sem sombra e radius `8px`, alinhados aos paineis administrativos.
-- Linha atual vermelha `#ff4d4f`.
-- Scrollbar customizada.
-
-## Componentes duplicados ou candidatos a extracao
-
-| Candidato | Evidencia |
+| Controle | Estado selecionado |
 | --- | --- |
-| `FixedActionBar` | Mesmo rodape fixo em quatro paginas |
-| `ActionButton`/`Button` | Variantes de botao repetidas; arquivo compartilhado vazio |
-| `ServiceCard` | Card de servico no inicio e resumo |
-| `SummaryInfoItem` | Itens de resumo repetidos em confirmacao |
-| `TextField` | Tres campos com estrutura quase identica no perfil |
-| `CalendarDayButton` | Botao de dia com estado selected/disabled/preview |
-| `PeriodSegmentedControl` | Botoes Dia/Noite com padrao de segmented control |
-| `InlineStatus` | Loading/vazio repetidos com pequenas diferencas |
+| Servico | `is-selected`, borda de destaque, `aria-pressed=true` |
+| Dia | fundo primario, `aria-pressed=true` |
+| Horario | fundo primario, `aria-pressed=true` |
+| Periodo | botao segmentado com fundo branco no item selecionado |
+| Etapa concluida | circulo escuro com check |
+| Etapa atual | circulo com fundo primario |
+| Menu admin ativo | fundo primario ou superficie definida pelo layout responsivo |
 
-## Inconsistencias visuais
+## Padrao de estados assincronos
 
-- Mistura de `bg-warning` e `bg-primary` para representar a cor primaria.
-- Hover de `.btn-primary` declarado em azul, mas sistema visual e amarelo.
-- Uso de `#fff` e `#ffffff` junto de `--color-white`.
-- Uso de `#4A4A3D` hardcoded junto de `--default-text-color`.
-- Duas faixas responsivas usam classes `font-size-sm-*`.
-- Classes usadas sem definicao local: `cursor-pointer`, `transition`, `animate-fade-in`.
-- Estados `active` e `hovered` do `MobileMenu` nao possuem estilo encontrado.
-- Existem seletores CSS aparentemente sem uso.
+`AsyncState` e a superficie comum para:
 
-## Sugestoes de padronizacao
+| Estado | Contexto atual |
+| --- | --- |
+| `loading` | Horarios e skeletons de servico |
+| `error` | Servicos, dias, horarios e envio de agendamento |
+| `empty` | Servicos ou horarios indisponiveis; data ainda nao selecionada |
+| `success` | Envio concluido |
 
-- Tratar `--color-primary` como fonte unica da cor primaria e substituir `bg-warning` onde a intencao for identidade do produto.
-- Consolidar estados de botao usando os tokens primario, hover e active ja declarados.
-- Extrair os candidatos de componentes antes de expandir novas telas.
-- Adotar um unico padrao para nomes `tirr__block__element` e corrigir variacoes.
-- Remover classes sem definicao ou implementar seus estilos.
-- Manter documentacao separando "tokens reais" de "valores encontrados".
+Operacoes de disponibilidade e servicos propagam resposta indisponivel como erro para que a interface diferencie falha de lista vazia. O use case final retorna `false` quando a API nao confirma o agendamento; a tela traduz isso em estado de erro sem modal do navegador.
+
+## Padrao de formularios
+
+- `react-hook-form` gerencia validacao do perfil.
+- `FormField` associa label, input e erro por `id`.
+- Email usa `type="email"` e validacao de formato.
+- Telefone recebe mascara e valida entre 10 e 11 digitos.
+- Dados sao normalizados com `trim()` antes de avancar.
+
+## Layout administrativo
+
+- Desktop a partir de `992px`: `AdminNavigation` fixa lateral com largura `232px`; modo recolhido usa `76px`.
+- A top bar administrativa acompanha a largura da navegacao e permanece fixa.
+- Mobile: a navegacao torna-se barra inferior com `80px`.
+- Paineis administrativos mantem raio de `8px`, borda clara e alta densidade de informacao.
+
+## Inconsistencias ainda registradas
+
+- Seletor legado `tirr__validaditon-page__*` contem erro de digitacao e nao e usado pelo fluxo novo.
+- Seletor legado `tirr__calendar-time-page__*` nao e a fonte das telas de agenda atuais.
+- Valores especificos de React Big Calendar continuam fora dos tokens globais.
+- O componente compartilhado `Button` continua vazio, embora as variantes Bootstrap sejam consistentes visualmente.

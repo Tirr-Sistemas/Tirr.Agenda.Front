@@ -1,323 +1,139 @@
-import { DAY_WEEK, MONTHS } from "@/constants/calendar";
 import { HOURS_PERIOD } from "@/constants/hours";
-
 import useCalendarSchedule from "@/hook/useCalendarSchedule";
+import AsyncState from "@/shared/AsyncState";
+import BookingSummary from "@/shared/BookingSummary";
+import CalendarPanel from "@/shared/CalendarPanel";
+import FixedActionBar from "@/shared/FixedActionBar";
+import SchedulerPageHeader from "@/shared/SchedulerPageHeader";
+import TimeSlot from "@/shared/TimeSlot";
+import useGlobalContext from "@/store";
 
-import {
-  CarretLeftIcon,
-  CarretRightIcon,
-  MoonIcon,
-  SunIcon
-} from "@/shared/icons";
-
-import { isValidDate } from "@/utils/date";
-
-/**
- * =========================================================
- * PAGE: ChoiceDataAndTimePage
- * =========================================================
- */
 const ChoiceDataAndTimePage = () => {
-
-  /**
-   * =====================================================
-   * HOOK
-   * =====================================================
-   */
+  const { schedule } = useGlobalContext();
   const {
     month,
     year,
-
     days,
-
     availableDays,
-
     selectedDate,
     selectedPeriod,
     hour,
-
     filteredHours,
-
     daysIsLoading,
     hoursIsLoading,
-
+    daysHasError,
+    hoursHasError,
     disabledButton,
-
     setSelectedPeriod,
     setHour,
-
     prevMonth,
     nextMonth,
-
+    retryDays,
+    retryHours,
     handleSelectDate,
     handleContinue,
-    handleBack
+    handleBack,
   } = useCalendarSchedule();
 
+  const selectedDateLabel = selectedDate
+    ? selectedDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
+    : "";
+
   return (
-    <div className="d-flex flex-column">
-      <div className="container mb-6 py-5 px-3 d-flex gap-5 flex-column justify-content-center align-items-center">
-        {/* CALENDÁRIO */}
-        <div className="w-100">
-          <div className="mb-2 w-100">
-            <h6 className="fs-6 text-muted fw-light">
-              Vamos encontrar o dia ideal para você
-            </h6>
-          </div>
+    <div className="tirr__scheduler-page">
+      <SchedulerPageHeader
+        eyebrow="Etapa 2"
+        title="Defina data e horario"
+        description="Escolha um dia disponivel e depois o horario que funciona melhor para voce."
+      />
 
-          <div
-            className="bg-white rounded-3 py-2"
-            style={{ minHeight: "330px" }}
-          >
+      <div className="tirr__scheduler-content-grid">
+        <div className="tirr__scheduler-main-content tirr__scheduler-date-time-layout">
+          <CalendarPanel
+            month={month}
+            year={year}
+            days={days}
+            availableDays={availableDays}
+            selectedDate={selectedDate}
+            isLoading={daysIsLoading}
+            hasError={daysHasError}
+            canGoBack={!disabledButton}
+            onPreviousMonth={prevMonth}
+            onNextMonth={nextMonth}
+            onSelectDate={handleSelectDate}
+            onRetry={() => void retryDays()}
+          />
 
-            {/* HEADER */}
-            <div className="d-flex justify-content-between align-items-center mb-4 px-3">
-              <h6 className="text-uppercase">
-                {MONTHS[month]} {year}
-              </h6>
-
-              <div className="d-flex gap-1">
-
-                <button
-                  className="tirr__calendar-time-page_btn-date-icons"
-                  disabled={disabledButton}
-                  onClick={prevMonth}
-                >
-                  <CarretLeftIcon fill={disabledButton ? "#cccccc" : "#4A4A3D"} />
-                </button>
-
-                <button
-                  className="tirr__calendar-time-page_btn-date-icons"
-                  onClick={nextMonth}
-                >
-                  <CarretRightIcon />
-                </button>
-
-              </div>
-
+          <section className="tirr__scheduler-panel tirr__scheduler-time-panel" aria-label="Escolha um horario">
+            <div className="tirr__scheduler-time-panel__header">
+              <p>Horario disponivel</p>
+              <h2>{selectedDate ? selectedDateLabel : "Escolha uma data"}</h2>
             </div>
 
-            {/* DAYS */}
-            <div className="tirr__calendar-time-page__calendar-grid">
-              {DAY_WEEK.map((d) => (
-                <div
-                  key={d}
-                  className="flex-fill text-muted small fw-semibold font-size-12 text-center mb-2"
-                >
-                  {d}
-                </div>
-              ))}
-              {days.map((day, index) => {
-                if (!day) {
-                  return (
-                    <div
-                      key={index}
-                    />
-                  );
-                }
-
-                /**
-                 * ===========================================
-                 * VALIDAÇÕES
-                 * ===========================================
-                 */
-                const dateIsValid =
-                  isValidDate(day.day, month, year);
-
-                const dayIsAvailable =
-                  availableDays.includes(day.day);
-
-                const disabled =
-                  !dateIsValid ||
-                  !dayIsAvailable;
-
-                const isSelected =
-                  selectedDate?.getDate() === day.day &&
-                  selectedDate?.getMonth() === month &&
-                  selectedDate?.getFullYear() === year;
-
-                return (
-                  <div
-                    key={index}
-                    className="mb-1 d-flex justify-content-center"
-                  >
-
-                    <button
-                      disabled={disabled}
-                      className={`btn fw-bold btn-sm rounded-circle border-dark tirr__calendar-time-page__calendar-item ${
-                        isSelected
-                          ? "btn-primary border-0"
-                          : "bg-white"
-                      } ${day.isPreview && 'opacity-25'}`}
-                      onClick={() => {
-                        handleSelectDate(day.day);
-                      }}
-                    >
-                      {day.day}
-                    </button>
-
-                  </div>
-                );
-
-              })}
-            </div>
-
-            {/* LOADING */}
-            {daysIsLoading && (
-              <div className="text-center small text-muted py-2">
-                Carregando disponibilidade...
-              </div>
+            {!selectedDate && (
+              <AsyncState
+                kind="empty"
+                title="Primeiro, escolha uma data"
+                description="Os horarios disponiveis aparecerao aqui."
+              />
             )}
 
-          </div>
+            {selectedDate && hoursHasError && (
+              <AsyncState
+                kind="error"
+                title="Nao foi possivel carregar os horarios"
+                description="Tente novamente em instantes."
+                actionLabel="Tentar novamente"
+                onAction={() => void retryHours()}
+              />
+            )}
 
-        </div>
-
-        {/* HORÁRIOS */}
-        {selectedDate && (
-          <div className="w-100">
-
-            <div>
-
-              <div className="mb-2 w-100">
-                <p className="fs-6 text-muted fw-light">
-                  Escolha o horário que combina com você
-                </p>
-              </div>
-
-              <div
-                className="bg-white rounded-3 py-2 p-3"
-                style={{ minHeight: "330px" }}
-              >
-
-                {/* DATE */}
-                <div className="d-flex align-items-center p-2">
-                  <h6 className="text-uppercase">
-                    {`${selectedDate.getDate()} ${
-                      MONTHS[selectedDate.getMonth()]
-                    } ${selectedDate.getFullYear()}`}
-                  </h6>
-                </div>
-
-                {/* PERIOD */}
-                <div className="d-flex flex-inline w-100 p-1 bg-light rounded-4 gap-1 my-3">
-
+            {selectedDate && !hoursHasError && (
+              <>
+                <div className="tirr__scheduler-period-switch" aria-label="Periodo do dia">
                   <button
-                    disabled={!selectedDate}
-                    onClick={() => {
-                      setSelectedPeriod(
-                        HOURS_PERIOD.PERIOD_DAY
-                      );
-                    }}
-                    className={`btn w-50 border-0 d-flex gap-1 align-items-center justify-content-center text-center tirr__calendar-time-page__btn-hours ${
-                      selectedPeriod ===
-                      HOURS_PERIOD.PERIOD_DAY
-                        ? "btn-primary"
-                        : "btn-outline-primary"
-                    }`}
+                    type="button"
+                    className={selectedPeriod === HOURS_PERIOD.PERIOD_DAY ? "is-selected" : ""}
+                    onClick={() => setSelectedPeriod(HOURS_PERIOD.PERIOD_DAY)}
+                    aria-pressed={selectedPeriod === HOURS_PERIOD.PERIOD_DAY}
                   >
-                    <SunIcon />
-                    Dia
+                    <i className="bi bi-sun" aria-hidden="true" /> Dia
                   </button>
-
                   <button
-                    disabled={!selectedDate}
-                    onClick={() => {
-                      setSelectedPeriod(
-                        HOURS_PERIOD.PERIOD_NIGHT
-                      );
-                    }}
-                    className={`btn w-50 border-0 d-flex gap-1 align-items-center justify-content-center text-center tirr__calendar-time-page__btn-hours ${
-                      selectedPeriod ===
-                      HOURS_PERIOD.PERIOD_NIGHT
-                        ? "btn-primary"
-                        : "btn-outline-primary text-dark"
-                    }`}
+                    type="button"
+                    className={selectedPeriod === HOURS_PERIOD.PERIOD_NIGHT ? "is-selected" : ""}
+                    onClick={() => setSelectedPeriod(HOURS_PERIOD.PERIOD_NIGHT)}
+                    aria-pressed={selectedPeriod === HOURS_PERIOD.PERIOD_NIGHT}
                   >
-                    <MoonIcon />
-                    Noite
+                    <i className="bi bi-moon" aria-hidden="true" /> Noite
                   </button>
-
                 </div>
 
-                {/* HOURS */}
-                <div
-                  className="d-grid gap-2 my-4"
-                  style={{
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(70px, 1fr))"
-                  }}
-                >
-                  {filteredHours.map((h) => {
-                    const isSelected =
-                      hour === h;
-
-                    return (
-                      <button
-                        key={h}
-                        disabled={!selectedDate}
-                        className={`btn border-dark tirr__calendar-time-page__btn-hours ${
-                          isSelected
-                            ? "btn-primary border-0"
-                            : "bg-white"
-                        }`}
-                        onClick={() => {
-                          setHour(h);
-                        }}
-                      >
-                        {h}
-                      </button>
-                    );
-
-                  })}
-
-                </div>
-
-                {/* EMPTY */}
-                {!hoursIsLoading &&
-                  filteredHours.length === 0 && (
-                    <div className="text-center small text-muted py-3">
-                      Nenhum horário disponível.
-                    </div>
-                  )}
-
-                {/* LOADING */}
-                {hoursIsLoading && (
-                  <div className="text-center small text-muted py-3">
-                    Carregando horários...
+                {hoursIsLoading && <AsyncState kind="loading" title="Carregando horarios" description="Estamos verificando a disponibilidade." />}
+                {!hoursIsLoading && filteredHours.length === 0 && <AsyncState kind="empty" title="Nenhum horario neste periodo" description="Escolha outro periodo ou uma nova data." />}
+                {!hoursIsLoading && filteredHours.length > 0 && (
+                  <div className="tirr__time-slot-grid">
+                    {filteredHours.map((value) => (
+                      <TimeSlot key={value} value={value} selected={hour === value} onSelect={setHour} />
+                    ))}
                   </div>
                 )}
+              </>
+            )}
+          </section>
+        </div>
 
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
+        <BookingSummary schedule={schedule} />
       </div>
 
-      {/* ACTIONS */}
-      <div className="d-flex w-100 justify-content-between gap-2 fixed-bottom bg-light p-3 d-flex justify-content-end w-100 shadow-lg">
-        <button
-          className="btn btn-outline-primary w-100 p-3 font-size-17 fw-bold "
-          onClick={handleBack}
-        >
-          Voltar
+      <FixedActionBar>
+        <button className="btn btn-outline-primary" type="button" onClick={handleBack}>Voltar</button>
+        <button className="btn btn-primary" type="button" disabled={!selectedDate || !hour} onClick={handleContinue}>
+          Continuar <i className="bi bi-arrow-right" aria-hidden="true" />
         </button>
-
-        <button
-          className="btn btn-primary w-100 p-3 font-size-17 fw-bold"
-          disabled={!selectedDate || !hour}
-          onClick={handleContinue}
-        >
-          Próximo
-        </button>
-      </div>
-
+      </FixedActionBar>
     </div>
   );
-
 };
 
 export default ChoiceDataAndTimePage;

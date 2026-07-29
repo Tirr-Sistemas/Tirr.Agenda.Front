@@ -46,7 +46,11 @@ const loadServiceUseCase = async (): Promise<CategoryModel[]> => {
    * VALIDAÇÃO FUNCIONÁRIOS
    * =====================================================
    */
-  if (!funcionarios?.result?.length) {
+  if (!funcionarios) {
+    throw new Error("Nao foi possivel carregar os profissionais");
+  }
+
+  if (!funcionarios.result?.length) {
     return [];
   }
 
@@ -72,7 +76,11 @@ const loadServiceUseCase = async (): Promise<CategoryModel[]> => {
    * VALIDAÇÃO SERVIÇOS
    * =====================================================
    */
-  if (!servicosResponse?.result?.length) {
+  if (!servicosResponse) {
+    throw new Error("Nao foi possivel carregar os servicos");
+  }
+
+  if (!servicosResponse.result?.length) {
     return [];
   }
 

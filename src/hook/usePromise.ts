@@ -85,7 +85,7 @@ const usePromise = <
 
         return response;
 
-      } catch (error) {
+      } catch {
 
         setHasError(true);
 

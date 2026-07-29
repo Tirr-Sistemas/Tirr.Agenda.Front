@@ -1,9 +1,10 @@
-import { Outlet, Route, Routes } from "react-router";
+import { Navigate, Outlet, Route, Routes } from "react-router";
+import { useState } from "react";
 
 import { ScheduleRoutes } from "./config";
 import ClientsPage from "./page/administrator/ClientsPage";
 import Dashboard from "./page/administrator/Dashboard";
-import MobileMenu from "./page/administrator/MobileMenu";
+import AdminNavigation from "./page/administrator/AdminNavigation";
 import ProfilePage from "./page/administrator/ProfilePage";
 import ServicesPage from "./page/administrator/ServicesPage";
 import LoginPage from "./page/LoginPage";
@@ -14,35 +15,33 @@ import SchedulerProfilePage from "./page/scheduler/ProfilePage";
 import ValidationPage from "./page/scheduler/ValidationPage";
 
 import TopBar from "./page/administrator/TopBar";
-import Header from "./shared/Header";
 import RequireAuth from "./shared/RequireAuth";
+import SchedulerLayout from "./shared/SchedulerLayout";
 
 /**
  * Layout público
  */
-const PublicLayout = () => (
-  <>
-    <Header />
-    <main className="container py-4">
-      <Outlet />
-    </main>
-  </>
-);
-
 /**
  * Layout administrativo
  */
-const AdminLayout = () => (
-  <div className="tirr__admin-layout">
-    <MobileMenu />
-    <div className="tirr__admin__workspace">
-      <TopBar />
-      <main>
-        <Outlet />
-      </main>
+const AdminLayout = () => {
+  const [isNavigationCollapsed, setIsNavigationCollapsed] = useState(false);
+
+  return (
+    <div className={`tirr__admin-layout ${isNavigationCollapsed ? "is-navigation-collapsed" : ""}`}>
+      <AdminNavigation
+        collapsed={isNavigationCollapsed}
+        onToggle={() => setIsNavigationCollapsed((collapsed) => !collapsed)}
+      />
+      <div className="tirr__admin__workspace">
+        <TopBar />
+        <main>
+          <Outlet />
+        </main>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Routing = () => {
   return (
@@ -50,8 +49,8 @@ const Routing = () => {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Rotas Públicas */}
-      <Route element={<PublicLayout />}>
-        <Route index element={<ChoiceServicePage />} />
+      <Route element={<SchedulerLayout />}>
+        <Route index element={<Navigate to={ScheduleRoutes.SERVICE} replace />} />
 
         <Route
           path={ScheduleRoutes.SERVICE}

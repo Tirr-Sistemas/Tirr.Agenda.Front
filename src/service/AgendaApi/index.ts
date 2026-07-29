@@ -127,7 +127,7 @@ export const API_AGENDA = {
 
             return data;
 
-        } catch (error) {
+        } catch {
             return null;
         }
 

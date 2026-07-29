@@ -64,7 +64,11 @@ const loadDaysUseCase = async ({ employerId, month, year }:LoadDaysUseCaseArgs):
    * @description
    * Interrompe execução caso a API não retorne resultados.
    */
-  if (!servicosResponse?.result) {
+  if (!servicosResponse || servicosResponse.statusCode >= 400) {
+    throw new Error("Nao foi possivel carregar a disponibilidade");
+  }
+
+  if (!servicosResponse.result) {
     return [];
   }
 
