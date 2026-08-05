@@ -1,6 +1,7 @@
 .rbc-time-header {
   border-bottom: 1px solid var(--color-gray-lighter);
 }
+
 .rbc-time-header-content {
   border-left: 1px solid var(--color-gray-lighter);
 }
@@ -15,18 +16,21 @@
 }
 
 /* Calendário */
+
 .rbc-calendar {
-      border: none;
-    outline: none;
-    min-width: 0;
+  border: none;
+  outline: none;
+  min-width: 0;
 }
 
 /* Linha de horário */
+
 .rbc-time-content {
   border-top: none;
 }
 
 /* Coluna das horas */
+
 .rbc-time-gutter {
   background: var(--color-white);
 }
@@ -42,12 +46,14 @@
 }
 
 /* Espaçamento das linhas */
+
 .rbc-timeslot-group {
   min-height: 70px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 /* Eventos */
+
 .rbc-event {
   border: none !important;
   border-radius: 8px !important;
@@ -64,6 +70,7 @@
 }
 
 /* Evento selecionado */
+
 .rbc-selected {
   opacity: 1;
   outline: 2px solid var(--color-text-dark);
@@ -71,22 +78,26 @@
 }
 
 /* Linha atual */
+
 .rbc-current-time-indicator {
   height: 3px;
   background: var(--bs-danger);
 }
 
 /* Hoje */
+
 .rbc-today {
   background: var(--color-white) !important;
 }
 
 /* Remove bordas verticais */
+
 .rbc-time-content > * + * > * {
   border-left: 1px solid var(--border-subtle);
 }
 
 /* Scroll */
+
 .rbc-time-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -97,11 +108,13 @@
 }
 
 /* Mobile */
+
 @media (max-width: 768px) {
   .rbc-header {
     padding: 8px 2px;
     font-size: 10px;
   }
+
   .rbc-label {
     font-size: 11px;
   }

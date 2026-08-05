@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Carrega e mantém dados assíncronos com estados de loading, erro e recarga.
+ * @description Carrega e mantém dados assíncronos com estados de loading, erro e recarga.
  *
- * @param {Function} loader - Função assíncrona que busca os dados.
- * @param {string} dependencyKey - Chave que dispara nova consulta quando alterada.
- * @param {T} initial - Valor utilizado antes da primeira resposta.
+ * @param loader - Função assíncrona que busca os dados.
+ * @param dependencyKey - Chave que dispara nova consulta quando alterada.
+ * @param initial - Valor utilizado antes da primeira resposta.
  * @returns Estado dos dados e função para executar a consulta novamente.
  */
 export const useApiData = <T,>(loader: () => Promise<T>, dependencyKey: string, initial: T) => {
@@ -15,6 +15,11 @@ export const useApiData = <T,>(loader: () => Promise<T>, dependencyKey: string, 
   const loaderRef = useRef(loader);
   loaderRef.current = loader;
 
+  /**
+   * @description Executa novamente o carregamento assíncrono exposto pelo hook.
+   *
+   * @returns Promessa resolvida com o resultado da operação.
+   */
   const reload = useCallback(async () => {
     void dependencyKey;
     setLoading(true);

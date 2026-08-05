@@ -6,15 +6,24 @@ type ApiProblem = {
   readonly errors?: Record<string, string[]>;
 };
 
-type RetriableRequest = InternalAxiosRequestConfig & { _retried?: boolean };
+type RetriableRequest = InternalAxiosRequestConfig & { _retried?: boolean; };
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
 let accessToken: string | null = null;
 let refreshHandler: (() => Promise<string | null>) | null = null;
 let refreshPromise: Promise<string | null> | null = null;
 
-/** Erro HTTP normalizado para consumo uniforme pelos casos de uso e pela UI. */
+/**
+ * @description Erro HTTP normalizado para consumo uniforme pelos casos de uso e pela UI.
+ */
 export class ApiError extends Error {
+  /**
+   * @description Cria um erro HTTP normalizado com status e falhas por campo.
+   *
+   * @param message - Valor de message utilizado pela operação.
+   * @param status - Novo status solicitado para o agendamento.
+   * @param fields - Erros de validação agrupados pelo campo de entrada.
+   */
   public constructor(
     message: string,
     public readonly status = 0,
@@ -26,26 +35,35 @@ export class ApiError extends Error {
 }
 
 /**
- * Atualiza o token enviado nas requisições autenticadas.
+ * @description Atualiza o token enviado nas requisições autenticadas.
  *
- * @param {string|null} token - Token atual ou `null` para remover a autenticação.
- * @returns {void}
+ * @param token - Token atual ou `null` para remover a autenticação.
+ * @returns Sem valor de retorno.
  */
 export const setApiAccessToken = (token: string | null): void => { accessToken = token; };
 /**
- * Registra a função responsável por renovar uma sessão expirada.
+ * @description Registra a função responsável por renovar uma sessão expirada.
  *
- * @param {Function} handler - Função que devolve o novo token ou `null`.
- * @returns {void}
+ * @param handler - Função que devolve o novo token ou `null`.
+ * @returns Sem valor de retorno.
  */
 export const setApiRefreshHandler = (handler: () => Promise<string | null>): void => { refreshHandler = handler; };
 
-/** Cliente HTTP para endpoints que não exigem autenticação. */
+/**
+ * @description Cliente HTTP para endpoints que não exigem autenticação.
+ */
 export const publicHttp = axios.create({ baseURL, timeout: 20_000 });
-/** Cliente HTTP autenticado com renovação única e automática após resposta 401. */
+/**
+ * @description Cliente HTTP autenticado com renovação única e automática após resposta 401.
+ */
 export const apiHttp = axios.create({ baseURL, timeout: 20_000 });
 
-/** Converte erros do Axios e respostas Problem Details em um erro da aplicação. */
+/**
+ * @description Converte erros do Axios e respostas Problem Details em um erro da aplicação.
+ *
+ * @param error - Falha capturada durante o processamento.
+ * @returns Resultado produzido pela operação.
+ */
 const normalizeError = (error: AxiosError<ApiProblem>): ApiError => {
   const problem = error.response?.data;
   return new ApiError(

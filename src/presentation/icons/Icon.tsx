@@ -1,6 +1,8 @@
 import type { ReactNode, SVGAttributes } from "react";
 
-/** Nomes suportados pela biblioteca local de ícones SVG. */
+/**
+ * @description Nomes suportados pela biblioteca local de ícones SVG.
+ */
 export type IconName =
   | "arrow-repeat" | "arrow-right" | "box-arrow-right"
   | "building" | "building-x"
@@ -14,7 +16,9 @@ export type IconName =
   | "slash-circle" | "sliders" | "stars" | "sun" | "tag" | "tags"
   | "three-dots" | "trash" | "x-lg";
 
-/** Propriedades do ícone, incluindo tamanho e nome acessível opcional. */
+/**
+ * @description Propriedades do ícone, incluindo tamanho e nome acessível opcional.
+ */
 type IconProps = Omit<SVGAttributes<SVGElement>, "name"> & {
   name: IconName;
   size?: number;
@@ -81,7 +85,12 @@ const GLYPHS: Record<IconName, ReactNode> = {
   "x-lg": close,
 };
 
-/** Renderiza um SVG tipado, decorativo por padrão e nomeável via `label`. */
+/**
+ * @description Renderiza um SVG tipado, decorativo por padrão e nomeável via `label`.
+ *
+ * @param props - Propriedades recebidas pelo componente.
+ * @returns Elemento React renderizado pelo componente.
+ */
 export const Icon = ({ name, size = 20, label, className = "", ...props }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

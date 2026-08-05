@@ -4,19 +4,72 @@ import type { IdentityManagementGateway } from "../../ports/IdentityManagementGa
 import type { ManageIdentityCommand } from "./ManageIdentityCommand";
 import type { ManageIdentityResult } from "./ManageIdentityResult";
 /**
- * Coordena operações administrativas de usuários, membros e chaves de API.
+ * @description Coordena operações administrativas de usuários, membros e chaves de API.
  *
- * @param {IdentityManagementGateway} gateway - Porta utilizada para persistir e consultar identidades.
+ * @param gateway - Porta utilizada para persistir e consultar identidades.
  */
 export class ManageIdentityUseCase {
-  public constructor(private readonly gateway: IdentityManagementGateway) {}
-  public execute(command: Extract<ManageIdentityCommand, { type: "findByEmail" }>): Promise<IdentityUser>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "createUser" }>): Promise<IdentityProfile>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "addMember" }>): Promise<BusinessMember>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "listMembers" }>): Promise<BusinessMemberListItem[]>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "setMemberStatus" | "revokeApiKey" }>): Promise<void>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "listApiKeys" }>): Promise<ApiKeyItem[]>;
-  public execute(command: Extract<ManageIdentityCommand, { type: "createApiKey" | "rotateApiKey" }>): Promise<ApiKeyCreated>;
+  /**
+   * @description Cria o caso de uso com a porta de gestão de identidades.
+   *
+   * @param gateway - Valor de gateway utilizado pela operação.
+   */
+  public constructor(private readonly gateway: IdentityManagementGateway) { }
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "findByEmail"; }>): Promise<IdentityUser>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "createUser"; }>): Promise<IdentityProfile>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "addMember"; }>): Promise<BusinessMember>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "listMembers"; }>): Promise<BusinessMemberListItem[]>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "setMemberStatus" | "revokeApiKey"; }>): Promise<void>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "listApiKeys"; }>): Promise<ApiKeyItem[]>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
+  public execute(command: Extract<ManageIdentityCommand, { type: "createApiKey" | "rotateApiKey"; }>): Promise<ApiKeyCreated>;
+  /**
+   * @description Executa a operação de gestão de identidades indicada pelo comando recebido.
+   *
+   * @param command - Contrato de entrada que identifica e parametriza a operação.
+   * @returns Promessa resolvida com o resultado da operação.
+   */
   public execute(command: ManageIdentityCommand): Promise<ManageIdentityResult> {
     const api = this.gateway.api;
     switch (command.type) {

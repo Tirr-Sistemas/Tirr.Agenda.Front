@@ -10,9 +10,11 @@ import type { AuthenticationUseCase } from "@/identity/application/useCases/Auth
 import type { AdministrationUseCase } from "@/administration/application/useCases/Administration/AdministrationUseCase";
 import type { ManageIdentityUseCase } from "@/identity/application/useCases/ManageIdentity/ManageIdentityUseCase";
 
-/** Catálogo dos casos de uso disponibilizados à camada de apresentação. */
+/**
+ * @description Catálogo dos casos de uso disponibilizados à camada de apresentação.
+ */
 export interface ApplicationDependencies {
-  readonly team: { readonly updateMemberRoles: UpdateMemberRolesUseCase };
+  readonly team: { readonly updateMemberRoles: UpdateMemberRolesUseCase; };
   readonly booking: {
     readonly createPublicBooking: CreatePublicBookingUseCase;
     readonly resolveBusiness: ResolvePublicBusinessUseCase;
@@ -21,7 +23,7 @@ export interface ApplicationDependencies {
     readonly listAvailableDates: ListAvailableDatesUseCase;
     readonly listAvailableTimeSlots: ListAvailableTimeSlotsUseCase;
   };
-  readonly availability: { readonly validateException: ValidateAvailabilityExceptionUseCase };
+  readonly availability: { readonly validateException: ValidateAvailabilityExceptionUseCase; };
   readonly authentication: AuthenticationUseCase;
   readonly administration: AdministrationUseCase;
   readonly identity: ManageIdentityUseCase;

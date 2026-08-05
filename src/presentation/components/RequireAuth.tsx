@@ -3,7 +3,11 @@ import { Navigate, Outlet, useLocation } from "react-router";
 import { useAuthStore } from "@/presentation/stores/authStore";
 import AsyncState from "./AsyncState";
 
-/** Protege rotas administrativas e redireciona sessões não autenticadas. */
+/**
+ * @description Protege rotas administrativas e redireciona sessões não autenticadas.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const RequireAuth = () => {
   const location = useLocation();
   const status = useAuthStore((state) => state.status);

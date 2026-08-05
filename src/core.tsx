@@ -1,5 +1,5 @@
 /**
- * Ponto de composição e inicialização da aplicação React.
+ * @description Ponto de composição e inicialização da aplicação React.
  *
  * Configura os casos de uso, autenticação, renovação de sessão, providers e
  * roteamento antes de montar a árvore no elemento `#root`.
@@ -23,7 +23,7 @@ import { setApiRefreshHandler } from '@/shared-architecture/http/ApiHttpClient';
 import '@/presentation/styles/calendar.css';
 import '@/presentation/styles/font.css';
 import '@/presentation/styles/global.css';
-import '@/presentation/styles/app-v1.css';
+import '@/presentation/styles/admin.css';
 import '@/presentation/styles/themes.css';
 import '@/presentation/styles/foundations.css';
 import '@/presentation/styles/modern.css';
@@ -50,4 +50,4 @@ createRoot(rootElement).render(
       </ApplicationProvider>
     </ErrorBoundary>
   </StrictMode>,
-)
+);

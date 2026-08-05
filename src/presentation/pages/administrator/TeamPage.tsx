@@ -1,0 +1,622 @@
+import Icon from "@/presentation/icons/Icon";
+import { type FormEvent, useState } from "react";
+
+import type {
+  Professional,
+  ProfessionalService,
+  ServiceSummary,
+} from "@/administration/application/dtos";
+import type {
+  BusinessMemberListItem,
+  IdentityUser,
+} from "@/identity/application/dtos/IdentityManagementDtos";
+import {
+  AdminDrawer,
+  AdminEmptyRow,
+  AdminTabs,
+  PageFeedback,
+  StatusPill,
+} from "@/presentation/components/AdminUi";
+import FormField from "@/presentation/components/FormField";
+import { useApiData } from "@/presentation/hooks/useApiData";
+import { useApplication } from "@/presentation/hooks/useApplication";
+import { useConfirm } from "@/presentation/hooks/useConfirm";
+import { useAuthStore } from "@/presentation/stores/authStore";
+import { formatToBRL } from "@/presentation/utils/formatToBRL";
+
+const ROLES = ["Owner", "Administrator", "Receptionist", "Professional"] as const;
+const EMPTY_PROFESSIONAL = { id: "", displayName: "", businessMembershipId: "", isActive: true };
+
+/**
+ * @description Gerencia profissionais, acessos, papéis e vínculos de serviço da equipe.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
+const TeamPage = () => {
+  const application = useApplication();
+  const confirm = useConfirm();
+  const businessId = useAuthStore((state) => state.activeBusiness?.businessId ?? "");
+  const permissions = useAuthStore((state) => state.permissions);
+  const [tab, setTab] = useState("professionals");
+  const professionals = useApiData<Professional[]>(
+    () => application.administration.professionals.list(businessId),
+    businessId,
+    [],
+  );
+  const members = useApiData<BusinessMemberListItem[]>(
+    () =>
+      permissions.includes("users.get")
+        ? application.identity.execute({ type: "listMembers", businessId })
+        : Promise.resolve([]),
+    `${businessId}:${permissions.join("|")}`,
+    [],
+  );
+  const catalog = useApiData<ServiceSummary[]>(
+    () => application.administration.overview.services(businessId),
+    businessId,
+    [],
+  );
+  const [professionalForm, setProfessionalForm] = useState(EMPTY_PROFESSIONAL);
+  const [professionalDrawer, setProfessionalDrawer] = useState(false);
+  const [serviceDrawer, setServiceDrawer] = useState<Professional | null>(null);
+  const [professionalServices, setProfessionalServices] = useState<ProfessionalService[]>([]);
+  const [email, setEmail] = useState("");
+  const [foundUser, setFoundUser] = useState<IdentityUser | null>(null);
+  const [newUser, setNewUser] = useState({ fullName: "", password: "" });
+  const [roles, setRoles] = useState<string[]>(["Professional"]);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+
+  /**
+   * @description Preenche o formul?rio com o profissional selecionado para edi??o.
+   *
+   * @param summary - Valor de summary utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const editProfessional = async (summary: Professional) => {
+    setProfessionalDrawer(true);
+    setBusy(true);
+    try {
+      const item = await application.administration.professionals.get(businessId, summary.id);
+      setProfessionalForm({
+        id: item.id,
+        displayName: item.displayName,
+        businessMembershipId: item.businessMembershipId ?? "",
+        isActive: item.isActive,
+      });
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel carregar.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Persiste o profissional preenchido e atualiza a equipe exibida.
+   *
+   * @param event - Evento disparado pela interface.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const saveProfessional = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setBusy(true);
+    setMessage("");
+    try {
+      const input = {
+        displayName: professionalForm.displayName.trim(),
+        businessMembershipId: professionalForm.businessMembershipId || null,
+        isActive: professionalForm.isActive,
+      };
+      if (professionalForm.id)
+        await application.administration.professionals.update(
+          businessId,
+          professionalForm.id,
+          input,
+        );
+      else await application.administration.professionals.create(businessId, input);
+      setProfessionalDrawer(false);
+      await professionals.reload();
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel salvar.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Confirma e remove o profissional selecionado.
+   *
+   * @param item - Valor de item utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const removeProfessional = async (item: Professional) => {
+    if (
+      !(await confirm({
+        title: `Excluir ${item.displayName}?`,
+        description: "O profissional deixara de aparecer na configuracao da equipe.",
+        confirmLabel: "Excluir",
+      }))
+    )
+      return;
+    await application.administration.professionals.remove(businessId, item.id);
+    await professionals.reload();
+  };
+  /**
+   * @description Abre a gest?o de servi?os vinculados ao profissional selecionado.
+   *
+   * @param professional - Valor de professional utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const openServices = async (professional: Professional) => {
+    setServiceDrawer(professional);
+    setBusy(true);
+    try {
+      setProfessionalServices(
+        await application.administration.professionals.services(businessId, professional.id),
+      );
+    } catch (caught) {
+      setMessage(
+        caught instanceof Error ? caught.message : "Nao foi possivel carregar os servicos.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Ativa ou desativa o v?nculo entre um profissional e um servi?o.
+   *
+   * @param service - Valor de service utilizado pela opera??o.
+   *
+   * @param active - Indica o estado de ativa??o solicitado.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const toggleService = async (service: ServiceSummary, active: boolean) => {
+    if (!serviceDrawer) return;
+    setBusy(true);
+    try {
+      if (active)
+        await application.administration.professionals.upsertService(
+          businessId,
+          serviceDrawer.id,
+          service.serviceId,
+          { durationInMinutes: null, price: null, isActive: true },
+        );
+      else
+        await application.administration.professionals.removeService(
+          businessId,
+          serviceDrawer.id,
+          service.serviceId,
+        );
+      setProfessionalServices(
+        await application.administration.professionals.services(businessId, serviceDrawer.id),
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /**
+   * @description Consulta uma identidade pelo e-mail informado para inclus?o na equipe.
+   *
+   * @param event - Evento disparado pela interface.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const findUser = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setBusy(true);
+    setFoundUser(null);
+    setMessage("");
+    try {
+      setFoundUser(
+        await application.identity.execute({ type: "findByEmail", email: email.trim() }),
+      );
+    } catch {
+      setMessage("Conta nao encontrada. Crie uma nova conta para continuar.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Cria uma identidade para o e-mail informado quando ela ainda n?o existe.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const createUser = async () => {
+    setBusy(true);
+    try {
+      const created = await application.identity.execute({
+        type: "createUser",
+        fullName: newUser.fullName.trim(),
+        email: email.trim(),
+        password: newUser.password,
+      });
+      setFoundUser({ ...created, isActive: true });
+      setNewUser({ fullName: "", password: "" });
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel criar.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Adiciona a identidade localizada ? equipe do estabelecimento.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const addMember = async () => {
+    if (!foundUser) return;
+    setBusy(true);
+    try {
+      await application.identity.execute({
+        type: "addMember",
+        businessId,
+        identityUserId: foundUser.id,
+        roles,
+      });
+      await members.reload();
+      setFoundUser(null);
+      setEmail("");
+      setMessage("Acesso adicionado a empresa.");
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel adicionar.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Substitui os pap?is do membro respeitando as invariantes de autoriza??o.
+   *
+   * @param member - Valor de member utilizado pela opera??o.
+   *
+   * @param nextRoles - Valor de next roles utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const replaceRoles = async (member: BusinessMemberListItem, nextRoles: string[]) => {
+    await application.team.updateMemberRoles.execute({
+      companyId: businessId,
+      memberId: member.identityUserId,
+      requestedRoles: nextRoles as (typeof ROLES)[number][],
+    });
+    await members.reload();
+  };
+  /**
+   * @description Ativa ou desativa o membro selecionado na equipe.
+   *
+   * @param member - Valor de member utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const toggleMember = async (member: BusinessMemberListItem) => {
+    await application.identity.execute({
+      type: "setMemberStatus",
+      businessId,
+      identityUserId: member.identityUserId,
+      isActive: !member.isActive,
+    });
+    await members.reload();
+  };
+
+  return (
+    <div className="tirr__admin__page">
+      <section className="tirr__admin__panel">
+        <div className="tirr__admin__panel-header">
+          <div>
+            <p className="tirr__admin__overline">Pessoas e acessos</p>
+            <h2>Equipe</h2>
+          </div>
+          {tab === "professionals" && permissions.includes("professionals.post") && (
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setProfessionalForm(EMPTY_PROFESSIONAL);
+                setProfessionalDrawer(true);
+              }}
+            >
+              <Icon name="plus-lg" /> Novo profissional
+            </button>
+          )}
+        </div>
+        <AdminTabs
+          value={tab}
+          onChange={setTab}
+          items={[
+            { value: "professionals", label: "Profissionais", icon: "person-badge" },
+            { value: "access", label: "Acessos", icon: "shield-lock" },
+          ]}
+        />
+        {message && <div className="tirr__inline-alert">{message}</div>}
+        {tab === "professionals" && (
+          <>
+            <PageFeedback
+              loading={professionals.loading}
+              error={professionals.error}
+              onRetry={() => void professionals.reload()}
+            />
+            <div className="tirr__admin__data-list">
+              {professionals.data.map((item) => (
+                <article className="tirr__admin__data-row" key={item.id}>
+                  <span className="tirr__admin__client-avatar">
+                    <Icon name="person" />
+                  </span>
+                  <div className="tirr__admin__data-main">
+                    <h3>{item.displayName}</h3>
+                    <p>{item.businessMembershipId ? "Acesso vinculado" : "Sem acesso vinculado"}</p>
+                  </div>
+                  <StatusPill active={item.isActive} />
+                  <div className="tirr__row-actions">
+                    <button
+                      className="tirr__admin__icon-button"
+                      onClick={() => void openServices(item)}
+                      title="Servicos"
+                    >
+                      <Icon name="scissors" />
+                    </button>
+                    {permissions.includes("professionals.put") && (
+                      <button
+                        className="tirr__admin__icon-button"
+                        onClick={() => void editProfessional(item)}
+                        title="Editar"
+                      >
+                        <Icon name="pencil" />
+                      </button>
+                    )}
+                    {permissions.includes("professionals.delete") && (
+                      <button
+                        className="tirr__admin__icon-button is-danger"
+                        onClick={() => void removeProfessional(item)}
+                        title="Excluir"
+                      >
+                        <Icon name="trash" />
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+              {!professionals.loading && !professionals.data.length && (
+                <AdminEmptyRow>Nenhum profissional cadastrado.</AdminEmptyRow>
+              )}
+            </div>
+          </>
+        )}
+        {tab === "access" && (
+          <div className="tirr__access-layout">
+            <section>
+              <h3>Adicionar acesso</h3>
+              <p>Localize ou crie uma conta e atribua papeis nesta empresa.</p>
+              <form className="tirr__inline-form" onSubmit={findUser}>
+                <FormField
+                  id="member-email"
+                  label="E-mail"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+                <button className="btn btn-outline-primary" disabled={busy}>
+                  <Icon name="search" /> Localizar
+                </button>
+              </form>
+              {!foundUser && email && (
+                <div className="tirr__create-user">
+                  <FormField
+                    id="member-name"
+                    label="Nome da nova conta"
+                    value={newUser.fullName}
+                    onChange={(event) => setNewUser({ ...newUser, fullName: event.target.value })}
+                  />
+                  <FormField
+                    id="member-password"
+                    label="Senha inicial"
+                    type="password"
+                    value={newUser.password}
+                    onChange={(event) => setNewUser({ ...newUser, password: event.target.value })}
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => void createUser()}
+                    disabled={!newUser.fullName || !newUser.password || busy}
+                  >
+                    Criar conta
+                  </button>
+                </div>
+              )}
+              {foundUser && (
+                <div className="tirr__member-candidate">
+                  <span className="tirr__admin__client-avatar">{foundUser.fullName[0]}</span>
+                  <div>
+                    <strong>{foundUser.fullName}</strong>
+                    <small>{foundUser.email}</small>
+                  </div>
+                  <StatusPill active={foundUser.isActive} />
+                </div>
+              )}
+              <fieldset className="tirr__role-picker">
+                <legend>Papeis nesta empresa</legend>
+                {ROLES.map((role) => (
+                  <label key={role}>
+                    <input
+                      type="checkbox"
+                      checked={roles.includes(role)}
+                      onChange={(event) =>
+                        setRoles(
+                          event.target.checked
+                            ? [...roles, role]
+                            : roles.filter((item) => item !== role),
+                        )
+                      }
+                    />
+                    <span>{role}</span>
+                  </label>
+                ))}
+              </fieldset>
+              <button
+                className="btn btn-primary"
+                disabled={!foundUser || !roles.length || busy}
+                onClick={() => void addMember()}
+              >
+                Adicionar a empresa
+              </button>
+            </section>
+            <section>
+              <h3>Membros da empresa</h3>
+              <p>Acessos e papeis sao exclusivos deste estabelecimento.</p>
+              <PageFeedback
+                loading={members.loading}
+                error={members.error}
+                onRetry={() => void members.reload()}
+              />
+              {members.data.map((member) => (
+                <article key={member.identityUserId} className="tirr__member-row">
+                  <span className="tirr__admin__client-avatar">{member.fullName[0]}</span>
+                  <div>
+                    <strong>{member.fullName}</strong>
+                    <small>
+                      {member.email} · {member.roles.join(" · ")}
+                    </small>
+                  </div>
+                  <select
+                    className="form-select"
+                    value={member.roles[0] ?? ""}
+                    onChange={(event) => void replaceRoles(member, [event.target.value])}
+                    disabled={!permissions.includes("users.put")}
+                  >
+                    {ROLES.map((role) => (
+                      <option key={role}>{role}</option>
+                    ))}
+                  </select>
+                  {permissions.includes("users.put") && (
+                    <button
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => void toggleMember(member)}
+                    >
+                      {member.isActive ? "Inativar" : "Ativar"}
+                    </button>
+                  )}
+                </article>
+              ))}
+              {!members.loading && !members.data.length && (
+                <AdminEmptyRow>Nenhum membro encontrado.</AdminEmptyRow>
+              )}
+            </section>
+          </div>
+        )}
+      </section>
+      <AdminDrawer
+        open={professionalDrawer}
+        title={professionalForm.id ? "Editar profissional" : "Novo profissional"}
+        onClose={() => setProfessionalDrawer(false)}
+        onSubmit={saveProfessional}
+        busy={busy}
+      >
+        <div className="tirr__drawer-fields">
+          <FormField
+            id="professional-name"
+            label="Nome de exibicao"
+            value={professionalForm.displayName}
+            onChange={(event) =>
+              setProfessionalForm({ ...professionalForm, displayName: event.target.value })
+            }
+            required
+          />
+          <label className="tirr__form-field">
+            <span>Conta de acesso (opcional)</span>
+            <select
+              className="form-select"
+              value={professionalForm.businessMembershipId}
+              onChange={(event) =>
+                setProfessionalForm({
+                  ...professionalForm,
+                  businessMembershipId: event.target.value,
+                })
+              }
+            >
+              <option value="">Sem conta vinculada</option>
+              {members.data
+                .filter((item) => item.isActive)
+                .map((item) => (
+                  <option key={item.membershipId} value={item.membershipId}>
+                    {item.fullName}
+                  </option>
+                ))}
+            </select>
+          </label>
+          {professionalForm.id && (
+            <label className="tirr__toggle-row">
+              <input
+                type="checkbox"
+                checked={professionalForm.isActive}
+                onChange={(event) =>
+                  setProfessionalForm({ ...professionalForm, isActive: event.target.checked })
+                }
+              />
+              <span>
+                <strong>Profissional ativo</strong>
+                <small>Disponivel para configuracao.</small>
+              </span>
+            </label>
+          )}
+        </div>
+      </AdminDrawer>
+      <AdminDrawer
+        open={Boolean(serviceDrawer)}
+        title={`Servicos de ${serviceDrawer?.displayName ?? "profissional"}`}
+        description="Defina quais atendimentos podem ser realizados."
+        onClose={() => setServiceDrawer(null)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          setServiceDrawer(null);
+        }}
+        busy={busy}
+        submitLabel="Concluir"
+      >
+        <PageFeedback
+          loading={catalog.loading}
+          error={catalog.error}
+          onRetry={() => void catalog.reload()}
+        />
+        {!catalog.loading &&
+          !catalog.error &&
+          (catalog.data.length ? (
+            <div className="tirr__service-assignment-list">
+              {catalog.data.map((service) => {
+                const association = professionalServices.find(
+                  (item) => item.serviceId === service.serviceId,
+                );
+                return (
+                  <label key={service.serviceId}>
+                    <input
+                      type="checkbox"
+                      checked={Boolean(association?.isActive)}
+                      onChange={(event) => void toggleService(service, event.target.checked)}
+                      disabled={busy}
+                    />
+                    <span>
+                      <strong>{service.name}</strong>
+                      <small>
+                        {service.durationInMinutes} min · {formatToBRL(service.price)}
+                      </small>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : (
+            <AdminEmptyRow
+              icon="scissors"
+              description="Cadastre um servico no Catalogo antes de vincula-lo a um profissional."
+            >
+              Nenhum servico disponivel
+            </AdminEmptyRow>
+          ))}
+      </AdminDrawer>
+    </div>
+  );
+};
+
+export default TeamPage;

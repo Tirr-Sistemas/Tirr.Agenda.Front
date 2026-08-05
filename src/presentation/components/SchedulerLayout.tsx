@@ -3,7 +3,11 @@ import { Outlet, useLocation } from "react-router";
 
 import Header from "./Header";
 
-/** Shell da agenda pública que restaura scroll e foco após mudanças de rota. */
+/**
+ * @description Shell da agenda pública que restaura scroll e foco após mudanças de rota.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const SchedulerLayout = () => {
   const location = useLocation();
   const contentRef = useRef<HTMLElement>(null);

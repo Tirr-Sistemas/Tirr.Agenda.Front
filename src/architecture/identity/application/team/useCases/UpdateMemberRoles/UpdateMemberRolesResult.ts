@@ -1,2 +1,4 @@
-/** Successful role updates do not require presentation data. */
+/**
+ * @description Successful role updates do not require presentation data.
+ */
 export type UpdateMemberRolesResult = void;

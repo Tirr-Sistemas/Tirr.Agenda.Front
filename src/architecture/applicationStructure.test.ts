@@ -7,8 +7,9 @@ const compatibilityFiles = Object.keys(import.meta.glob([
 ], { query: "?raw", import: "default" }));
 const uiOutsidePresentationFiles = Object.keys(import.meta.glob([
   "../{page,hook,shared,auth,theme,styles,assets,utils}/**/*.{ts,tsx,css,png,svg}",
-  "../routingV1.tsx",
+  "../routing*.tsx",
 ], { query: "?raw", import: "default" }));
+const administratorFiles = Object.keys(import.meta.glob("../presentation/pages/administrator/*.tsx"));
 
 describe("application use-case structure", () => {
   it("keeps every use case in a folder with Command, UseCase and Result contracts", () => {
@@ -32,5 +33,9 @@ describe("application use-case structure", () => {
 
   it("keeps every UI concern inside presentation", () => {
     expect(uiOutsidePresentationFiles).toEqual([]);
+  });
+
+  it("keeps administrator files free from version suffixes", () => {
+    expect(administratorFiles.filter((path) => /[Vv]\d/.test(path))).toEqual([]);
   });
 });

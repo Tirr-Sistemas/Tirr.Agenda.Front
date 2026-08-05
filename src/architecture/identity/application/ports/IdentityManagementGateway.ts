@@ -1,7 +1,9 @@
 import type { IdentityProfile } from "../dtos/AuthDtos";
 import type { ApiKeyCreated, ApiKeyItem, BusinessMember, BusinessMemberListItem, IdentityUser } from "../dtos/IdentityManagementDtos";
 
-/** Porta de saída para usuários, membros e chaves de API. */
+/**
+ * @description Porta de saída para usuários, membros e chaves de API.
+ */
 export interface IdentityManagementGateway {
   readonly api: {
     findByEmail(email: string): Promise<IdentityUser>;

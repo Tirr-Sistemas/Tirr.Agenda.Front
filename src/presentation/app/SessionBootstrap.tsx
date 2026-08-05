@@ -2,7 +2,11 @@ import { useEffect } from "react";
 
 import { useAuthStore } from "@/presentation/stores/authStore";
 
-/** Inicializa silenciosamente a sessão armazenada quando a aplicação é montada. */
+/**
+ * @description Inicializa silenciosamente a sessão armazenada quando a aplicação é montada.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const SessionBootstrap = () => {
   const bootstrap = useAuthStore((state) => state.bootstrap);
 

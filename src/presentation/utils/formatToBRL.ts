@@ -1,4 +1,4 @@
- /**
+/**
  * =========================================================
  * Formatador de moeda (BRL)
  * =========================================================
@@ -18,6 +18,9 @@
  * formatToBRL(10)      -> "R$ 10,00"
  * formatToBRL(1500.5)  -> "R$ 1.500,50"
  * formatToBRL(0)       -> "R$ 0,00"
+ *
+ * @param value - Valor que será processado.
+ * @returns Texto resultante da operação.
  */
 export const formatToBRL = (value: number): string => {
   if (typeof value !== "number" || Number.isNaN(value)) {

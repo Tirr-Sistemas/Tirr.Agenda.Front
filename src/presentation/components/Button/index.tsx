@@ -1,10 +1,14 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import Icon, { type IconName } from "@/presentation/icons/Icon";
 
-/** Variantes visuais disponíveis para ações. */
+/**
+ * @description Variantes visuais disponíveis para ações.
+ */
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
-/** Propriedades do botão que estendem o elemento HTML nativo. */
+/**
+ * @description Propriedades do botão que estendem o elemento HTML nativo.
+ */
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: "sm" | "md";
@@ -21,7 +25,9 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
   ghost: "btn-ghost",
 };
 
-/** Botão do design system com variantes, ícones, loading e suporte a ref. */
+/**
+ * @description Botão do design system com variantes, ícones, loading e suporte a ref.
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ variant = "primary", size = "md", loading = false, icon, endIcon, disabled, className = "", children, ...props }, ref) => (
   <button
     ref={ref}

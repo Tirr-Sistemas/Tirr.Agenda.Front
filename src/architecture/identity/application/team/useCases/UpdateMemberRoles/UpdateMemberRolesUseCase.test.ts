@@ -3,7 +3,7 @@ import { LastOwnerRemovalError } from "@/identity/domain/team/errors/LastOwnerRe
 import type { TeamMemberRepository } from "../../ports/TeamMemberRepository";
 import { UpdateMemberRolesUseCase } from "./UpdateMemberRolesUseCase";
 
-function createRepository(members: TeamMember[]): TeamMemberRepository & { saved: TeamMember[] } {
+function createRepository(members: TeamMember[]): TeamMemberRepository & { saved: TeamMember[]; } {
   return {
     saved: [],
     findById: async (_companyId, memberId) => members.find((member) => member.id === memberId) ?? null,

@@ -3,10 +3,10 @@ import { useContext } from "react";
 import { ConfirmContext, type ConfirmContextValue } from "@/presentation/providers/ConfirmContext";
 
 /**
- * Solicita uma confirmação modal e aguarda a decisão do usuário.
+ * @description Solicita uma confirmação modal e aguarda a decisão do usuário.
  *
- * @returns {ConfirmContextValue} Função que abre o diálogo acessível.
- * @throws {Error} Quando utilizado fora de `ConfirmProvider`.
+ * @returns Função que abre o diálogo acessível.
+ * @throws Quando utilizado fora de `ConfirmProvider`.
  */
 export const useConfirm = (): ConfirmContextValue => {
   const value = useContext(ConfirmContext);

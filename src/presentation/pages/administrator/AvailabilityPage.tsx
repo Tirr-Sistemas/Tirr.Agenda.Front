@@ -1,21 +1,67 @@
-﻿import Icon from "@/presentation/icons/Icon";
+import Icon from "@/presentation/icons/Icon";
 import { type FormEvent, useState } from "react";
 
 import { useAuthStore } from "@/presentation/stores/authStore";
 import { useApplication } from "@/presentation/hooks/useApplication";
 import { useApiData } from "@/presentation/hooks/useApiData";
-import { AdminDrawer, AdminEmptyRow, AdminTabs, PageFeedback, StatusPill } from "@/presentation/components/AdminUi";
+import {
+  AdminDrawer,
+  AdminEmptyRow,
+  AdminTabs,
+  PageFeedback,
+  StatusPill,
+} from "@/presentation/components/AdminUi";
 import FormField from "@/presentation/components/FormField";
 import { useConfirm } from "@/presentation/hooks/useConfirm";
-import type { AvailabilityException, AvailabilityExceptionType, AvailabilityRule, Professional } from "@/administration/application/dtos";
+import type {
+  AvailabilityException,
+  AvailabilityExceptionType,
+  AvailabilityRule,
+  Professional,
+} from "@/administration/application/dtos";
 
 type Tab = "rules" | "exceptions";
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const DAY_LABEL: Record<string, string> = { Sunday: "Domingo", Monday: "Segunda-feira", Tuesday: "Terca-feira", Wednesday: "Quarta-feira", Thursday: "Quinta-feira", Friday: "Sexta-feira", Saturday: "Sabado" };
-const EMPTY_RULE = { id: "", professionalId: "", dayOfWeek: "Monday", startTime: "09:00", endTime: "18:00", isActive: true };
-const EMPTY_EXCEPTION: { id: string; professionalId: string; date: string; type: AvailabilityExceptionType; startTime: string; endTime: string; reason: string } = { id: "", professionalId: "", date: "", type: "Unavailable", startTime: "", endTime: "", reason: "" };
+const DAY_LABEL: Record<string, string> = {
+  Sunday: "Domingo",
+  Monday: "Segunda-feira",
+  Tuesday: "Terca-feira",
+  Wednesday: "Quarta-feira",
+  Thursday: "Quinta-feira",
+  Friday: "Sexta-feira",
+  Saturday: "Sabado",
+};
+const EMPTY_RULE = {
+  id: "",
+  professionalId: "",
+  dayOfWeek: "Monday",
+  startTime: "09:00",
+  endTime: "18:00",
+  isActive: true,
+};
+const EMPTY_EXCEPTION: {
+  id: string;
+  professionalId: string;
+  date: string;
+  type: AvailabilityExceptionType;
+  startTime: string;
+  endTime: string;
+  reason: string;
+} = {
+  id: "",
+  professionalId: "",
+  date: "",
+  type: "Unavailable",
+  startTime: "",
+  endTime: "",
+  reason: "",
+};
 
-/** CRUD de regras semanais e exceções de disponibilidade da equipe. */
+/**
+ * @description CRUD de regras semanais e exceções de disponibilidade da equipe.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const AvailabilityPage = () => {
   const application = useApplication();
   const confirm = useConfirm();
@@ -23,20 +69,96 @@ const AvailabilityPage = () => {
   const permissions = useAuthStore((state) => state.permissions);
   const [tab, setTab] = useState<Tab>("rules");
   const [professionalFilter, setProfessionalFilter] = useState("");
-  const professionals = useApiData<Professional[]>(() => application.administration.professionals.list(businessId), businessId, []);
-  const rules = useApiData<AvailabilityRule[]>(() => application.administration.availability.rules(businessId, professionalFilter || undefined), `${businessId}:${professionalFilter}`, []);
-  const exceptions = useApiData<AvailabilityException[]>(() => application.administration.availability.exceptions(businessId, professionalFilter || undefined), `${businessId}:${professionalFilter}`, []);
+  const professionals = useApiData<Professional[]>(
+    () => application.administration.professionals.list(businessId),
+    businessId,
+    [],
+  );
+  const rules = useApiData<AvailabilityRule[]>(
+    () =>
+      application.administration.availability.rules(businessId, professionalFilter || undefined),
+    `${businessId}:${professionalFilter}`,
+    [],
+  );
+  const exceptions = useApiData<AvailabilityException[]>(
+    () =>
+      application.administration.availability.exceptions(
+        businessId,
+        professionalFilter || undefined,
+      ),
+    `${businessId}:${professionalFilter}`,
+    [],
+  );
   const [ruleForm, setRuleForm] = useState(EMPTY_RULE);
   const [exceptionForm, setExceptionForm] = useState(EMPTY_EXCEPTION);
   const [drawer, setDrawer] = useState<Tab | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const activeProfessionals = professionals.data.filter((item) => item.isActive);
-  const professionalName = (id: string) => professionals.data.find((item) => item.id === id)?.displayName ?? "Profissional";
+  /**
+   * @description Resolve o nome de exibi??o do profissional associado ao identificador informado.
+   *
+   * @param id - Identificador do registro alvo.
+   *
+   * @returns Texto resultante da opera??o.
+   */
+  const professionalName = (id: string) =>
+    professionals.data.find((item) => item.id === id)?.displayName ?? "Profissional";
 
-  const editRule = async (summary: AvailabilityRule) => { setDrawer("rules"); setBusy(true); try { const item = await application.administration.availability.rule(businessId, summary.id); setRuleForm({ ...item }); } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Nao foi possivel carregar a regra."); } finally { setBusy(false); } };
-  const editException = async (summary: AvailabilityException) => { setDrawer("exceptions"); setBusy(true); try { const item = await application.administration.availability.exception(businessId, summary.id); setExceptionForm({ id: item.id, professionalId: item.professionalId, date: item.date, type: item.type, startTime: item.startTime?.slice(0, 5) ?? "", endTime: item.endTime?.slice(0, 5) ?? "", reason: item.reason ?? "" }); } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Nao foi possivel carregar a excecao."); } finally { setBusy(false); } };
+  /**
+   * @description Preenche o formul?rio com uma regra de disponibilidade existente para edi??o.
+   *
+   * @param summary - Valor de summary utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const editRule = async (summary: AvailabilityRule) => {
+    setDrawer("rules");
+    setBusy(true);
+    try {
+      const item = await application.administration.availability.rule(businessId, summary.id);
+      setRuleForm({ ...item });
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel carregar a regra.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  /**
+   * @description Preenche o formul?rio com uma exce??o de disponibilidade existente para edi??o.
+   *
+   * @param summary - Valor de summary utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const editException = async (summary: AvailabilityException) => {
+    setDrawer("exceptions");
+    setBusy(true);
+    try {
+      const item = await application.administration.availability.exception(businessId, summary.id);
+      setExceptionForm({
+        id: item.id,
+        professionalId: item.professionalId,
+        date: item.date,
+        type: item.type,
+        startTime: item.startTime?.slice(0, 5) ?? "",
+        endTime: item.endTime?.slice(0, 5) ?? "",
+        reason: item.reason ?? "",
+      });
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel carregar a excecao.");
+    } finally {
+      setBusy(false);
+    }
+  };
 
+  /**
+   * @description Persiste a regra de disponibilidade preenchida e atualiza a listagem da p?gina.
+   *
+   * @param event - Evento disparado pela interface.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
   const saveRule = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
@@ -47,8 +169,15 @@ const AvailabilityPage = () => {
 
     setBusy(true);
     try {
-      const input = { professionalId: ruleForm.professionalId, dayOfWeek: ruleForm.dayOfWeek, startTime: ruleForm.startTime, endTime: ruleForm.endTime, isActive: ruleForm.isActive };
-      if (ruleForm.id) await application.administration.availability.updateRule(businessId, ruleForm.id, input);
+      const input = {
+        professionalId: ruleForm.professionalId,
+        dayOfWeek: ruleForm.dayOfWeek,
+        startTime: ruleForm.startTime,
+        endTime: ruleForm.endTime,
+        isActive: ruleForm.isActive,
+      };
+      if (ruleForm.id)
+        await application.administration.availability.updateRule(businessId, ruleForm.id, input);
       else await application.administration.availability.createRule(businessId, input);
       setDrawer(null);
       await rules.reload();
@@ -58,17 +187,46 @@ const AvailabilityPage = () => {
       setBusy(false);
     }
   };
+  /**
+   * @description Persiste a exce??o de disponibilidade preenchida e atualiza a listagem da p?gina.
+   *
+   * @param event - Evento disparado pela interface.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
   const saveException = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
-    try { application.availability.validateException.execute({ startTime: exceptionForm.startTime || null, endTime: exceptionForm.endTime || null }); }
-    catch (caught) { setMessage(caught instanceof Error ? caught.message : "Período inválido."); return; }
+    try {
+      application.availability.validateException.execute({
+        startTime: exceptionForm.startTime || null,
+        endTime: exceptionForm.endTime || null,
+      });
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Período inválido.");
+      return;
+    }
 
     setBusy(true);
     try {
-      const input = { date: exceptionForm.date, type: exceptionForm.type, startTime: exceptionForm.startTime || null, endTime: exceptionForm.endTime || null, reason: exceptionForm.reason.trim() || null };
-      if (exceptionForm.id) await application.administration.availability.updateException(businessId, exceptionForm.id, input);
-      else await application.administration.availability.createException(businessId, { ...input, professionalId: exceptionForm.professionalId });
+      const input = {
+        date: exceptionForm.date,
+        type: exceptionForm.type,
+        startTime: exceptionForm.startTime || null,
+        endTime: exceptionForm.endTime || null,
+        reason: exceptionForm.reason.trim() || null,
+      };
+      if (exceptionForm.id)
+        await application.administration.availability.updateException(
+          businessId,
+          exceptionForm.id,
+          input,
+        );
+      else
+        await application.administration.availability.createException(businessId, {
+          ...input,
+          professionalId: exceptionForm.professionalId,
+        });
       setDrawer(null);
       await exceptions.reload();
     } catch (caught) {
@@ -77,17 +235,402 @@ const AvailabilityPage = () => {
       setBusy(false);
     }
   };
-  const removeRule = async (item: AvailabilityRule) => { if (!await confirm({ title: "Excluir regra?", description: "Esta regra de disponibilidade sera removida permanentemente.", confirmLabel: "Excluir" })) return; try { await application.administration.availability.removeRule(businessId, item.id); await rules.reload(); } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Nao foi possivel excluir."); } };
-  const removeException = async (item: AvailabilityException) => { if (!await confirm({ title: "Excluir excecao?", description: "Esta excecao deixara de ser considerada no calculo da agenda.", confirmLabel: "Excluir" })) return; try { await application.administration.availability.removeException(businessId, item.id); await exceptions.reload(); } catch (caught) { setMessage(caught instanceof Error ? caught.message : "Nao foi possivel excluir."); } };
+  /**
+   * @description Confirma e remove a regra de disponibilidade selecionada.
+   *
+   * @param item - Valor de item utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const removeRule = async (item: AvailabilityRule) => {
+    if (
+      !(await confirm({
+        title: "Excluir regra?",
+        description: "Esta regra de disponibilidade sera removida permanentemente.",
+        confirmLabel: "Excluir",
+      }))
+    )
+      return;
+    try {
+      await application.administration.availability.removeRule(businessId, item.id);
+      await rules.reload();
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel excluir.");
+    }
+  };
+  /**
+   * @description Confirma e remove a exce??o de disponibilidade selecionada.
+   *
+   * @param item - Valor de item utilizado pela opera??o.
+   *
+   * @returns Promessa resolvida com o resultado da opera??o.
+   */
+  const removeException = async (item: AvailabilityException) => {
+    if (
+      !(await confirm({
+        title: "Excluir excecao?",
+        description: "Esta excecao deixara de ser considerada no calculo da agenda.",
+        confirmLabel: "Excluir",
+      }))
+    )
+      return;
+    try {
+      await application.administration.availability.removeException(businessId, item.id);
+      await exceptions.reload();
+    } catch (caught) {
+      setMessage(caught instanceof Error ? caught.message : "Nao foi possivel excluir.");
+    }
+  };
 
-  return <div className="tirr__admin__page"><section className="tirr__admin__panel"><div className="tirr__admin__panel-header"><div><p className="tirr__admin__overline">Organizacao da jornada</p><h2>Disponibilidade</h2></div><div className="tirr__admin__toolbar"><select className="form-select" value={professionalFilter} onChange={(event) => setProfessionalFilter(event.target.value)} disabled={!professionals.data.length}><option value="">Todos os profissionais</option>{professionals.data.map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select>{tab === "rules" && permissions.includes("availability_rules.post") && <button className="btn btn-primary" disabled={!activeProfessionals.length} onClick={() => { setRuleForm({ ...EMPTY_RULE, professionalId: professionalFilter || activeProfessionals[0]?.id || "" }); setDrawer("rules"); }}><Icon name="plus-lg" /> Nova regra</button>}{tab === "exceptions" && permissions.includes("availability_exceptions.post") && <button className="btn btn-primary" disabled={!activeProfessionals.length} onClick={() => { setExceptionForm({ ...EMPTY_EXCEPTION, professionalId: professionalFilter || activeProfessionals[0]?.id || "" }); setDrawer("exceptions"); }}><Icon name="plus-lg" /> Nova excecao</button>}</div></div>
-    <AdminTabs value={tab} onChange={(value) => setTab(value as Tab)} items={[{ value: "rules", label: "Regras semanais", icon: "arrow-repeat" }, { value: "exceptions", label: "Excecoes", icon: "calendar-x" }]} />{message && <div className="tirr__inline-alert">{message}</div>}
-    {tab === "rules" && <><PageFeedback loading={rules.loading || professionals.loading} error={rules.error || professionals.error} onRetry={() => void rules.reload()} /><div className="tirr__admin__data-list">{rules.data.map((item) => <article className="tirr__admin__data-row" key={item.id}><span className="tirr__admin__client-avatar"><Icon name="clock" /></span><div className="tirr__admin__data-main"><h3>{DAY_LABEL[item.dayOfWeek] ?? item.dayOfWeek}</h3><p>{professionalName(item.professionalId)}</p></div><div><small>Horario</small><span>{item.startTime.slice(0, 5)} - {item.endTime.slice(0, 5)}</span></div><StatusPill active={item.isActive} /><div className="tirr__row-actions">{permissions.includes("availability_rules.put") && <button className="tirr__admin__icon-button" onClick={() => void editRule(item)} aria-label="Editar regra"><Icon name="pencil" /></button>}{permissions.includes("availability_rules.delete") && <button className="tirr__admin__icon-button is-danger" onClick={() => void removeRule(item)} aria-label="Excluir regra"><Icon name="trash" /></button>}</div></article>)}{!rules.loading && !rules.data.length && <AdminEmptyRow>Nenhuma regra cadastrada.</AdminEmptyRow>}</div></>}
-    {tab === "exceptions" && <><PageFeedback loading={exceptions.loading || professionals.loading} error={exceptions.error || professionals.error} onRetry={() => void exceptions.reload()} /><div className="tirr__admin__data-list">{exceptions.data.map((item) => <article className="tirr__admin__data-row" key={item.id}><span className="tirr__admin__client-avatar"><Icon name={item.type === "Unavailable" ? "calendar-x" : "calendar-plus"} /></span><div className="tirr__admin__data-main"><h3>{new Date(`${item.date}T12:00:00`).toLocaleDateString("pt-BR", { dateStyle: "long" })}</h3><p>{professionalName(item.professionalId)} · {item.reason || (item.type === "Unavailable" ? "Indisponivel" : "Horario extra")}</p></div><div><small>Periodo</small><span>{item.startTime && item.endTime ? `${item.startTime.slice(0, 5)} - ${item.endTime.slice(0, 5)}` : "Dia inteiro"}</span></div><StatusPill tone={item.type === "Unavailable" ? "danger" : "info"} label={item.type === "Unavailable" ? "Indisponivel" : "Extra"} /><div className="tirr__row-actions">{permissions.includes("availability_exceptions.put") && <button className="tirr__admin__icon-button" onClick={() => void editException(item)} aria-label="Editar excecao"><Icon name="pencil" /></button>}{permissions.includes("availability_exceptions.delete") && <button className="tirr__admin__icon-button is-danger" onClick={() => void removeException(item)} aria-label="Excluir excecao"><Icon name="trash" /></button>}</div></article>)}{!exceptions.loading && !exceptions.data.length && <AdminEmptyRow>Nenhuma excecao cadastrada.</AdminEmptyRow>}</div></>}
-    </section>
-    <AdminDrawer open={drawer === "rules"} title={ruleForm.id ? "Editar regra" : "Nova regra semanal"} onClose={() => { setDrawer(null); setMessage(""); }} onSubmit={saveRule} busy={busy}><div className="tirr__drawer-fields">{message && <div className="tirr__inline-alert" role="alert"><Icon name="exclamation-circle" />{message}</div>}<label className="tirr__form-field"><span>Profissional</span><select className="form-select" value={ruleForm.professionalId} onChange={(event) => setRuleForm({ ...ruleForm, professionalId: event.target.value })} required>{professionals.data.filter((item) => item.isActive).map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label><label className="tirr__form-field"><span>Dia da semana</span><select className="form-select" value={ruleForm.dayOfWeek} onChange={(event) => setRuleForm({ ...ruleForm, dayOfWeek: event.target.value })}>{DAYS.map((day) => <option key={day} value={day}>{DAY_LABEL[day]}</option>)}</select></label><div className="tirr__field-grid"><FormField id="rule-start" label="Inicio" type="time" value={ruleForm.startTime.slice(0, 5)} onChange={(event) => setRuleForm({ ...ruleForm, startTime: event.target.value })} required /><FormField id="rule-end" label="Fim" type="time" value={ruleForm.endTime.slice(0, 5)} onChange={(event) => setRuleForm({ ...ruleForm, endTime: event.target.value })} required /></div>{ruleForm.id && <label className="tirr__toggle-row"><input type="checkbox" checked={ruleForm.isActive} onChange={(event) => setRuleForm({ ...ruleForm, isActive: event.target.checked })} /><span><strong>Regra ativa</strong><small>Considerada no calculo de horarios.</small></span></label>}</div></AdminDrawer>
-    <AdminDrawer open={drawer === "exceptions"} title={exceptionForm.id ? "Editar excecao" : "Nova excecao"} onClose={() => { setDrawer(null); setMessage(""); }} onSubmit={saveException} busy={busy}><div className="tirr__drawer-fields">{message && <div className="tirr__inline-alert" role="alert"><Icon name="exclamation-circle" />{message}</div>}<label className="tirr__form-field"><span>Profissional</span><select className="form-select" value={exceptionForm.professionalId} onChange={(event) => setExceptionForm({ ...exceptionForm, professionalId: event.target.value })} disabled={Boolean(exceptionForm.id)}>{professionals.data.filter((item) => item.isActive).map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label><FormField id="exception-date" label="Data" type="date" value={exceptionForm.date} onChange={(event) => setExceptionForm({ ...exceptionForm, date: event.target.value })} required /><label className="tirr__form-field"><span>Tipo</span><select className="form-select" value={exceptionForm.type} onChange={(event) => setExceptionForm({ ...exceptionForm, type: event.target.value as "Unavailable" })}><option value="Unavailable">Indisponibilidade</option><option value="ExtraAvailability">Disponibilidade extra</option></select></label><div className="tirr__field-grid"><FormField id="exception-start" label="Inicio (opcional)" type="time" value={exceptionForm.startTime} onChange={(event) => setExceptionForm({ ...exceptionForm, startTime: event.target.value })} /><FormField id="exception-end" label="Fim (opcional)" type="time" value={exceptionForm.endTime} onChange={(event) => setExceptionForm({ ...exceptionForm, endTime: event.target.value })} /></div><FormField id="exception-reason" label="Motivo" value={exceptionForm.reason} onChange={(event) => setExceptionForm({ ...exceptionForm, reason: event.target.value })} /></div></AdminDrawer>
-  </div>;
+  return (
+    <div className="tirr__admin__page">
+      <section className="tirr__admin__panel">
+        <div className="tirr__admin__panel-header">
+          <div>
+            <p className="tirr__admin__overline">Organizacao da jornada</p>
+            <h2>Disponibilidade</h2>
+          </div>
+          <div className="tirr__admin__toolbar">
+            <select
+              className="form-select"
+              value={professionalFilter}
+              onChange={(event) => setProfessionalFilter(event.target.value)}
+              disabled={!professionals.data.length}
+            >
+              <option value="">Todos os profissionais</option>
+              {professionals.data.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.displayName}
+                </option>
+              ))}
+            </select>
+            {tab === "rules" && permissions.includes("availability_rules.post") && (
+              <button
+                className="btn btn-primary"
+                disabled={!activeProfessionals.length}
+                onClick={() => {
+                  setRuleForm({
+                    ...EMPTY_RULE,
+                    professionalId: professionalFilter || activeProfessionals[0]?.id || "",
+                  });
+                  setDrawer("rules");
+                }}
+              >
+                <Icon name="plus-lg" /> Nova regra
+              </button>
+            )}
+            {tab === "exceptions" && permissions.includes("availability_exceptions.post") && (
+              <button
+                className="btn btn-primary"
+                disabled={!activeProfessionals.length}
+                onClick={() => {
+                  setExceptionForm({
+                    ...EMPTY_EXCEPTION,
+                    professionalId: professionalFilter || activeProfessionals[0]?.id || "",
+                  });
+                  setDrawer("exceptions");
+                }}
+              >
+                <Icon name="plus-lg" /> Nova excecao
+              </button>
+            )}
+          </div>
+        </div>
+        <AdminTabs
+          value={tab}
+          onChange={(value) => setTab(value as Tab)}
+          items={[
+            { value: "rules", label: "Regras semanais", icon: "arrow-repeat" },
+            { value: "exceptions", label: "Excecoes", icon: "calendar-x" },
+          ]}
+        />
+        {message && <div className="tirr__inline-alert">{message}</div>}
+        {tab === "rules" && (
+          <>
+            <PageFeedback
+              loading={rules.loading || professionals.loading}
+              error={rules.error || professionals.error}
+              onRetry={() => void rules.reload()}
+            />
+            <div className="tirr__admin__data-list">
+              {rules.data.map((item) => (
+                <article className="tirr__admin__data-row" key={item.id}>
+                  <span className="tirr__admin__client-avatar">
+                    <Icon name="clock" />
+                  </span>
+                  <div className="tirr__admin__data-main">
+                    <h3>{DAY_LABEL[item.dayOfWeek] ?? item.dayOfWeek}</h3>
+                    <p>{professionalName(item.professionalId)}</p>
+                  </div>
+                  <div>
+                    <small>Horario</small>
+                    <span>
+                      {item.startTime.slice(0, 5)} - {item.endTime.slice(0, 5)}
+                    </span>
+                  </div>
+                  <StatusPill active={item.isActive} />
+                  <div className="tirr__row-actions">
+                    {permissions.includes("availability_rules.put") && (
+                      <button
+                        className="tirr__admin__icon-button"
+                        onClick={() => void editRule(item)}
+                        aria-label="Editar regra"
+                      >
+                        <Icon name="pencil" />
+                      </button>
+                    )}
+                    {permissions.includes("availability_rules.delete") && (
+                      <button
+                        className="tirr__admin__icon-button is-danger"
+                        onClick={() => void removeRule(item)}
+                        aria-label="Excluir regra"
+                      >
+                        <Icon name="trash" />
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+              {!rules.loading && !rules.data.length && (
+                <AdminEmptyRow>Nenhuma regra cadastrada.</AdminEmptyRow>
+              )}
+            </div>
+          </>
+        )}
+        {tab === "exceptions" && (
+          <>
+            <PageFeedback
+              loading={exceptions.loading || professionals.loading}
+              error={exceptions.error || professionals.error}
+              onRetry={() => void exceptions.reload()}
+            />
+            <div className="tirr__admin__data-list">
+              {exceptions.data.map((item) => (
+                <article className="tirr__admin__data-row" key={item.id}>
+                  <span className="tirr__admin__client-avatar">
+                    <Icon name={item.type === "Unavailable" ? "calendar-x" : "calendar-plus"} />
+                  </span>
+                  <div className="tirr__admin__data-main">
+                    <h3>
+                      {new Date(`${item.date}T12:00:00`).toLocaleDateString("pt-BR", {
+                        dateStyle: "long",
+                      })}
+                    </h3>
+                    <p>
+                      {professionalName(item.professionalId)} ·{" "}
+                      {item.reason ||
+                        (item.type === "Unavailable" ? "Indisponivel" : "Horario extra")}
+                    </p>
+                  </div>
+                  <div>
+                    <small>Periodo</small>
+                    <span>
+                      {item.startTime && item.endTime
+                        ? `${item.startTime.slice(0, 5)} - ${item.endTime.slice(0, 5)}`
+                        : "Dia inteiro"}
+                    </span>
+                  </div>
+                  <StatusPill
+                    tone={item.type === "Unavailable" ? "danger" : "info"}
+                    label={item.type === "Unavailable" ? "Indisponivel" : "Extra"}
+                  />
+                  <div className="tirr__row-actions">
+                    {permissions.includes("availability_exceptions.put") && (
+                      <button
+                        className="tirr__admin__icon-button"
+                        onClick={() => void editException(item)}
+                        aria-label="Editar excecao"
+                      >
+                        <Icon name="pencil" />
+                      </button>
+                    )}
+                    {permissions.includes("availability_exceptions.delete") && (
+                      <button
+                        className="tirr__admin__icon-button is-danger"
+                        onClick={() => void removeException(item)}
+                        aria-label="Excluir excecao"
+                      >
+                        <Icon name="trash" />
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+              {!exceptions.loading && !exceptions.data.length && (
+                <AdminEmptyRow>Nenhuma excecao cadastrada.</AdminEmptyRow>
+              )}
+            </div>
+          </>
+        )}
+      </section>
+      <AdminDrawer
+        open={drawer === "rules"}
+        title={ruleForm.id ? "Editar regra" : "Nova regra semanal"}
+        onClose={() => {
+          setDrawer(null);
+          setMessage("");
+        }}
+        onSubmit={saveRule}
+        busy={busy}
+      >
+        <div className="tirr__drawer-fields">
+          {message && (
+            <div className="tirr__inline-alert" role="alert">
+              <Icon name="exclamation-circle" />
+              {message}
+            </div>
+          )}
+          <label className="tirr__form-field">
+            <span>Profissional</span>
+            <select
+              className="form-select"
+              value={ruleForm.professionalId}
+              onChange={(event) => setRuleForm({ ...ruleForm, professionalId: event.target.value })}
+              required
+            >
+              {professionals.data
+                .filter((item) => item.isActive)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.displayName}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <label className="tirr__form-field">
+            <span>Dia da semana</span>
+            <select
+              className="form-select"
+              value={ruleForm.dayOfWeek}
+              onChange={(event) => setRuleForm({ ...ruleForm, dayOfWeek: event.target.value })}
+            >
+              {DAYS.map((day) => (
+                <option key={day} value={day}>
+                  {DAY_LABEL[day]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="tirr__field-grid">
+            <FormField
+              id="rule-start"
+              label="Inicio"
+              type="time"
+              value={ruleForm.startTime.slice(0, 5)}
+              onChange={(event) => setRuleForm({ ...ruleForm, startTime: event.target.value })}
+              required
+            />
+            <FormField
+              id="rule-end"
+              label="Fim"
+              type="time"
+              value={ruleForm.endTime.slice(0, 5)}
+              onChange={(event) => setRuleForm({ ...ruleForm, endTime: event.target.value })}
+              required
+            />
+          </div>
+          {ruleForm.id && (
+            <label className="tirr__toggle-row">
+              <input
+                type="checkbox"
+                checked={ruleForm.isActive}
+                onChange={(event) => setRuleForm({ ...ruleForm, isActive: event.target.checked })}
+              />
+              <span>
+                <strong>Regra ativa</strong>
+                <small>Considerada no calculo de horarios.</small>
+              </span>
+            </label>
+          )}
+        </div>
+      </AdminDrawer>
+      <AdminDrawer
+        open={drawer === "exceptions"}
+        title={exceptionForm.id ? "Editar excecao" : "Nova excecao"}
+        onClose={() => {
+          setDrawer(null);
+          setMessage("");
+        }}
+        onSubmit={saveException}
+        busy={busy}
+      >
+        <div className="tirr__drawer-fields">
+          {message && (
+            <div className="tirr__inline-alert" role="alert">
+              <Icon name="exclamation-circle" />
+              {message}
+            </div>
+          )}
+          <label className="tirr__form-field">
+            <span>Profissional</span>
+            <select
+              className="form-select"
+              value={exceptionForm.professionalId}
+              onChange={(event) =>
+                setExceptionForm({ ...exceptionForm, professionalId: event.target.value })
+              }
+              disabled={Boolean(exceptionForm.id)}
+            >
+              {professionals.data
+                .filter((item) => item.isActive)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.displayName}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <FormField
+            id="exception-date"
+            label="Data"
+            type="date"
+            value={exceptionForm.date}
+            onChange={(event) => setExceptionForm({ ...exceptionForm, date: event.target.value })}
+            required
+          />
+          <label className="tirr__form-field">
+            <span>Tipo</span>
+            <select
+              className="form-select"
+              value={exceptionForm.type}
+              onChange={(event) =>
+                setExceptionForm({ ...exceptionForm, type: event.target.value as "Unavailable" })
+              }
+            >
+              <option value="Unavailable">Indisponibilidade</option>
+              <option value="ExtraAvailability">Disponibilidade extra</option>
+            </select>
+          </label>
+          <div className="tirr__field-grid">
+            <FormField
+              id="exception-start"
+              label="Inicio (opcional)"
+              type="time"
+              value={exceptionForm.startTime}
+              onChange={(event) =>
+                setExceptionForm({ ...exceptionForm, startTime: event.target.value })
+              }
+            />
+            <FormField
+              id="exception-end"
+              label="Fim (opcional)"
+              type="time"
+              value={exceptionForm.endTime}
+              onChange={(event) =>
+                setExceptionForm({ ...exceptionForm, endTime: event.target.value })
+              }
+            />
+          </div>
+          <FormField
+            id="exception-reason"
+            label="Motivo"
+            value={exceptionForm.reason}
+            onChange={(event) => setExceptionForm({ ...exceptionForm, reason: event.target.value })}
+          />
+        </div>
+      </AdminDrawer>
+    </div>
+  );
 };
 
 export default AvailabilityPage;

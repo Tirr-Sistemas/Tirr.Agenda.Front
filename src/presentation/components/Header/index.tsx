@@ -1,7 +1,11 @@
-﻿import Icon from "@/presentation/icons/Icon";
+import Icon from "@/presentation/icons/Icon";
 import ThemeToggle from "@/presentation/components/ThemeToggle";
 
-/** Cabeçalho fixo da jornada pública de agendamento. */
+/**
+ * @description Cabeçalho fixo da jornada pública de agendamento.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const Header = () => (
   <header className="tirr__scheduler-topbar">
     <div className="tirr__scheduler-topbar__content">

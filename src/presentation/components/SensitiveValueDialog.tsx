@@ -3,14 +3,21 @@ import { type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import Button from "@/presentation/components/Button";
 import Icon from "@/presentation/icons/Icon";
 
-/** Propriedades do diálogo que revela uma credencial somente uma vez. */
+/**
+ * @description Propriedades do diálogo que revela uma credencial somente uma vez.
+ */
 type SensitiveValueDialogProps = {
   readonly open: boolean;
   readonly value: string;
   readonly onClose: () => void;
 };
 
-/** Exibe, copia e protege o foco durante a apresentação de um valor sensível. */
+/**
+ * @description Exibe, copia e protege o foco durante a apresentação de um valor sensível.
+ *
+ * @param props - Propriedades recebidas pelo componente.
+ * @returns Elemento React renderizado pelo componente.
+ */
 const SensitiveValueDialog = ({ open, value, onClose }: SensitiveValueDialogProps) => {
   const [copied, setCopied] = useState(false);
   const titleId = useId();
@@ -24,6 +31,11 @@ const SensitiveValueDialog = ({ open, value, onClose }: SensitiveValueDialogProp
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.requestAnimationFrame(() => closeRef.current?.focus());
+    /**
+     * @description Trata escape e sincroniza o estado relacionado.
+     *
+     * @param event - Evento disparado pela interface.
+     */
     const handleEscape = (event: globalThis.KeyboardEvent) => { if (event.key === "Escape") onClose(); };
     document.addEventListener("keydown", handleEscape);
     return () => {
@@ -35,6 +47,11 @@ const SensitiveValueDialog = ({ open, value, onClose }: SensitiveValueDialogProp
 
   if (!open) return null;
 
+  /**
+   * @description Mantém a navegação por teclado contida no diálogo enquanto ele estiver aberto.
+   *
+   * @param event - Evento disparado pela interface.
+   */
   const keepFocusInside = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "Tab" || !panelRef.current) return;
     const controls = Array.from(panelRef.current.querySelectorAll<HTMLElement>("button:not(:disabled), [tabindex]:not([tabindex='-1'])"));
@@ -45,6 +62,11 @@ const SensitiveValueDialog = ({ open, value, onClose }: SensitiveValueDialogProp
     if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   };
 
+  /**
+   * @description Copia o valor sensível para a área de transferência e atualiza o retorno visual.
+   *
+   * @returns Promessa resolvida com o resultado da operação.
+   */
   const copy = async () => {
     await navigator.clipboard.writeText(value);
     setCopied(true);

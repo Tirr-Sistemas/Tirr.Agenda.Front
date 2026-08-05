@@ -1,13 +1,21 @@
 import type { InputHTMLAttributes } from "react";
 
-/** Propriedades de um campo textual com label e erro associados. */
+/**
+ * @description Propriedades de um campo textual com label e erro associados.
+ */
 type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   id: string;
   label: string;
   error?: string;
 };
 
-/** Renderiza um input acessível com mensagem de validação opcional. */
+/**
+ * @description Renderiza um input acessível com mensagem de validação opcional.
+ *
+ * @param props - Propriedades recebidas pelo componente.
+ *
+ * @returns Elemento React renderizado pelo componente.
+ */
 const FormField = ({ id, label, error, className, ...inputProps }: FormFieldProps) => (
   <div className="tirr__form-field">
     <label htmlFor={id}>{label}</label>
