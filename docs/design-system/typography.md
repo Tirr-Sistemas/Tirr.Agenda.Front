@@ -18,12 +18,29 @@
 | Acao | `12px` a `13px` | `700` | botoes, horarios e periodos |
 | Metadado | `10px` a `12px` | `600` a `700` | stepper, resumo e menu |
 
+## Escala ativa
+
+| Token | Valor | Papel |
+| --- | --- | --- |
+| `--font-size-caption` | `10px` | Status, overline e metadado compacto |
+| `--font-size-meta` | `11px` | Texto auxiliar e descricao curta |
+| `--font-size-small` | `12px` | Navegacao, labels e dados secundarios |
+| `--font-size-body` | `13px` | Controles, botoes e texto operacional |
+| `--font-size-card-title` | `14px` | Titulos de itens e cards |
+| `--font-size-section-title` | `15px` | Titulos internos de paineis |
+| `--font-size-page-title` | `18px` | Titulo fixo do topbar |
+| `--font-size-flow-title` | `20px` | Titulo das etapas publicas |
+| `--font-size-display` | `28px` | Mensagem principal do login |
+
+Os tamanhos dos controles foram desacoplados do padrao `16px` do Bootstrap. A altura e a area de toque permanecem inalteradas.
+
 ## Utilitarios existentes
 
-`src/styles/tokens.css` declara utilitarios `font-size-12` ate `font-size-40` e variantes por breakpoint. A jornada nova usa tamanhos locais em CSS para preservar dimensoes estaveis de cards, grids e barras.
+As telas ativas usam tamanhos locais nos componentes e utilitarios Bootstrap pontuais. `tokens.css` deixou de ser carregado pelo runtime para remover utilitarios responsivos duplicados.
 
 ## Observacoes
 
 - Nao ha escala semantica global formal para heading, body e caption.
 - Ha mistura de utilitarios Bootstrap e `font-size-*` proprietario nas telas legadas.
-- O prefixo `font-size-sm-*` aparece em dois intervalos de breakpoint em `tokens.css`; esta inconsistencia continua documentada e nao foi alterada nesta entrega.
+- Novas telas devem reutilizar os papeis tipograficos encontrados antes de adicionar outro tamanho.
+- Texto secundario deve usar `--text-secondary`; `--color-gray-medium` nao deve ser aplicado diretamente a novos metadados.

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { ServiceModel } from "./ServiceModel"
 
 export class CategoryModel {

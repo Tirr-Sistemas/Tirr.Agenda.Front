@@ -410,7 +410,7 @@ const useCalendar = (
             mounted = false;
         };
 
-    }, [month, year]);
+    }, [loadDays, month, year]);
 
     /**
      * =====================================================
@@ -469,7 +469,7 @@ const useCalendar = (
 
         loadHoursByDay();
 
-    }, [selectedDate]);
+    }, [loadHours, selectedDate]);
 
     /**
      * =====================================================

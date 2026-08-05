@@ -28,11 +28,12 @@ const AsyncState = ({ kind, title, description, actionLabel, onAction }: AsyncSt
       {description && <p>{description}</p>}
     </div>
     {actionLabel && onAction && (
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={onAction}>
+      <Button variant="secondary" size="sm" onClick={onAction}>
         {actionLabel}
-      </button>
+      </Button>
     )}
   </section>
 );
 
 export default AsyncState;
+import Button from "./Button";

@@ -19,12 +19,21 @@ O padrao predominante e bloco e elemento com `__`. Classes de estado usam `is-*`
 
 Fluxo real:
 
-1. `/agenda-servico`
-2. `/agenda-dia-e-hora`
-3. `/agenda-perfil`
-4. `/agenda-confirmacao`
+1. Servico em `/agendar/:businessId`.
+2. Profissional.
+3. Data e horario.
+4. Dados do cliente.
+5. Revisao e confirmacao.
 
-`useScheduleNavigation` calcula a primeira etapa incompleta e redireciona apenas quando o usuario tenta acessar uma etapa posterior sem os dados necessarios. A guarda considera servico, data/hora e dados pessoais; janeiro e valido como mes `0`.
+`PublicSchedulerPage` mantem o passo e as selecoes no mesmo fluxo. `/agendar/empresa/:slug` resolve o estabelecimento e redireciona para a rota por identificador. Em conflito `409`, o horario e limpo, os slots sao atualizados e o usuario retorna a etapa de horario.
+
+## Contexto de empresa
+
+1. `BusinessSwitcher` lista `/me/businesses`.
+2. A selecao chama `/auth/business-context`.
+3. O JWT contextual e a rota recebem o novo `businessId`.
+4. Um overlay bloqueia interacoes durante a troca.
+5. As paginas recarregam os dados pela empresa ativa.
 
 ## Padrao de pagina publica
 
@@ -44,7 +53,7 @@ Fluxo real:
 | Periodo | botao segmentado com fundo branco no item selecionado |
 | Etapa concluida | circulo escuro com check |
 | Etapa atual | circulo com fundo primario |
-| Menu admin ativo | fundo primario ou superficie definida pelo layout responsivo |
+| Menu admin ativo | superficie `--color-gray-lighter`, texto escuro e indicador primario |
 
 ## Padrao de estados assincronos
 
@@ -74,9 +83,37 @@ Operacoes de disponibilidade e servicos propagam resposta indisponivel como erro
 - Mobile: a navegacao torna-se barra inferior com `80px`.
 - Paineis administrativos mantem raio de `8px`, borda clara e alta densidade de informacao.
 
-## Inconsistencias ainda registradas
+## Tema e superficies
 
-- Seletor legado `tirr__validaditon-page__*` contem erro de digitacao e nao e usado pelo fluxo novo.
-- Seletor legado `tirr__calendar-time-page__*` nao e a fonte das telas de agenda atuais.
-- Valores especificos de React Big Calendar continuam fora dos tokens globais.
-- O componente compartilhado `Button` continua vazio, embora as variantes Bootstrap sejam consistentes visualmente.
+- O tema e aplicado por `data-theme` no elemento raiz.
+- Componentes usam `--surface-*`, `--text-*` e `--border-*`; tokens de paleta permanecem como base.
+- A escolha e persistida e pode ser alterada em todas as entradas do produto.
+- O React Big Calendar recebe os mesmos tokens semanticos do restante do painel.
+
+## Politica responsiva
+
+- `1200px+`: agenda em calendario e sidebar.
+- `992px-1199px`: calendario e detalhes empilhados; navegacao lateral permanece ativa.
+- `768px-991px`: navegacao inferior, agenda semanal com scroll local apenas quando necessario.
+- Ate `767px`: agenda abre em Dia, controles fluidos e detalhes em uma coluna.
+# Padroes de produto integrados
+
+## Contexto multiempresa
+
+As rotas administrativas usam `/administrador/:businessId`. Toda mudanca de empresa deve emitir um novo token contextual, cancelar a apresentacao dos dados anteriores e recalcular navegacao e comandos pelas permissoes recebidas.
+
+## Permissoes
+
+Itens de navegacao e comandos mutaveis sao exibidos somente quando a permissao correspondente existe. A rota tambem possui guarda propria, evitando que ocultar o menu seja a unica barreira.
+
+## Mutacoes
+
+Criacao e edicao usam drawer. Exclusao, revogacao, rotacao e cancelamento exigem confirmacao. O segredo de uma API Key e mostrado em dialogo modal uma unica vez.
+
+## Datas e horarios
+
+Datas de disponibilidade sao datas locais do estabelecimento. Instantes retornados em UTC devem ser formatados segundo o fuso do estabelecimento quando esse contexto estiver disponivel.
+
+## Erros
+
+Erros de campo usam `ProblemDetails.errors`. Conflitos de agenda retornam o usuario para uma escolha valida; falta de permissao produz uma pagina contextual e limite de requisicoes deve preservar os dados preenchidos.

@@ -42,8 +42,21 @@ Os tokens abaixo sao os valores declarados em `src/styles/global.css`. As telas 
 
 ## Valores fora dos tokens
 
-O calendario administrativo contem valores diretos para a linha de horario atual, bordas e scrollbar em `src/styles/calendar.css`. Eles permanecem como valores encontrados, nao como tokens do sistema.
+O indicador do horario atual usa o token de perigo do Bootstrap. Bordas e scrollbar do calendario usam `--border-subtle` e `--border-strong`.
 
 ## Recomendacao
 
-Antes de criar novos tokens, consolidar os valores do React Big Calendar que realmente precisem se tornar parte do contrato visual.
+Novos componentes devem consumir tokens semanticos e nao depender de `--color-white` para representar superficie.
+
+## Tokens semanticos de tema
+
+| Papel | Tema claro | Tema escuro |
+| --- | --- | --- |
+| Pagina | `--surface-page` | `#171813` |
+| Painel | `--surface-panel` | `#23241d` |
+| Superficie sutil | `--surface-muted` | `#303229` |
+| Texto principal | `--text-primary` | `#f3f3ea` |
+| Texto secundario | `--text-secondary` | `#b7b9aa` |
+| Borda sutil | `--border-subtle` | `#383a31` |
+
+O amarelo permanece como identidade nos dois temas. Texto sobre amarelo usa `--color-on-primary`, evitando branco sobre a cor primaria.

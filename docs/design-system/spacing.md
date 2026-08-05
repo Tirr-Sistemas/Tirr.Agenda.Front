@@ -4,6 +4,8 @@
 
 O sistema combina os utilitarios Bootstrap com medidas locais nos componentes `tirr__`.
 
+Escala semantica ativa: `--space-1: 4px`, `--space-2: 8px`, `--space-3: 12px`, `--space-4: 16px`, `--space-5: 20px` e `--space-6: 24px`.
+
 | Contexto | Medidas encontradas |
 | --- | --- |
 | Shell publico | `24px` lateral desktop, `16px` mobile, `112px` abaixo da top bar e acima da action bar |
@@ -41,5 +43,5 @@ O shell publico usa separacao por borda em vez de sombra. As sombras continuam c
 
 ## Problemas ainda encontrados
 
-- O CSS legado da agenda publica continua com seletores nao utilizados pelas novas telas, como `tirr__calendar-time-page__*` e `tirr__validaditon-page__*`.
-- `mb-6` existe para o layout antigo e nao e necessario nas etapas novas, que reservam espaco no shell.
+- O shell administrativo empilha a barra lateral da agenda entre `992px` e `1199px`, preservando largura operacional do calendario.
+- Scroll horizontal deve existir apenas em componentes largos, nunca no `body` ou no workspace.

@@ -1,68 +1,70 @@
 # Design System Foundations
 
-## Escopo
+## Escopo analisado
 
-Esta documentacao registra os padroes encontrados e implementados no codigo. Nenhuma cor, token ou componente foi inventado para este documento.
+Esta documentacao registra somente padroes presentes no codigo. Foram analisados `src/shared`, `src/page`, `src/styles`, `src/auth`, `src/service/api` e `src/routingV1.tsx`.
 
-Fontes principais analisadas:
-
-- `src/styles/global.css`, `src/styles/tokens.css`, `src/styles/calendar.css` e `src/styles/font.css`
-- `src/shared/*`
-- `src/page/scheduler/*`
-- `src/page/administrator/*`
-- `src/routing.tsx`
-
-O repositorio usa `src/page` para telas e `src/shared` para componentes. Nao existem os diretorios `src/components`, `src/app` ou `pages`.
+O projeto nao possui `src/components`, `src/app` ou `pages`. O runtime carregado por `src/core.tsx` usa `routingV1.tsx`; arquivos de agenda e admin anteriores continuam no repositorio como legado.
 
 ## Stack visual
 
-- React, Vite e TypeScript.
-- Bootstrap 5 para base de formulario, grid e botoes.
-- Bootstrap Icons no admin e no fluxo de agendamento.
-- React Big Calendar na agenda administrativa.
-- Poppins como familia visual global.
+- React, TypeScript e Vite.
+- Bootstrap 5 e Bootstrap Icons.
+- React Big Calendar e Moment na agenda administrativa.
+- Zustand para sessao, permissoes e empresa ativa.
+- Poppins como familia global.
 
-## Principios observados
+## Principios encontrados
 
-- Fundo geral: `--bg-color`.
-- Superficies operacionais: `--color-white` com borda `--color-gray-lighter` e raio de `8px`.
-- Cor primaria: `--color-primary`, reservada para acao principal e selecao.
-- Texto principal: `--default-text-color` e `--color-text-dark`.
-- Navegacao administrativa responsiva: barra inferior no mobile e lateral fixa no desktop.
-- Jornada publica em quatro etapas, com top bar fixa, progresso e rodape de acoes fixo.
+- Superficies claras sobre `--bg-color`.
+- Paineis brancos com borda discreta e raio maximo de `8px`.
+- Amarelo primario reservado para acao, foco, selecao e destaque.
+- Navegacao lateral recolhivel no desktop e inferior no mobile.
+- Titulo e descricao da rota permanecem no topbar fixo.
+- Admin denso e operacional; agenda publica guiada em cinco etapas.
+- Empresa ativa faz parte da rota, do JWT e de toda requisicao administrativa.
 
 ## Tokens identificados
 
-Tokens declarados em `src/styles/global.css`:
+As foundations ficam em `src/styles/global.css`; os aliases semanticos e temas ficam em `src/styles/themes.css`:
 
-| Grupo | Tokens |
+- Cores: `--default-text-color`, `--bg-color`, `--color-primary`, `--color-primary-hover`, `--color-primary-active`, `--color-white`, `--color-gray-light`, `--color-gray-medium`, `--color-gray-lighter`, `--color-text-dark`.
+- Tipografia: `--default-font-family`.
+- Aliases Bootstrap: `--bs-primary`, `--bs-body-color`, `--bs-body-bg`, `--bs-border-color`, `--bs-light`, `--bs-dark`.
+- Espacamento: `--space-1` a `--space-6`.
+- Forma: `--radius-control`, `--radius-surface` e `--radius-pill`.
+- Elevacao e movimento: `--shadow-popover`, `--shadow-drawer` e `--motion-fast`.
+- Superficies semanticas: `--surface-page`, `--surface-panel`, `--surface-muted` e `--surface-elevated`.
+
+Espacamentos, sombras e raios ainda sao valores locais de componente e estao mapeados em `spacing.md`.
+
+## Inventario por dominio
+
+| Dominio | Recursos ativos |
 | --- | --- |
-| Fonte | `--default-font-family` |
-| Texto e fundo | `--default-text-color`, `--bg-color`, `--color-text-dark`, `--color-white` |
-| Primaria | `--color-primary`, `--color-primary-hover`, `--color-primary-active` |
-| Neutros | `--color-gray-light`, `--color-gray-medium`, `--color-gray-lighter` |
-| Bootstrap | `--bs-font-sans-serif`, `--bs-primary`, `--bs-body-color`, `--bs-body-bg`, `--bs-border-color`, `--bs-light`, `--bs-dark` |
+| Acesso | Login e cadastro de primeiro acesso |
+| Agenda publica | Servico, profissional, data/horario, cliente, revisao e sucesso |
+| Agenda administrativa | Dia, semana, mes, criacao, status e reagendamento |
+| Clientes | Lista, criacao, edicao, ativacao e exclusao |
+| Catalogo | Servicos e categorias |
+| Equipe | Profissionais, membros, papeis, status e servicos atendidos |
+| Disponibilidade | Regras semanais e excecoes |
+| Configuracoes | Empresa, expediente, perfil, seguranca e chaves de API |
 
-## Inventario de componentes
+## Inconsistencias encontradas
 
-| Area | Componentes reais |
-| --- | --- |
-| Shell publico | `SchedulerLayout`, `Header`, `SchedulerPageHeader`, `FixedActionBar` |
-| Escolha e resumo | `ServiceOption`, `BookingSummary`, `TimeSlot`, `CalendarPanel` |
-| Formulario e feedback | `FormField`, `AsyncState` |
-| Administracao | `AdminNavigation`, `TopBar`, paineis e cards locais das paginas administrativas |
-| Infraestrutura | `RequireAuth`, icones SVG legados e `Button` vazio |
+- Duas geracoes de paginas e componentes coexistem; o runtime usa as paginas `V1`/`V2`.
+- Componentes antigos continuam no repositorio, mas nao participam de `routingV1.tsx`.
+- Parte dos estilos de pagina ainda permanece em `global.css` e `app-v1.css`; `themes.css` funciona como camada semantica final.
+- Alguns arquivos legados apresentam texto com codificacao incorreta e namespaces TypeScript antigos.
+- Icones SVG legados coexistem com Bootstrap Icons; as telas ativas usam Bootstrap Icons.
 
-## Padronizacoes aplicadas
+## Padronizacoes sugeridas
 
-- O fluxo publico usa um unico shell em `SchedulerLayout`.
-- As quatro etapas passaram a compartilhar rodape de acoes, resumo de reserva e hierarquia de pagina.
-- Servicos, dias e horarios usam `button` semantico com estados de selecao.
-- Carregamento, vazio, erro e sucesso usam `AsyncState`.
-- O calendario de disponibilidade e os campos de perfil deixaram de depender de markup duplicado.
+- Migrar gradualmente regras de pagina ainda presentes em `global.css` para modulos por dominio.
+- Remover a geracao legada somente apos migrar seus testes e imports.
+- Reutilizar `Button`, `AdminDrawer`, `AdminTabs`, `PageFeedback` e `AdminEmptyRow` em novos CRUDs.
 
-## Pendencias conhecidas
+## Temas
 
-- `src/shared/Button/index.tsx` permanece vazio; os botoes usam as variantes Bootstrap ja configuradas.
-- `src/shared/icons.tsx` ainda e legado do fluxo antigo; o novo fluxo usa Bootstrap Icons.
-- Existem valores hardcoded no calendario administrativo. Eles nao foram elevados a tokens por falta de padronizacao previa.
+`ThemeProvider` aplica `data-theme="light|dark"` no elemento `html`. A escolha e persistida em `localStorage` e, no primeiro acesso, parte de `prefers-color-scheme`. O seletor esta disponivel no login, no agendamento publico e no topbar administrativo.

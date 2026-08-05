@@ -1,11 +1,17 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 
-import { authUtils } from "@/utils/auth";
+import { useAuthStore } from "@/auth/authStore";
+import AsyncState from "./AsyncState";
 
 const RequireAuth = () => {
   const location = useLocation();
+  const status = useAuthStore((state) => state.status);
 
-  if (!authUtils.isTokenValid()) {
+  if (status === "idle" || status === "loading") {
+    return <main className="tirr__session-loading"><AsyncState kind="loading" title="Preparando seu painel" description="Validando a sessao e o acesso as empresas." /></main>;
+  }
+
+  if (status !== "authenticated") {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 

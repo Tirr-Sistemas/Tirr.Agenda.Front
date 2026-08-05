@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 /**
  * =========================================================
@@ -39,6 +39,10 @@ const usePromise = <
   action: (...args: TArgs) => Promise<TResult>,
   defaultValue: TResult
 ) => {
+  const actionRef = useRef(action);
+  const defaultValueRef = useRef(defaultValue);
+  actionRef.current = action;
+  defaultValueRef.current = defaultValue;
 
   /**
    * =====================================================
@@ -73,13 +77,13 @@ const usePromise = <
 
       try {
 
-        setResult(defaultValue);
+        setResult(defaultValueRef.current);
 
         setIsLoading(true);
 
         setHasError(false);
 
-        const response = await action(...args);
+        const response = await actionRef.current(...args);
 
         setResult(response);
 
@@ -89,9 +93,9 @@ const usePromise = <
 
         setHasError(true);
 
-        setResult(defaultValue);
+        setResult(defaultValueRef.current);
 
-        return defaultValue;
+        return defaultValueRef.current;
 
       } finally {
 
@@ -100,7 +104,7 @@ const usePromise = <
       }
 
     },
-    [action, defaultValue]
+    []
   );
 
   /**

@@ -7,7 +7,7 @@
  */
 export interface GetFuncionariosResponseDto {
     statusCode: number
-    resultString: any
+    resultString: unknown
     result: {
         id: number
         estabelecimentoId: number
@@ -15,8 +15,8 @@ export interface GetFuncionariosResponseDto {
         cpf: string
         tipo: number
         createdAt: string
-        updatedAt: any
-        deletedAt: any
+        updatedAt: string | null
+        deletedAt: string | null
     }[]
     message: string
 }
@@ -30,8 +30,8 @@ export interface GetFuncionariosResponseDto {
  */
 export interface GetServicoResponseDto {
     statusCode: number
-    resultString: any
-    message: String
+    resultString: unknown
+    message: string
     result: GetServicoResponseDto__Result[]
 }
 
@@ -44,9 +44,9 @@ export interface GetServicoResponseDto__Result {
     descricao: string
     valor: number
     tempoExecucao: number
-    deletedAt: any
+    deletedAt: string | null
     createdAt: string
-    updatedAt: any
+    updatedAt: string | null
 }
 
 /**
@@ -133,7 +133,7 @@ export interface GetDisponibilidadeMesResponse {
      * Pode conter informações serializadas ou dados
      * auxiliares dependendo da implementação do backend.
      */
-    resultString: any;
+    resultString: unknown;
 
     /**
      * =====================================================
@@ -218,7 +218,7 @@ export interface GetDisponibilidadeHorarioResponse {
      * Pode conter informações serializadas ou dados
      * auxiliares dependendo da implementação do backend.
      */
-    resultString: any;
+    resultString: unknown;
 
     /**
      * =====================================================

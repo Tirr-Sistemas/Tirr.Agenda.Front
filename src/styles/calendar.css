@@ -32,19 +32,19 @@
 }
 
 .rbc-time-gutter .rbc-timeslot-group {
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .rbc-label {
   font-size: 12px;
   font-weight: 600;
-  color: #868e96;
+  color: var(--text-secondary);
 }
 
 /* Espaçamento das linhas */
 .rbc-timeslot-group {
   min-height: 70px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 /* Eventos */
@@ -56,7 +56,7 @@
   font-size: 13px;
   font-weight: 600;
   background-color: var(--color-primary) !important;
-  color: var(--color-text-dark) !important;
+  color: var(--color-on-primary) !important;
 }
 
 .rbc-event-label {
@@ -73,7 +73,7 @@
 /* Linha atual */
 .rbc-current-time-indicator {
   height: 3px;
-  background: #ff4d4f;
+  background: var(--bs-danger);
 }
 
 /* Hoje */
@@ -83,7 +83,7 @@
 
 /* Remove bordas verticais */
 .rbc-time-content > * + * > * {
-  border-left: 1px solid #f1f3f5;
+  border-left: 1px solid var(--border-subtle);
 }
 
 /* Scroll */
@@ -92,7 +92,7 @@
 }
 
 .rbc-time-content::-webkit-scrollbar-thumb {
-  background: #ced4da;
+  background: var(--border-strong);
   border-radius: 999px;
 }
 

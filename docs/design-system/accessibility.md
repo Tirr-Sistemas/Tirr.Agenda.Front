@@ -1,6 +1,17 @@
 # Accessibility
 
-## Implementado na jornada publica
+## Runtime atual
+
+- Login e cadastro usam formularios nativos e feedback persistente.
+- Agenda publica usa botoes reais para servico, profissional, data e horario.
+- Menu administrativo preserva texto no desktop, colapso e navegacao inferior mobile.
+- Topbar fixo mantem titulo e descricao durante o scroll.
+- `PageFeedback`, `AsyncState` e a troca de empresa usam estados persistentes.
+- Drawers separam titulo, conteudo rolavel e acoes.
+
+Implementado: foco contido e Escape nos drawers, Escape nos menus, `aria-current` no wizard, `aria-pressed` nas selecoes publicas, foco na etapa ativa e texto escuro sobre o amarelo primario.
+
+## Implementado na jornada publica legada
 
 | Tema | Tratamento no codigo |
 | --- | --- |
@@ -25,10 +36,16 @@
 
 ## Pontos que ainda exigem validacao manual
 
-- Contraste de texto branco sobre a cor primaria amarela em todas as variantes Bootstrap.
-- Contraste do texto `--color-gray-medium` em fundo branco, especialmente em metadados pequenos.
 - Navegacao por teclado no React Big Calendar administrativo.
+- Validacao visual em zoom de 200% no editor de expediente.
 - Texto alternativo das imagens remotas de servico: no fluxo atual elas sao decorativas porque nome e descricao adjacentes identificam o item.
+
+## Tema
+
+- O primeiro acesso respeita `prefers-color-scheme` e a escolha posterior e persistida.
+- O controle de tema possui nome acessivel que descreve a proxima acao.
+- Controles nativos recebem `color-scheme` adequado no tema escuro.
+- Animacoes sao reduzidas quando `prefers-reduced-motion` esta ativo.
 
 ## Riscos legados
 
@@ -43,3 +60,12 @@
 - Associar cada input a label e mensagem de erro.
 - Garantir `:focus-visible`, hover, active e disabled em controles customizados.
 - Usar `AsyncState` para carregamento, erro, vazio ou sucesso relevantes.
+# Requisitos dos novos fluxos
+
+- O seletor de empresa informa `aria-expanded` e mantem nome acessivel durante o estado de troca.
+- Navegacao, tabs, drawers e dialogs possuem rotulos semanticos.
+- Loading nao remove silenciosamente o conteudo sem apresentar um estado com `role="status"`.
+- Erros de operacao usam `role="alert"` e nao dependem somente de cor.
+- Controles de status mantem texto visivel alem da variacao visual.
+- A navegacao mobile preserva alvos de toque e move recursos secundarios para o menu Mais.
+- Formularios associam labels e mensagens aos campos; comandos ficam desabilitados durante envio para evitar duplicidade.
