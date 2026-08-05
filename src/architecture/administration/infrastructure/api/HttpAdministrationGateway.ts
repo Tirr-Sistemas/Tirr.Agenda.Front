@@ -19,6 +19,11 @@ const withTimeOnlyRange = <T extends { startTime: string | null; endTime: string
   endTime: asTimeOnly(input.endTime),
 });
 
+/**
+ * Adaptador Axios que implementa todas as portas do contexto administrativo.
+ *
+ * Centraliza rotas por empresa e normaliza horários antes de enviar comandos.
+ */
 export class HttpAdministrationGateway implements AdministrationGateway {
   public constructor(private readonly http: AxiosInstance) {}
 

@@ -14,6 +14,7 @@ const META = [
   { match: "/configuracoes", title: "Configuracoes", description: "Estabelecimento, seguranca e integracoes." },
 ] as const;
 
+/** Topbar administrativa com contexto da rota, empresa ativa, tema e sessão. */
 const TopBarV1 = () => {
   const { pathname } = useLocation();
   const { businessId } = useParams();

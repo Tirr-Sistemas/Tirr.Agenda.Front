@@ -1,3 +1,4 @@
+/** Abstração de persistência local dos dados mínimos da sessão. */
 export interface SessionRepository {
   getRefreshToken(): string | null;
   setRefreshToken(token: string | null): void;

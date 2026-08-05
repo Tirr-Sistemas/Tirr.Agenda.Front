@@ -5,9 +5,17 @@ import { Navigate, useNavigate } from "react-router";
 import { useAuthStore } from "@/presentation/stores/authStore";
 import ThemeToggle from "@/presentation/components/ThemeToggle";
 
+/** Modos suportados pelo formulário de acesso. */
 type Mode = "login" | "register";
+/**
+ * Converte o nome da empresa em um slug seguro para o primeiro cadastro.
+ *
+ * @param {string} value - Nome informado pelo usuário.
+ * @returns {string} Slug normalizado, sem acentos e separadores inválidos.
+ */
 const slugify = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+/** Página de login e criação da primeira conta administrativa. */
 const AccessPage = () => {
   const navigate = useNavigate();
   const status = useAuthStore((state) => state.status);

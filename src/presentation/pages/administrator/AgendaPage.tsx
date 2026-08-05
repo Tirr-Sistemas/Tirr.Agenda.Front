@@ -17,10 +17,13 @@ moment.updateLocale("pt-br", { week: { dow: 1, doy: 4 } });
 const localizer = momentLocalizer(moment);
 const STATUS_LABEL: Record<string, string> = { Pending: "Pendente", Confirmed: "Confirmado", Cancelled: "Cancelado", Completed: "Concluido", NoShow: "Nao compareceu" };
 const STATUS_TONE = { Pending: "warning", Confirmed: "info", Cancelled: "danger", Completed: "success", NoShow: "neutral" } as const;
+/** Converte uma data de navegação para a chave local usada pela API. */
 const dateOnly = (date: Date) => moment(date).format("YYYY-MM-DD");
 const emptyBooking = { serviceId: "", professionalId: "", date: "", startsAtUtc: "", fullName: "", email: "", phone: "" };
+/** Agendamento enriquecido para o contrato do React Big Calendar. */
 type CalendarAppointment = Appointment & { start: Date; end: Date; title: string };
 
+/** Barra de navegação localizada do calendário administrativo. */
 const CalendarToolbar = ({ label, onNavigate }: ToolbarProps<CalendarAppointment>) => <div className="tirr__calendar-toolbar">
   <div className="tirr__calendar-toolbar__navigation">
     <button type="button" onClick={() => onNavigate("PREV")} aria-label="Periodo anterior" title="Periodo anterior"><Icon name="chevron-left" /></button>
@@ -30,6 +33,7 @@ const CalendarToolbar = ({ label, onNavigate }: ToolbarProps<CalendarAppointment
   <button type="button" className="tirr__calendar-toolbar__today" onClick={() => onNavigate("TODAY")}>Hoje</button>
 </div>;
 
+/** Agenda administrativa com filtros, calendário, detalhes e criação de reservas. */
 const AgendaPage = () => {
   const application = useApplication();
   const businessId = useAuthStore((state) => state.activeBusiness?.businessId ?? "");

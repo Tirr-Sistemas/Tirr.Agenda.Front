@@ -15,6 +15,7 @@ import SensitiveValueDialog from "@/presentation/components/SensitiveValueDialog
 const DAY_LABEL: Record<string, string> = { Sunday: "Domingo", Monday: "Segunda", Tuesday: "Terca", Wednesday: "Quarta", Thursday: "Quinta", Friday: "Sexta", Saturday: "Sabado" };
 const EMPTY_BUSINESS = { name: "", legalName: "", documentNumber: "", slug: "", timeZone: "" };
 
+/** Configura empresa, expediente, conta, segurança e integrações. */
 const SettingsPageV2 = () => {
   const application = useApplication();
   const confirm = useConfirm();

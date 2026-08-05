@@ -19,12 +19,14 @@ const CustomersPageV1 = lazy(() => import("@/presentation/pages/administrator/Cu
 const SettingsPage = lazy(() => import("@/presentation/pages/administrator/SettingsPageV2"));
 const TeamPage = lazy(() => import("@/presentation/pages/administrator/TeamPageV2"));
 
+/** Redireciona a entrada administrativa para a empresa ativa. */
 const AdminEntry = () => {
   const active = useAuthStore((state) => state.activeBusiness);
   if (!active) return <main className="tirr__session-loading"><AsyncState kind="empty" title="Nenhuma empresa disponivel" description="Sua conta nao possui participacao ativa em um estabelecimento." /></main>;
   return <Navigate to={`/administrador/${active.businessId}`} replace />;
 };
 
+/** Resolve um slug público e redireciona para a rota canônica. */
 const PublicSlugEntry = () => {
   const application = useApplication();
   const { slug = "" } = useParams();
@@ -40,16 +42,19 @@ const PublicSlugEntry = () => {
   return <main className="tirr__session-loading"><AsyncState kind={error ? "error" : "loading"} title={error ? "Nao foi possivel abrir a agenda" : "Abrindo agenda"} description={error || "Identificando a empresa..."} /></main>;
 };
 
+/** Instancia a agenda pública conforme o identificador presente na rota. */
 const PublicSchedulerEntry = () => {
   const { businessId = "" } = useParams();
   return <PublicSchedulerPage key={businessId} />;
 };
 
+/** Protege uma sub-rota administrativa por permissão. */
 const PermissionRoute = ({ permission }: { permission: string }) => {
   const allowed = useAuthStore((state) => state.permissions.includes(permission));
   return allowed ? <Outlet /> : <main className="tirr__admin__page"><AsyncState kind="error" title="Acesso nao permitido" description="Seu papel nesta empresa nao possui permissao para este recurso." /></main>;
 };
 
+/** Shell que coordena empresa ativa, navegação e conteúdo administrativo. */
 const AdminLayout = () => {
   const { businessId = "" } = useParams();
   const navigate = useNavigate();
@@ -76,8 +81,10 @@ const AdminLayout = () => {
   </div>;
 };
 
+/** Estado exibido enquanto uma página lazy é carregada. */
 const PageRouteLoading = () => <div className="tirr__admin__page"><div className="tirr__resource-skeleton" role="status" aria-label="Carregando pagina" /></div>;
 
+/** Declara rotas públicas, autenticadas e protegidas por permissão. */
 const RoutingV1 = () => <Routes>
   <Route path="/login" element={<AccessPage />} />
   <Route element={<SchedulerLayout />}>

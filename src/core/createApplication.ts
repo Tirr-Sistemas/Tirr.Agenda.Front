@@ -18,7 +18,13 @@ import { HttpIdentityManagementGateway } from "@/identity/infrastructure/HttpIde
 import { apiHttp, publicHttp } from "@/shared-architecture/http/ApiHttpClient";
 import type { ApplicationDependencies } from "./applicationDependencies";
 
-/** Creates adapters once and exposes only application use cases to React. */
+/**
+ * Monta o grafo de dependências da aplicação.
+ *
+ * Instancia adaptadores uma única vez e expõe apenas casos de uso para React.
+ *
+ * @returns {ApplicationDependencies} Dependências prontas para o provider da aplicação.
+ */
 export function createApplication(): ApplicationDependencies {
   const members = new HttpTeamMemberRepository(apiHttp);
   const publicBookings = new HttpPublicBookingGateway(publicHttp);

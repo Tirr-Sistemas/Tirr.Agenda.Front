@@ -4,6 +4,7 @@ import AsyncState from "./AsyncState";
 import Button from "./Button";
 import Icon, { type IconName } from "@/presentation/icons/Icon";
 
+/** Seleciona o feedback adequado para loading, erro ou coleção vazia. */
 export const PageFeedback = ({ loading, error, empty, onRetry }: { loading: boolean; error: string; empty?: boolean; onRetry: () => void }) => {
   if (loading) return <div className="tirr__admin__feedback"><div className="tirr__resource-skeleton" role="status" aria-label="Carregando" /></div>;
   if (error) return <div className="tirr__admin__feedback"><AsyncState kind="error" title="Nao foi possivel carregar os dados" description={error} actionLabel="Tentar novamente" onAction={onRetry} /></div>;
@@ -11,13 +12,16 @@ export const PageFeedback = ({ loading, error, empty, onRetry }: { loading: bool
   return null;
 };
 
+/** Tons semânticos utilizados pelos indicadores administrativos. */
 type StatusTone = "neutral" | "success" | "warning" | "danger" | "info";
 
+/** Exibe um estado textual com cor semântica complementar. */
 export const StatusPill = ({ active, label, tone }: { active?: boolean; label?: string; tone?: StatusTone }) => {
   const resolvedTone = tone ?? (active ? "success" : "neutral");
   return <span className={`tirr__admin__status is-${resolvedTone}`}>{label ?? (active ? "Ativo" : "Inativo")}</span>;
 };
 
+/** Drawer de formulário com Escape, bloqueio de scroll e contenção de foco. */
 export const AdminDrawer = ({ title, description, open, onClose, onSubmit, busy, submitDisabled, children, submitLabel = "Salvar" }: { title: string; description?: string; open: boolean; onClose: () => void; onSubmit: (event: FormEvent<HTMLFormElement>) => void; busy?: boolean; submitDisabled?: boolean; children: ReactNode; submitLabel?: string }) => {
   const titleId = useId();
   const panelRef = useRef<HTMLFormElement>(null);
@@ -55,6 +59,7 @@ export const AdminDrawer = ({ title, description, open, onClose, onSubmit, busy,
   return <div className="tirr__drawer" role="dialog" aria-modal="true" aria-labelledby={titleId}><button className="tirr__drawer-backdrop" type="button" onClick={onClose} aria-label="Fechar" /><form ref={panelRef} className="tirr__drawer-panel" onSubmit={onSubmit} onKeyDown={keepFocusInside}><header><div><h2 id={titleId}>{title}</h2>{description && <p>{description}</p>}</div><Button variant="ghost" className="tirr__admin__icon-button" onClick={onClose} aria-label="Fechar" icon="x-lg" /></header><div className="tirr__drawer-content">{children}</div><footer><Button variant="secondary" onClick={onClose}>Cancelar</Button><Button type="submit" loading={busy} disabled={submitDisabled}>{submitLabel}</Button></footer></form></div>;
 };
 
+/** Abas administrativas com navegação por setas e roving tab index. */
 export const AdminTabs = ({ value, onChange, items }: { value: string; onChange: (value: string) => void; items: { value: string; label: string; icon?: IconName }[] }) => {
   const navigateTabs = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
@@ -68,4 +73,5 @@ export const AdminTabs = ({ value, onChange, items }: { value: string; onChange:
   return <div className="tirr__admin-tabs" role="tablist" onKeyDown={navigateTabs}>{items.map((item) => <button key={item.value} type="button" role="tab" aria-selected={value === item.value} tabIndex={value === item.value ? 0 : -1} className={value === item.value ? "active" : ""} onClick={() => onChange(item.value)}>{item.icon && <Icon name={item.icon} size={17} />}{item.label}</button>)}</div>;
 };
 
+/** Estado vazio padronizado para listas e seções administrativas. */
 export const AdminEmptyRow = ({ children, description, icon = "inbox" }: { children: ReactNode; description?: string; icon?: IconName }) => <div className="tirr__admin__empty" role="status"><Icon name={icon} size={28} /><p>{children}</p>{description && <small>{description}</small>}</div>;

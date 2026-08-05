@@ -3,8 +3,10 @@ import { create } from "zustand";
 import type { FirstAccessInput, IdentityProfile, UserBusiness } from "@/identity/application/dtos/AuthDtos";
 import type { AuthenticationUseCase } from "@/identity/application/useCases/Authentication/AuthenticationUseCase";
 
+/** Fases possíveis do ciclo de restauração e autenticação da sessão. */
 type SessionStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
 
+/** Estado global e comandos de autenticação consumidos pela apresentação. */
 type AuthState = {
   status: SessionStatus;
   user: IdentityProfile | null;
@@ -27,7 +29,14 @@ type AuthState = {
   can: (permission: string) => boolean;
 };
 
+/** Caso de uso injetado pelo composition root. */
 let authentication: AuthenticationUseCase | null = null;
+/**
+ * Injeta o caso de uso de autenticação utilizado pelo store.
+ *
+ * @param {AuthenticationUseCase} useCase - Fachada de autenticação da aplicação.
+ * @returns {void}
+ */
 export const configureAuthentication = (useCase: AuthenticationUseCase): void => { authentication = useCase; };
 const requireAuthentication = (): AuthenticationUseCase => {
   if (!authentication) throw new Error("A autenticação não foi configurada.");
@@ -35,6 +44,7 @@ const requireAuthentication = (): AuthenticationUseCase => {
 };
 const unauthenticatedState = { status: "unauthenticated" as const, user: null, businesses: [], activeBusiness: null, accessToken: null, refreshToken: null, roles: [], permissions: [] };
 
+/** Store Zustand que mantém sessão, permissões e estabelecimento ativo. */
 export const useAuthStore = create<AuthState>((set, get) => ({
   status: "idle",
   user: null,

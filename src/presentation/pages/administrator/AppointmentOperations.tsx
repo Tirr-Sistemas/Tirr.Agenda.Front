@@ -6,6 +6,7 @@ import { AdminDrawer, AdminEmptyRow, PageFeedback } from "@/presentation/compone
 import FormField from "@/presentation/components/FormField";
 import type { Appointment } from "@/administration/application/dtos";
 
+/** Coordena alteração de status, reagendamento e cancelamento da seleção atual. */
 const AppointmentOperations = () => {
   const application = useApplication();
   const businessId = useAuthStore((state) => state.activeBusiness?.businessId ?? "");

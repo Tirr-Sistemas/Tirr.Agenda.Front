@@ -15,6 +15,7 @@ const DAY_LABEL: Record<string, string> = { Sunday: "Domingo", Monday: "Segunda-
 const EMPTY_RULE = { id: "", professionalId: "", dayOfWeek: "Monday", startTime: "09:00", endTime: "18:00", isActive: true };
 const EMPTY_EXCEPTION: { id: string; professionalId: string; date: string; type: AvailabilityExceptionType; startTime: string; endTime: string; reason: string } = { id: "", professionalId: "", date: "", type: "Unavailable", startTime: "", endTime: "", reason: "" };
 
+/** CRUD de regras semanais e exceções de disponibilidade da equipe. */
 const AvailabilityPage = () => {
   const application = useApplication();
   const confirm = useConfirm();

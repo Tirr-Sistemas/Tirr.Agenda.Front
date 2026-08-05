@@ -13,8 +13,10 @@ const ITEMS = [
   { suffix: "/configuracoes", icon: "sliders", label: "Configuracoes", permission: "business.get" },
 ] as const;
 
+/** Estado e comando de recolhimento da navegação administrativa. */
 type Props = { collapsed: boolean; onToggle: () => void };
 
+/** Navegação responsiva filtrada pelas permissões da sessão ativa. */
 const AdminNavigationV1 = ({ collapsed, onToggle }: Props) => {
   const { businessId } = useParams();
   const [moreOpen, setMoreOpen] = useState(false);

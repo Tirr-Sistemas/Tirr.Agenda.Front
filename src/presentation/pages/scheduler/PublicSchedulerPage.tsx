@@ -10,11 +10,14 @@ import { useApplication } from "@/presentation/hooks/useApplication";
 import { formatToBRL } from "@/presentation/utils/formatToBRL";
 import { phoneMask } from "@/presentation/utils/maskPhone";
 
+/** Etapas possíveis da jornada pública de agendamento. */
 type Step = "service" | "professional" | "time" | "customer" | "review" | "success";
 const STEPS: Step[] = ["service", "professional", "time", "customer", "review"];
 const STEP_LABELS = ["Servico", "Profissional", "Horario", "Seus dados", "Revisao"];
+/** Converte uma data em chave ISO sem horário. */
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 
+/** Jornada pública que conduz o cliente da escolha à confirmação da reserva. */
 const PublicSchedulerPage = () => {
   const application = useApplication();
   const { businessId: routeBusinessId } = useParams();

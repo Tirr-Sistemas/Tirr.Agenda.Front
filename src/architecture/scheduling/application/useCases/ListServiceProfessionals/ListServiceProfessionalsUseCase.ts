@@ -1,2 +1,3 @@
 import type { PublicBookingGateway } from "../../ports/PublicBookingGateway"; import type { ListServiceProfessionalsCommand } from "./ListServiceProfessionalsCommand"; import type { ListServiceProfessionalsResult } from "./ListServiceProfessionalsResult";
+/** Lista profissionais disponíveis para executar determinado serviço. */
 export class ListServiceProfessionalsUseCase { public constructor(private readonly gateway: PublicBookingGateway) {} public execute(command: ListServiceProfessionalsCommand): Promise<ListServiceProfessionalsResult> { return this.gateway.listProfessionals(command.businessId, command.serviceId); } }

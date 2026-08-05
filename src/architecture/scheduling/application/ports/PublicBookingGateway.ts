@@ -1,6 +1,6 @@
 import type { AvailableTimeSlot, BookableService, CreatePublicBookingInput, PublicBusiness, ScheduledAppointment, ServiceProfessional } from "../dtos/PublicBookingDtos";
 
-/** Boundary for the public scheduling API. */
+/** Porta de saída para consultas e comandos da agenda pública. */
 export interface PublicBookingGateway {
   health(): Promise<void>;
   getBusiness(businessId: string): Promise<PublicBusiness>;

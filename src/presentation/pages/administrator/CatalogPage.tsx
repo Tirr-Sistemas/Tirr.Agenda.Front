@@ -14,6 +14,7 @@ type Tab = "services" | "categories";
 const EMPTY_SERVICE = { id: "", serviceCategoryId: "", name: "", description: "", durationInMinutes: 30, price: 0, isActive: true };
 const EMPTY_CATEGORY = { id: "", name: "", description: "", isActive: true };
 
+/** CRUD do catálogo de serviços e categorias do estabelecimento. */
 const CatalogPage = () => {
   const application = useApplication();
   const confirm = useConfirm();

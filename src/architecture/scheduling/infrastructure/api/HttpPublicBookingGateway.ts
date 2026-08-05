@@ -13,7 +13,7 @@ function professional(value: Record<string, unknown>): ServiceProfessional { ret
 function slot(value: Record<string, unknown>): AvailableTimeSlot { return { startsAtUtc: text(value.startsAtUtc), endsAtUtc: text(value.endsAtUtc) }; }
 function appointment(value: unknown): ScheduledAppointment { const item = object(value); return { appointmentId: text(item.appointmentId), customerId: text(item.customerId), startsAtUtc: text(item.startsAtUtc), endsAtUtc: text(item.endsAtUtc), price: number(item.price), status: text(item.status) }; }
 
-/** Axios adapter that validates untrusted HTTP responses before exposing DTOs. */
+/** Adaptador Axios que valida respostas externas antes de expor DTOs de agenda. */
 export class HttpPublicBookingGateway implements PublicBookingGateway {
   public constructor(private readonly http: AxiosInstance) {}
   public async health(): Promise<void> { await this.http.get<unknown>("/public/health"); }

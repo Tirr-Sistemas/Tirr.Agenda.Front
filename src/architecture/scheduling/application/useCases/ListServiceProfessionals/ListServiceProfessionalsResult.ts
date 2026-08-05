@@ -1,1 +1,3 @@
-import type { ServiceProfessional } from "../../dtos/PublicBookingDtos"; export type ListServiceProfessionalsResult = ServiceProfessional[];
+import type { ServiceProfessional } from "../../dtos/PublicBookingDtos";
+/** Profissionais habilitados para o serviço solicitado. */
+export type ListServiceProfessionalsResult = ServiceProfessional[];

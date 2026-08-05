@@ -4,7 +4,9 @@ import Button from "@/presentation/components/Button";
 import Icon from "@/presentation/icons/Icon";
 import { ConfirmContext, type ConfirmOptions } from "@/presentation/providers/ConfirmContext";
 
+/** Confirmação aberta e função usada para resolver sua Promise. */
 type PendingConfirmation = ConfirmOptions & { readonly resolve: (confirmed: boolean) => void };
+/** Orquestra confirmações acessíveis e devolve o foco ao acionador. */
 export const ConfirmProvider = ({ children }: { readonly children: ReactNode }) => {
   const [pending, setPending] = useState<PendingConfirmation | null>(null);
   const titleId = useId();

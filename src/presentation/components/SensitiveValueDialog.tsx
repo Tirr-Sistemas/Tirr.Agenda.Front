@@ -3,12 +3,14 @@ import { type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import Button from "@/presentation/components/Button";
 import Icon from "@/presentation/icons/Icon";
 
+/** Propriedades do diálogo que revela uma credencial somente uma vez. */
 type SensitiveValueDialogProps = {
   readonly open: boolean;
   readonly value: string;
   readonly onClose: () => void;
 };
 
+/** Exibe, copia e protege o foco durante a apresentação de um valor sensível. */
 const SensitiveValueDialog = ({ open, value, onClose }: SensitiveValueDialogProps) => {
   const [copied, setCopied] = useState(false);
   const titleId = useId();

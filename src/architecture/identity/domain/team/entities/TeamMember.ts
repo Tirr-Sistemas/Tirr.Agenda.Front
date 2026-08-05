@@ -1,8 +1,9 @@
 import { normalizeMemberRoles, type MemberRole } from "../valueObjects/MemberRole";
 
+/** Estado necessário para reconstruir um membro da equipe. */
 export interface TeamMemberProperties { readonly id: string; readonly roles: readonly MemberRole[]; }
 
-/** Domain representation of a company member and its local role invariants. */
+/** Representa um membro da empresa e protege as invariantes dos seus papéis. */
 export class TeamMember {
   readonly #id: string;
   #roles: readonly MemberRole[];

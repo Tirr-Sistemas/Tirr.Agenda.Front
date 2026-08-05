@@ -1,5 +1,6 @@
 import type { FirstAccessInput, SessionSnapshot } from "../../dtos/AuthDtos";
 
+/** Comandos aceitos pelo caso de uso unificado de autenticação. */
 export type AuthenticationCommand =
   | { readonly type: "register"; readonly input: FirstAccessInput }
   | { readonly type: "login"; readonly email: string; readonly password: string }

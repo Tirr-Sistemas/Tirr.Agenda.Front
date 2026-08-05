@@ -1,6 +1,6 @@
 import type { BusinessContext, FirstAccessInput, IdentityProfile, TokenResponse, UserBusiness } from "../dtos/AuthDtos";
 
-/** Port for all remote authentication and identity operations. */
+/** Porta de saída para autenticação remota, perfil e seleção de empresa. */
 export interface AuthenticationGateway {
   register(input: FirstAccessInput): Promise<void>;
   login(email: string, password: string): Promise<TokenResponse>;

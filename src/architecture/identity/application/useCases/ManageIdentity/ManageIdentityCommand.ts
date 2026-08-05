@@ -1,3 +1,4 @@
+/** Comandos aceitos pelo gerenciamento administrativo de identidades. */
 export type ManageIdentityCommand =
   | { readonly type: "findByEmail"; readonly email: string }
   | { readonly type: "createUser"; readonly fullName: string; readonly email: string; readonly password: string }

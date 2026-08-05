@@ -11,7 +11,7 @@ function parseMember(value: unknown): TeamMember {
   return new TeamMember({ id: item.identityUserId, roles: item.roles });
 }
 
-/** HTTP implementation; untrusted responses are parsed before reaching the domain. */
+/** Repositório HTTP que valida respostas externas antes de criar entidades de equipe. */
 export class HttpTeamMemberRepository implements TeamMemberRepository {
   public constructor(private readonly http: AxiosInstance) {}
   public async findById(companyId: string, memberId: string): Promise<TeamMember | null> { return (await this.list(companyId)).find((member) => member.id === memberId) ?? null; }

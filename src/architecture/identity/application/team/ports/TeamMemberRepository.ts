@@ -1,6 +1,6 @@
 import type { TeamMember } from "@/identity/domain/team/entities/TeamMember";
 
-/** Persistence contract used by team use cases. */
+/** Contrato de persistência utilizado pelos casos de uso de equipe. */
 export interface TeamMemberRepository {
   findById(companyId: string, memberId: string): Promise<TeamMember | null>;
   list(companyId: string): Promise<readonly TeamMember[]>;

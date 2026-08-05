@@ -14,6 +14,7 @@ import { useConfirm } from "@/presentation/hooks/useConfirm";
 const ROLES = ["Owner", "Administrator", "Receptionist", "Professional"] as const;
 const EMPTY_PROFESSIONAL = { id: "", displayName: "", businessMembershipId: "", isActive: true };
 
+/** Gerencia profissionais, acessos, papéis e vínculos de serviço da equipe. */
 const TeamPageV2 = () => {
   const application = useApplication();
   const confirm = useConfirm();

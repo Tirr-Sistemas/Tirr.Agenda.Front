@@ -10,7 +10,7 @@ import type { AuthenticationUseCase } from "@/identity/application/useCases/Auth
 import type { AdministrationUseCase } from "@/administration/application/useCases/Administration/AdministrationUseCase";
 import type { ManageIdentityUseCase } from "@/identity/application/useCases/ManageIdentity/ManageIdentityUseCase";
 
-/** Public application operations available to React. */
+/** Catálogo dos casos de uso disponibilizados à camada de apresentação. */
 export interface ApplicationDependencies {
   readonly team: { readonly updateMemberRoles: UpdateMemberRolesUseCase };
   readonly booking: {

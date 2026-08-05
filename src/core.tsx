@@ -1,3 +1,9 @@
+/**
+ * Ponto de composição e inicialização da aplicação React.
+ *
+ * Configura os casos de uso, autenticação, renovação de sessão, providers e
+ * roteamento antes de montar a árvore no elemento `#root`.
+ */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 

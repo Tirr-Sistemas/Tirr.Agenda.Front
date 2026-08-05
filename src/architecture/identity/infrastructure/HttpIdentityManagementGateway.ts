@@ -5,6 +5,7 @@ import { apiHttp } from "@/shared-architecture/http/ApiHttpClient";
 
 const business = (businessId: string): string => `/businesses/${businessId}`;
 
+/** Adaptador HTTP para gerenciamento de usuários, membros e chaves de API. */
 export class HttpIdentityManagementGateway implements IdentityManagementGateway {
   public readonly api = {
     findByEmail: async (email: string): Promise<IdentityUser> => (await apiHttp.get<IdentityUser>("/users/by-email", { params: { email } })).data,

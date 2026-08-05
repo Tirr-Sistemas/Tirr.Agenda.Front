@@ -13,6 +13,7 @@ let accessToken: string | null = null;
 let refreshHandler: (() => Promise<string | null>) | null = null;
 let refreshPromise: Promise<string | null> | null = null;
 
+/** Erro HTTP normalizado para consumo uniforme pelos casos de uso e pela UI. */
 export class ApiError extends Error {
   public constructor(
     message: string,
@@ -24,12 +25,27 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Atualiza o token enviado nas requisições autenticadas.
+ *
+ * @param {string|null} token - Token atual ou `null` para remover a autenticação.
+ * @returns {void}
+ */
 export const setApiAccessToken = (token: string | null): void => { accessToken = token; };
+/**
+ * Registra a função responsável por renovar uma sessão expirada.
+ *
+ * @param {Function} handler - Função que devolve o novo token ou `null`.
+ * @returns {void}
+ */
 export const setApiRefreshHandler = (handler: () => Promise<string | null>): void => { refreshHandler = handler; };
 
+/** Cliente HTTP para endpoints que não exigem autenticação. */
 export const publicHttp = axios.create({ baseURL, timeout: 20_000 });
+/** Cliente HTTP autenticado com renovação única e automática após resposta 401. */
 export const apiHttp = axios.create({ baseURL, timeout: 20_000 });
 
+/** Converte erros do Axios e respostas Problem Details em um erro da aplicação. */
 const normalizeError = (error: AxiosError<ApiProblem>): ApiError => {
   const problem = error.response?.data;
   return new ApiError(

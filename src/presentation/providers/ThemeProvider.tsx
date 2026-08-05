@@ -9,6 +9,7 @@ const getInitialTheme = (): Theme => {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
+/** Persiste e aplica o tema visual no elemento raiz do documento. */
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 

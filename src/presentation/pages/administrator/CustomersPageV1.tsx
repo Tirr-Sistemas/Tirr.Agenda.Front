@@ -12,6 +12,7 @@ import { useConfirm } from "@/presentation/hooks/useConfirm";
 
 const EMPTY_FORM = { id: "", fullName: "", email: "", phone: "", isActive: true };
 
+/** Lista e mantém os clientes usados nos agendamentos administrativos. */
 const CustomersPageV1 = () => {
   const application = useApplication();
   const confirm = useConfirm();

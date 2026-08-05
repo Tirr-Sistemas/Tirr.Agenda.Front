@@ -1,8 +1,10 @@
 import Icon, { type IconName } from "@/presentation/icons/Icon";
 import Button from "./Button";
 
+/** Estados assíncronos suportados pelo componente de feedback. */
 type AsyncStateKind = "loading" | "error" | "empty" | "success";
 
+/** Propriedades do feedback assíncrono reutilizável. */
 type AsyncStateProps = {
   kind: AsyncStateKind;
   title: string;
@@ -18,6 +20,7 @@ const ICONS: Record<AsyncStateKind, IconName> = {
   success: "check2-circle",
 };
 
+/** Exibe loading, erro, vazio ou sucesso com semântica e ação opcionais. */
 const AsyncState = ({ kind, title, description, actionLabel, onAction }: AsyncStateProps) => (
   <section
     className={`tirr__scheduler-async-state is-${kind}`}

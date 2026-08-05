@@ -1,5 +1,12 @@
 import type { Appointment, AppointmentStatus, AvailabilityException, AvailabilityExceptionType, AvailabilityRule, BusinessProfile, Customer, CustomerSummary, OperatingHoursDay, Professional, ProfessionalService, ScheduleAppointmentInput, Service, ServiceCategory, ServiceSummary } from "../dtos";
 
+/**
+ * Porta de saída para todas as operações do contexto administrativo.
+ *
+ * A aplicação depende deste contrato e desconhece o transporte utilizado pela
+ * implementação de infraestrutura.
+ */
+
 export interface AdministrationGateway {
   readonly appointments: { day(businessId: string, date: string): Promise<Appointment[]>; week(businessId: string, weekStartsOn: string): Promise<Appointment[]>; month(businessId: string, year: number, month: number): Promise<Appointment[]>; create(businessId: string, input: ScheduleAppointmentInput): Promise<unknown>; updateStatus(businessId: string, appointmentId: string, status: AppointmentStatus, reason?: string): Promise<unknown>; reschedule(businessId: string, appointmentId: string, startsAtUtc: string): Promise<unknown>; };
   readonly overview: { profile(businessId: string): Promise<BusinessProfile>; operatingHours(businessId: string): Promise<OperatingHoursDay[]>; customers(businessId: string, includeInactive?: boolean): Promise<CustomerSummary[]>; services(businessId: string, includeInactive?: boolean): Promise<ServiceSummary[]>; updateProfile(businessId: string, input: Pick<BusinessProfile, "name" | "legalName" | "documentNumber" | "slug" | "timeZone">): Promise<BusinessProfile>; replaceOperatingHours(businessId: string, days: OperatingHoursDay[]): Promise<unknown>; };

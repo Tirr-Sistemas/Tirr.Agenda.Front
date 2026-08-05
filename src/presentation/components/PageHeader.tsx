@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+/** Conteúdo e ações aceitos pelo cabeçalho de página. */
 type PageHeaderProps = {
   readonly eyebrow?: string;
   readonly title: string;
@@ -7,6 +8,7 @@ type PageHeaderProps = {
   readonly actions?: ReactNode;
 };
 
+/** Padroniza título, descrição, contexto e ações principais de uma página. */
 const PageHeader = ({ eyebrow, title, description, actions }: PageHeaderProps) => (
   <header className="tirr-page-header">
     <div>

@@ -4,6 +4,7 @@ import { apiHttp, publicHttp, setApiAccessToken } from "@/shared-architecture/ht
 
 type UserBusinessesResponse = { readonly businesses: UserBusiness[] };
 
+/** Adaptador HTTP para autenticação, perfil e contexto do estabelecimento. */
 export class HttpAuthenticationGateway implements AuthenticationGateway {
   public async register(input: FirstAccessInput): Promise<void> { await publicHttp.post("/public/auth/register", input); }
   public async login(email: string, password: string): Promise<TokenResponse> { return (await publicHttp.post<TokenResponse>("/public/auth/login", { email, password })).data; }

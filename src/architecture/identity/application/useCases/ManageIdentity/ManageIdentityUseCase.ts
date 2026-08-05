@@ -3,6 +3,11 @@ import type { ApiKeyCreated, ApiKeyItem, BusinessMember, BusinessMemberListItem,
 import type { IdentityManagementGateway } from "../../ports/IdentityManagementGateway";
 import type { ManageIdentityCommand } from "./ManageIdentityCommand";
 import type { ManageIdentityResult } from "./ManageIdentityResult";
+/**
+ * Coordena operações administrativas de usuários, membros e chaves de API.
+ *
+ * @param {IdentityManagementGateway} gateway - Porta utilizada para persistir e consultar identidades.
+ */
 export class ManageIdentityUseCase {
   public constructor(private readonly gateway: IdentityManagementGateway) {}
   public execute(command: Extract<ManageIdentityCommand, { type: "findByEmail" }>): Promise<IdentityUser>;
