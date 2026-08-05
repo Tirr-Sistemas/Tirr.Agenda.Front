@@ -1,5 +1,9 @@
 # Patterns
 
+## Link publico da agenda
+
+A URL canonica do agendamento e `/agendar/:businessId`. O painel gera esse endereco com `publicSchedulerUrl`, usando a origem atual da aplicacao, e oferece a acao `Copiar link da agenda` junto aos dados da empresa ativa.
+
 ## Nomenclatura
 
 O codigo usa classes proprietarias com prefixo `tirr__`, em conjunto com utilitarios Bootstrap.

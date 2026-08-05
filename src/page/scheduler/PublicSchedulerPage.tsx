@@ -14,7 +14,8 @@ const STEP_LABELS = ["Servico", "Profissional", "Horario", "Seus dados", "Revisa
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 
 const PublicSchedulerPage = () => {
-  const { businessId = "" } = useParams();
+  const { businessId: routeBusinessId } = useParams();
+  const businessId = routeBusinessId?.trim() ?? "";
   const [step, setStep] = useState<Step>("service");
   const [services, setServices] = useState<BookableService[]>([]);
   const [business, setBusiness] = useState<PublicBusiness | null>(null);

@@ -172,6 +172,8 @@
 .tirr__service-assignment-list strong { font-size: 13px; }
 .tirr__service-assignment-list small { color: var(--color-gray-medium); font-size: 11px; }
 .tirr__section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tirr__section-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.tirr__section-actions .btn { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .tirr__readonly-value { display: grid; gap: 3px; padding: 12px; border-radius: 8px; background: var(--bg-color); }
 .tirr__readonly-value small { color: var(--color-gray-medium); font-size: 10px; }
 .tirr__readonly-value strong { font-size: 12px; }
@@ -243,6 +245,9 @@
   .tirr__member-row > select, .tirr__member-row > .btn { grid-column: 1 / -1; grid-row: auto; width: 100%; }
   .tirr__member-candidate { align-items: flex-start; }
   .tirr__member-candidate .tirr__admin__status { align-self: center; }
+  .tirr__settings-grid .tirr__section-heading { align-items: flex-start; flex-wrap: wrap; }
+  .tirr__settings-grid .tirr__section-actions { width: 100%; justify-content: space-between; }
+  .tirr__settings-grid .tirr__section-actions .btn { flex: 1; justify-content: center; }
 }
 
 @media (min-width: 641px) and (max-width: 767px) {

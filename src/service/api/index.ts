@@ -10,6 +10,16 @@ import type {
 
 const business = (businessId: string) => `/businesses/${businessId}`;
 const publicBusiness = (businessId: string) => `/public/businesses/${businessId}`;
+const asTimeOnly = (value: string | null) => {
+  if (!value) return null;
+  const [hours = "00", minutes = "00", seconds = "00"] = value.split(":");
+  return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.slice(0, 2).padStart(2, "0")}`;
+};
+const withTimeOnlyRange = <T extends { startTime: string | null; endTime: string | null }>(input: T) => ({
+  ...input,
+  startTime: asTimeOnly(input.startTime),
+  endTime: asTimeOnly(input.endTime),
+});
 
 export const authApi = {
   register: (input: FirstAccessInput) => rawHttp.post<FirstAccessResult>("/public/auth/register", input).then((r) => r.data),
@@ -41,7 +51,13 @@ export const overviewApi = {
   customers: (businessId: string, includeInactive = true) => http.get<{ customers: CustomerSummary[] }>(`${business(businessId)}/customers`, { params: { includeInactive } }).then((r) => r.data.customers),
   services: (businessId: string, includeInactive = true) => http.get<{ services: ServiceSummary[] }>(`${business(businessId)}/services`, { params: { includeInactive } }).then((r) => r.data.services),
   updateProfile: (businessId: string, input: Pick<BusinessProfile, "name" | "legalName" | "documentNumber" | "slug" | "timeZone">) => http.put<BusinessProfile>(`${business(businessId)}/profile`, input).then((r) => r.data),
-  replaceOperatingHours: (businessId: string, days: OperatingHoursDay[]) => http.put(`${business(businessId)}/operating-hours`, { days }),
+  replaceOperatingHours: (businessId: string, days: OperatingHoursDay[]) => http.put(`${business(businessId)}/operating-hours`, {
+    days: days.map((day) => ({
+      ...day,
+      opensAt: day.isOperating ? asTimeOnly(day.opensAt) : null,
+      closesAt: day.isOperating ? asTimeOnly(day.closesAt) : null,
+    })),
+  }),
 };
 
 export const appointmentsApi = {
@@ -89,13 +105,13 @@ export const professionalsApi = {
 export const availabilityApi = {
   rules: (businessId: string, professionalId?: string, includeInactive = true) => http.get<{ rules: AvailabilityRule[] }>(`${business(businessId)}/availability-rules`, { params: { professionalId, includeInactive } }).then((r) => r.data.rules),
   rule: (businessId: string, id: string) => http.get<AvailabilityRule>(`${business(businessId)}/availability-rules/${id}`).then((r) => r.data),
-  createRule: (businessId: string, input: Pick<AvailabilityRule, "professionalId" | "dayOfWeek" | "startTime" | "endTime">) => http.post<AvailabilityRule>(`${business(businessId)}/availability-rules`, input).then((r) => r.data),
-  updateRule: (businessId: string, id: string, input: Pick<AvailabilityRule, "dayOfWeek" | "startTime" | "endTime" | "isActive">) => http.put<AvailabilityRule>(`${business(businessId)}/availability-rules/${id}`, input).then((r) => r.data),
+  createRule: (businessId: string, input: Pick<AvailabilityRule, "professionalId" | "dayOfWeek" | "startTime" | "endTime">) => http.post<AvailabilityRule>(`${business(businessId)}/availability-rules`, withTimeOnlyRange(input)).then((r) => r.data),
+  updateRule: (businessId: string, id: string, input: Pick<AvailabilityRule, "dayOfWeek" | "startTime" | "endTime" | "isActive">) => http.put<AvailabilityRule>(`${business(businessId)}/availability-rules/${id}`, withTimeOnlyRange(input)).then((r) => r.data),
   removeRule: (businessId: string, id: string) => http.delete(`${business(businessId)}/availability-rules/${id}`),
   exceptions: (businessId: string, professionalId?: string) => http.get<{ exceptions: AvailabilityException[] }>(`${business(businessId)}/availability-exceptions`, { params: { professionalId } }).then((r) => r.data.exceptions),
   exception: (businessId: string, id: string) => http.get<AvailabilityException>(`${business(businessId)}/availability-exceptions/${id}`).then((r) => r.data),
-  createException: (businessId: string, input: { professionalId: string; date: string; type: AvailabilityExceptionType; startTime: string | null; endTime: string | null; reason: string | null }) => http.post<AvailabilityException>(`${business(businessId)}/availability-exceptions`, input).then((r) => r.data),
-  updateException: (businessId: string, id: string, input: Omit<AvailabilityException, "id" | "professionalId">) => http.put<AvailabilityException>(`${business(businessId)}/availability-exceptions/${id}`, input).then((r) => r.data),
+  createException: (businessId: string, input: { professionalId: string; date: string; type: AvailabilityExceptionType; startTime: string | null; endTime: string | null; reason: string | null }) => http.post<AvailabilityException>(`${business(businessId)}/availability-exceptions`, withTimeOnlyRange(input)).then((r) => r.data),
+  updateException: (businessId: string, id: string, input: Omit<AvailabilityException, "id" | "professionalId">) => http.put<AvailabilityException>(`${business(businessId)}/availability-exceptions/${id}`, withTimeOnlyRange(input)).then((r) => r.data),
   removeException: (businessId: string, id: string) => http.delete(`${business(businessId)}/availability-exceptions/${id}`),
 };
 

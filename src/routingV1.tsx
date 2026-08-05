@@ -10,6 +10,7 @@ import AsyncState from "@/shared/AsyncState";
 import RequireAuth from "@/shared/RequireAuth";
 import SchedulerLayout from "@/shared/SchedulerLayout";
 import { publicSchedulingApi } from "@/service/api";
+import { PUBLIC_SCHEDULER_ROUTE, publicSchedulerPath } from "@/utils/publicSchedulerUrl";
 
 const AgendaPage = lazy(() => import("@/page/administrator/AgendaPageV2"));
 const AvailabilityPage = lazy(() => import("@/page/administrator/AvailabilityPage"));
@@ -31,11 +32,16 @@ const PublicSlugEntry = () => {
 
   useEffect(() => {
     publicSchedulingApi.businessBySlug(slug)
-      .then((item) => navigate(`/agendar/${item.businessId}`, { replace: true }))
+      .then((item) => navigate(publicSchedulerPath(item.businessId), { replace: true }))
       .catch((caught) => setError(caught instanceof Error ? caught.message : "Empresa nao encontrada."));
   }, [navigate, slug]);
 
   return <main className="tirr__session-loading"><AsyncState kind={error ? "error" : "loading"} title={error ? "Nao foi possivel abrir a agenda" : "Abrindo agenda"} description={error || "Identificando a empresa..."} /></main>;
+};
+
+const PublicSchedulerEntry = () => {
+  const { businessId = "" } = useParams();
+  return <PublicSchedulerPage key={businessId} />;
 };
 
 const PermissionRoute = ({ permission }: { permission: string }) => {
@@ -74,7 +80,7 @@ const PageRouteLoading = () => <div className="tirr__admin__page"><div className
 const RoutingV1 = () => <Routes>
   <Route path="/login" element={<AccessPage />} />
   <Route element={<SchedulerLayout />}>
-    <Route path="/agendar/:businessId" element={<PublicSchedulerPage />} />
+    <Route path={PUBLIC_SCHEDULER_ROUTE} element={<PublicSchedulerEntry />} />
     <Route path="/agendar/empresa/:slug" element={<PublicSlugEntry />} />
   </Route>
   <Route path="/" element={<Navigate to="/login" replace />} />
