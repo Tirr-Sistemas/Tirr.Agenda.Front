@@ -28,6 +28,12 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
+      "@/core/*": ["src/core/*"],
+      "@/administration/*": ["src/architecture/administration/*"],
+      "@/scheduling/*": ["src/architecture/scheduling/*"],
+      "@/identity/*": ["src/architecture/identity/*"],
+      "@/shared-architecture/*": ["src/architecture/shared/*"],
+      "@/presentation/*": ["src/presentation/*"],
       "@/*": [
         "src/*"
       ]

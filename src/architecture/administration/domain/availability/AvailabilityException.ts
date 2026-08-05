@@ -1,0 +1,3 @@
+import { validateAvailabilityException } from "./policies/AvailabilityExceptionPolicy";
+export type AvailabilityExceptionType = "Unavailable" | "ExtraAvailability";
+export class AvailabilityException { public constructor(readonly professionalId: string, readonly date: string, readonly type: AvailabilityExceptionType, readonly start: string | null, readonly end: string | null) { if (type === "ExtraAvailability" && validateAvailabilityException(start, end) === null) throw new Error("Disponibilidade extra exige um intervalo."); if (type === "Unavailable") validateAvailabilityException(start, end); } }

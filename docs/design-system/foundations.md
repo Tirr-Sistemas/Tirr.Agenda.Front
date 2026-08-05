@@ -1,70 +1,42 @@
-# Design System Foundations
-
-## Escopo analisado
-
-Esta documentacao registra somente padroes presentes no codigo. Foram analisados `src/shared`, `src/page`, `src/styles`, `src/auth`, `src/service/api` e `src/routingV1.tsx`.
-
-O projeto nao possui `src/components`, `src/app` ou `pages`. O runtime carregado por `src/core.tsx` usa `routingV1.tsx`; arquivos de agenda e admin anteriores continuam no repositorio como legado.
+# Fundamentos do design system
 
 ## Stack visual
 
 - React, TypeScript e Vite.
-- Bootstrap 5 e Bootstrap Icons.
-- React Big Calendar e Moment na agenda administrativa.
-- Zustand para sessao, permissoes e empresa ativa.
-- Poppins como familia global.
+- Bootstrap 5 apenas como base de grid e controles.
+- Ícones SVG locais, tipados e independentes de fonte.
+- React Big Calendar na agenda administrativa.
+- Poppins como família global, com fallbacks de sistema.
 
-## Principios encontrados
+## Arquivos canônicos
 
-- Superficies claras sobre `--bg-color`.
-- Paineis brancos com borda discreta e raio maximo de `8px`.
-- Amarelo primario reservado para acao, foco, selecao e destaque.
-- Navegacao lateral recolhivel no desktop e inferior no mobile.
-- Titulo e descricao da rota permanecem no topbar fixo.
-- Admin denso e operacional; agenda publica guiada em cinco etapas.
-- Empresa ativa faz parte da rota, do JWT e de toda requisicao administrativa.
-
-## Tokens identificados
-
-As foundations ficam em `src/styles/global.css`; os aliases semanticos e temas ficam em `src/styles/themes.css`:
-
-- Cores: `--default-text-color`, `--bg-color`, `--color-primary`, `--color-primary-hover`, `--color-primary-active`, `--color-white`, `--color-gray-light`, `--color-gray-medium`, `--color-gray-lighter`, `--color-text-dark`.
-- Tipografia: `--default-font-family`.
-- Aliases Bootstrap: `--bs-primary`, `--bs-body-color`, `--bs-body-bg`, `--bs-border-color`, `--bs-light`, `--bs-dark`.
-- Espacamento: `--space-1` a `--space-6`.
-- Forma: `--radius-control`, `--radius-surface` e `--radius-pill`.
-- Elevacao e movimento: `--shadow-popover`, `--shadow-drawer` e `--motion-fast`.
-- Superficies semanticas: `--surface-page`, `--surface-panel`, `--surface-muted` e `--surface-elevated`.
-
-Espacamentos, sombras e raios ainda sao valores locais de componente e estao mapeados em `spacing.md`.
-
-## Inventario por dominio
-
-| Dominio | Recursos ativos |
+| Arquivo | Responsabilidade |
 | --- | --- |
-| Acesso | Login e cadastro de primeiro acesso |
-| Agenda publica | Servico, profissional, data/horario, cliente, revisao e sucesso |
-| Agenda administrativa | Dia, semana, mes, criacao, status e reagendamento |
-| Clientes | Lista, criacao, edicao, ativacao e exclusao |
-| Catalogo | Servicos e categorias |
-| Equipe | Profissionais, membros, papeis, status e servicos atendidos |
-| Disponibilidade | Regras semanais e excecoes |
-| Configuracoes | Empresa, expediente, perfil, seguranca e chaves de API |
+| `src/presentation/styles/foundations.css` | cores, superfícies, tipografia, espaçamento, raios, sombras e movimento |
+| `src/presentation/styles/modern.css` | componentes, shell, login, agendamento e responsividade |
+| `src/presentation/styles/themes.css` | compatibilidade de tema das telas existentes |
+| `src/presentation/styles/calendar.css` | adaptação isolada do calendário de terceiros |
 
-## Inconsistencias encontradas
+Novos estilos devem consumir os tokens semânticos de `foundations.css`. Cores literais ficam restritas à declaração da paleta; componentes usam `--surface-*`, `--text-*`, `--border-*` e tokens de estado.
 
-- Duas geracoes de paginas e componentes coexistem; o runtime usa as paginas `V1`/`V2`.
-- Componentes antigos continuam no repositorio, mas nao participam de `routingV1.tsx`.
-- Parte dos estilos de pagina ainda permanece em `global.css` e `app-v1.css`; `themes.css` funciona como camada semantica final.
-- Alguns arquivos legados apresentam texto com codificacao incorreta e namespaces TypeScript antigos.
-- Icones SVG legados coexistem com Bootstrap Icons; as telas ativas usam Bootstrap Icons.
+## Princípios
 
-## Padronizacoes sugeridas
+- Amarelo identifica ação primária, seleção e foco; texto sobre amarelo permanece escuro.
+- Superfícies usam hierarquia por borda, espaçamento e sombra leve.
+- Raios seguem três níveis: controles, superfícies e diálogos.
+- Alvos interativos têm no mínimo 42 px no desktop e 44 px no mobile.
+- Navegação lateral recolhível no desktop e inferior no mobile.
+- O tema escuro altera tokens, sem duplicar regras de componente.
+- Movimento é curto e respeita `prefers-reduced-motion`.
 
-- Migrar gradualmente regras de pagina ainda presentes em `global.css` para modulos por dominio.
-- Remover a geracao legada somente apos migrar seus testes e imports.
-- Reutilizar `Button`, `AdminDrawer`, `AdminTabs`, `PageFeedback` e `AdminEmptyRow` em novos CRUDs.
+## Escalas principais
+
+- Espaçamento: `--space-1` a `--space-9` (4 a 48 px).
+- Raios: `--radius-control`, `--radius-surface`, `--radius-large` e `--radius-pill`.
+- Elevação: `--shadow-xs`, `--shadow-sm`, `--shadow-md`, `--shadow-popover` e `--shadow-drawer`.
+- Tipografia: caption, meta, small, body, card title, section title, page title, flow title e display.
+- Estados: success, warning, danger e info, cada um com cor forte e superfície suave.
 
 ## Temas
 
-`ThemeProvider` aplica `data-theme="light|dark"` no elemento `html`. A escolha e persistida em `localStorage` e, no primeiro acesso, parte de `prefers-color-scheme`. O seletor esta disponivel no login, no agendamento publico e no topbar administrativo.
+`ThemeProvider` aplica `data-theme="light|dark"` ao elemento `html`. A preferência é persistida e, no primeiro acesso, respeita `prefers-color-scheme`. Login, agenda pública e área administrativa expõem o mesmo controle de tema.

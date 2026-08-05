@@ -2,7 +2,7 @@
 
 ## Fonte da verdade
 
-Os tokens abaixo sao os valores declarados em `src/styles/global.css`. As telas novas da agenda usam apenas esses tokens ou aliases Bootstrap configurados no mesmo arquivo.
+Os tokens abaixo sao os valores declarados em `src/presentation/styles/global.css`. As telas novas da agenda usam apenas esses tokens ou aliases Bootstrap configurados no mesmo arquivo.
 
 | Token | Valor | Uso atual |
 | --- | --- | --- |

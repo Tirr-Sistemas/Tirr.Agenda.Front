@@ -2,7 +2,7 @@
 
 ## Escopo
 
-O frontend usa `VITE_API_BASE_URL` e o cliente tipado em `src/service/api`. As 71 operacoes HTTP expostas pelo Swagger apos a evolucao do backend possuem metodo cliente e fluxo associado.
+O frontend usa `VITE_API_BASE_URL` e clientes HTTP implementados nas infraestruturas de `administration`, `scheduling` e `identity`, com configuração transversal em `src/architecture/shared/http`. As operações do backend são acessadas pela UI exclusivamente por casos de uso.
 
 | Dominio | Operacoes | Experiencia |
 | --- | ---: | --- |

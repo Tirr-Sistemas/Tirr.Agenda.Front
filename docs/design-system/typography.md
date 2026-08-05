@@ -5,7 +5,7 @@
 - Familia global: `Poppins`.
 - Token: `--default-font-family`.
 - Alias Bootstrap: `--bs-font-sans-serif`.
-- Arquivo de fonte: `src/styles/font.css`, com pesos de `100` a `900`.
+- Arquivo de fonte: `src/presentation/styles/font.css`, com pesos de `100` a `900`.
 
 ## Hierarquia atual
 
@@ -41,6 +41,6 @@ As telas ativas usam tamanhos locais nos componentes e utilitarios Bootstrap pon
 ## Observacoes
 
 - Nao ha escala semantica global formal para heading, body e caption.
-- Ha mistura de utilitarios Bootstrap e `font-size-*` proprietario nas telas legadas.
+- Ha mistura de utilitarios Bootstrap e `font-size-*` proprietario em algumas telas.
 - Novas telas devem reutilizar os papeis tipograficos encontrados antes de adicionar outro tamanho.
 - Texto secundario deve usar `--text-secondary`; `--color-gray-medium` nao deve ser aplicado diretamente a novos metadados.

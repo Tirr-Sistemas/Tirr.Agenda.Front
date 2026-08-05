@@ -15,6 +15,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/core': path.resolve(__dirname, './src/core'),
+      '@/administration': path.resolve(__dirname, './src/architecture/administration'),
+      '@/scheduling': path.resolve(__dirname, './src/architecture/scheduling'),
+      '@/identity': path.resolve(__dirname, './src/architecture/identity'),
+      '@/shared-architecture': path.resolve(__dirname, './src/architecture/shared'),
+      '@/presentation': path.resolve(__dirname, './src/presentation'),
       '@': path.resolve(__dirname, './src'),
     },
   },
