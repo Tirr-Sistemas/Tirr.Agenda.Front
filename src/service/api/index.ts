@@ -122,7 +122,8 @@ export const identityApi = {
   members: (businessId: string) => http.get<{ members: BusinessMemberListItem[] }>(`${business(businessId)}/members`).then((r) => r.data.members),
   replaceRoles: (businessId: string, identityUserId: string, roles: string[]) => http.put(`${business(businessId)}/members/${identityUserId}/roles`, { roles }),
   setMemberStatus: (businessId: string, identityUserId: string, isActive: boolean) => http.patch(`${business(businessId)}/members/${identityUserId}/status`, { isActive }),
-  apiKeys: (businessId: string) => http.get<{ apiKeys: ApiKeyItem[] }>(`${business(businessId)}/api-keys`).then((r) => r.data.apiKeys),
+  apiKeys: (businessId: string) => http.get<ApiKeyItem[]>(`${business(businessId)}/api-keys`).then((r) =>
+    Array.isArray(r.data) ? r.data.map((item) => ({ ...item, permissions: item.permissions ?? [] })) : []),
   createApiKey: (businessId: string, name: string, permissions: string[], expiresAtUtc: string | null) => http.post<ApiKeyCreated>(`${business(businessId)}/api-keys`, { name, permissions, expiresAtUtc }).then((r) => r.data),
   rotateApiKey: (businessId: string, id: string) => http.post<ApiKeyCreated>(`${business(businessId)}/api-keys/${id}/rotate`).then((r) => r.data),
   revokeApiKey: (businessId: string, id: string) => http.delete(`${business(businessId)}/api-keys/${id}`),

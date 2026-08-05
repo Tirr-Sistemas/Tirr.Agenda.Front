@@ -1,6 +1,6 @@
 import MockAdapter from "axios-mock-adapter";
 
-import { authApi, availabilityApi, overviewApi, publicSchedulingApi } from ".";
+import { authApi, availabilityApi, identityApi, overviewApi, publicSchedulingApi } from ".";
 import { http, rawHttp, setApiAccessToken } from "./http";
 
 describe("typed API client", () => {
@@ -100,5 +100,23 @@ describe("typed API client", () => {
       endTime: "13:45",
       reason: "Almoco",
     });
+  });
+
+  it("reads API keys from the direct array returned by the API", async () => {
+    privateMock.onGet("/businesses/business-1/api-keys").reply(200, [{
+      id: "key-1",
+      name: "Integracao",
+      prefix: "tirr_test",
+      isActive: true,
+      expiresAtUtc: null,
+      revokedAtUtc: null,
+      lastUsedAtUtc: null,
+      createdAtUtc: "2026-08-04T12:00:00Z",
+      permissions: ["appointments.get"],
+    }]);
+
+    await expect(identityApi.apiKeys("business-1")).resolves.toEqual([
+      expect.objectContaining({ id: "key-1", permissions: ["appointments.get"] }),
+    ]);
   });
 });
