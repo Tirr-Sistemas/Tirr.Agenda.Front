@@ -178,7 +178,7 @@ const CustomersPage = () => {
         </div>
       )}
       <section className="tirr__admin__panel">
-        <div className="tirr__admin__panel-header tirr__admin__list-header">
+        <div className="tirr__admin__panel-header tirr__admin__list-header tirr__customers-header">
           <div>
             <p className="tirr__admin__overline">Base de relacionamento</p>
             <h2>Clientes</h2>
@@ -187,9 +187,11 @@ const CustomersPage = () => {
             <label className="tirr__admin__search">
               <Icon name="search" />
               <input
+                type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Buscar cliente"
+                aria-label="Buscar cliente"
               />
             </label>
             {canCreate && (

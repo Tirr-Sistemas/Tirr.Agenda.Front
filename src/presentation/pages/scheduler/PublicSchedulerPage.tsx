@@ -31,6 +31,21 @@ const STEP_LABELS = ["Servico", "Profissional", "Horario", "Seus dados", "Revisa
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 
 /**
+ * @description Exibe uma descrição útil e substitui valores compostos apenas por pontuação.
+ *
+ * @param description - Descrição cadastrada para o serviço.
+ * @param durationInMinutes - Duração usada como informação alternativa.
+ * @returns Descrição legível para o cliente.
+ */
+const serviceDescription = (
+  description: string | null,
+  durationInMinutes: number,
+): string => {
+  const value = description?.trim();
+  return value && /[\p{L}\p{N}]/u.test(value) ? value : `${durationInMinutes} minutos`;
+};
+
+/**
  * @description Jornada pública que conduz o cliente da escolha à confirmação da reserva.
  *
  * @returns Elemento React renderizado pelo componente.
@@ -51,7 +66,10 @@ const PublicSchedulerPage = () => {
   const [slot, setSlot] = useState<AvailableTimeSlot | null>(null);
   const [customer, setCustomer] = useState({ fullName: "", email: "", phone: "" });
   const [result, setResult] = useState<ScheduledAppointment | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [areServicesLoading, setAreServicesLoading] = useState(true);
+  const [areProfessionalsLoading, setAreProfessionalsLoading] = useState(false);
+  const [areDatesLoading, setAreDatesLoading] = useState(false);
+  const [areSlotsLoading, setAreSlotsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -66,7 +84,7 @@ const PublicSchedulerPage = () => {
   }, [step]);
 
   useEffect(() => {
-    setIsLoading(true);
+    setAreServicesLoading(true);
     setError("");
     Promise.all([
       application.booking.resolveBusiness.execute({ type: "businessId", businessId }),
@@ -81,12 +99,12 @@ const PublicSchedulerPage = () => {
           caught instanceof Error ? caught.message : "Nao foi possivel carregar os servicos.",
         ),
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setAreServicesLoading(false));
   }, [application, businessId]);
 
   useEffect(() => {
     if (!service) return;
-    setIsLoading(true);
+    setAreProfessionalsLoading(true);
     setError("");
     application.booking.listProfessionals
       .execute({ businessId, serviceId: service.serviceId })
@@ -96,12 +114,12 @@ const PublicSchedulerPage = () => {
           caught instanceof Error ? caught.message : "Nao foi possivel carregar os profissionais.",
         ),
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setAreProfessionalsLoading(false));
   }, [application, businessId, service]);
 
   useEffect(() => {
     if (!service || !professional) return;
-    setIsLoading(true);
+    setAreDatesLoading(true);
     setError("");
     application.booking.listAvailableDates
       .execute({
@@ -115,12 +133,12 @@ const PublicSchedulerPage = () => {
       .catch((caught) =>
         setError(caught instanceof Error ? caught.message : "Nao foi possivel carregar as datas."),
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setAreDatesLoading(false));
   }, [application, businessId, maxDate, minDate, professional, service]);
 
   useEffect(() => {
     if (!service || !professional || !selectedDate) return;
-    setIsLoading(true);
+    setAreSlotsLoading(true);
     setError("");
     setSlot(null);
     application.booking.listAvailableTimeSlots
@@ -136,7 +154,7 @@ const PublicSchedulerPage = () => {
           caught instanceof Error ? caught.message : "Nao foi possivel carregar os horarios.",
         ),
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setAreSlotsLoading(false));
   }, [application, businessId, professional, selectedDate, service]);
 
   /**
@@ -286,7 +304,7 @@ const PublicSchedulerPage = () => {
             <h1>Qual servico voce procura?</h1>
             <span>Escolha o atendimento para ver profissionais e horarios.</span>
           </header>
-          {isLoading ? (
+          {areServicesLoading ? (
             <div
               className="tirr__resource-skeleton"
               role="status"
@@ -304,7 +322,7 @@ const PublicSchedulerPage = () => {
                   <Icon name="stars" />
                   <span>
                     <strong>{item.name}</strong>
-                    <small>{item.description || `${item.durationInMinutes} minutos`}</small>
+                    <small>{serviceDescription(item.description, item.durationInMinutes)}</small>
                   </span>
                   <b>{formatToBRL(item.price)}</b>
                 </button>
@@ -336,7 +354,7 @@ const PublicSchedulerPage = () => {
             <h1>Escolha quem vai atender voce</h1>
             <span>Valores e duracao podem variar por profissional.</span>
           </header>
-          {isLoading ? (
+          {areProfessionalsLoading ? (
             <div
               className="tirr__resource-skeleton"
               role="status"
@@ -389,7 +407,7 @@ const PublicSchedulerPage = () => {
             <h1>Escolha data e horario</h1>
             <span>Mostramos apenas opcoes disponiveis para sua reserva.</span>
           </header>
-          {isLoading && !availableDates.length ? (
+          {areDatesLoading && !availableDates.length ? (
             <div className="tirr__resource-skeleton" role="status" aria-label="Carregando datas" />
           ) : groupedDates.length ? (
             <>
@@ -411,7 +429,7 @@ const PublicSchedulerPage = () => {
                 })}
               </div>
               {selectedDate &&
-                (isLoading ? (
+                (areSlotsLoading ? (
                   <div
                     className="tirr__resource-skeleton compact"
                     role="status"
@@ -575,30 +593,63 @@ const PublicSchedulerPage = () => {
         </section>
       )}
 
-      {step === "success" && result && (
-        <section className="tirr__booking-stage tirr__booking-success" tabIndex={-1}>
-          <Icon name="check-circle-fill" />
-          <p>Agendamento concluido</p>
-          <h1>Seu horario esta reservado</h1>
-          <span>
-            {new Date(result.startsAtUtc).toLocaleString("pt-BR", {
-              dateStyle: "long",
-              timeStyle: "short",
-            })}
-          </span>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              setStep("service");
-              setService(null);
-              setProfessional(null);
-              setSelectedDate("");
-              setSlot(null);
-              setResult(null);
-            }}
-          >
-            Fazer novo agendamento
-          </button>
+      {step === "success" && result && service && professional && (
+        <section
+          className="tirr__booking-stage tirr__booking-success"
+          aria-labelledby="booking-success-title"
+          tabIndex={-1}
+        >
+          <header className="tirr__booking-success__header">
+            <span className="tirr__booking-success__mark">
+              <Icon name="check2" size={28} />
+            </span>
+            <div className="tirr__booking-success__copy">
+              <p>Agendamento concluido</p>
+              <h1 id="booking-success-title">Seu horario esta reservado</h1>
+              <span>Confira abaixo os dados confirmados para o seu atendimento.</span>
+            </div>
+          </header>
+
+          <dl className="tirr__review-grid tirr__booking-success__details">
+            <div>
+              <dt>Servico</dt>
+              <dd>{service.name}</dd>
+            </div>
+            <div>
+              <dt>Profissional</dt>
+              <dd>{professional.displayName}</dd>
+            </div>
+            <div>
+              <dt>Data e horario</dt>
+              <dd>
+                {new Date(result.startsAtUtc).toLocaleString("pt-BR", {
+                  dateStyle: "long",
+                  timeStyle: "short",
+                })}
+              </dd>
+            </div>
+            <div>
+              <dt>Valor</dt>
+              <dd>{formatToBRL(professional.price)}</dd>
+            </div>
+          </dl>
+
+          <footer>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setStep("service");
+                setService(null);
+                setProfessional(null);
+                setSelectedDate("");
+                setSlot(null);
+                setResult(null);
+              }}
+            >
+              <Icon name="calendar-plus" />
+              Fazer novo agendamento
+            </button>
+          </footer>
         </section>
       )}
     </div>

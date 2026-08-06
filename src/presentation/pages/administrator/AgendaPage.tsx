@@ -7,9 +7,9 @@ import AppointmentOperations from "./AppointmentOperations";
  * @returns Elemento React renderizado pelo componente.
  */
 const AgendaPage = () => (
-  <>
+  <div className="tirr__admin__page tirr__admin__agenda-page">
     <AgendaCalendar />
     <AppointmentOperations />
-  </>
+  </div>
 );
 export default AgendaPage;

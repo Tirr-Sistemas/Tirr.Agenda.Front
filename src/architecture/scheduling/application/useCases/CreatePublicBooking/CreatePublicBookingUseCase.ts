@@ -21,7 +21,14 @@ export class CreatePublicBookingUseCase {
    */
   public execute(input: CreatePublicBookingCommand): Promise<CreatePublicBookingResult> {
     if (!input.customerFullName.trim() || !input.customerEmail.trim() || !input.customerPhone.trim()) throw new Error("Nome, telefone e e-mail do cliente são obrigatórios.");
-    if (!input.startsAtUtc.endsWith("Z") || new Date(input.startsAtUtc).getTime() <= Date.now()) throw new Error("O agendamento deve usar uma data UTC futura.");
-    return this.bookings.create({ ...input, customerFullName: input.customerFullName.trim(), customerEmail: input.customerEmail.trim().toLowerCase() });
+    const startsAt = new Date(input.startsAtUtc);
+    const hasUtcOffset = /(?:Z|[+-]00:00)$/i.test(input.startsAtUtc);
+    if (!hasUtcOffset || Number.isNaN(startsAt.getTime()) || startsAt.getTime() <= Date.now()) throw new Error("O agendamento deve usar uma data UTC futura.");
+    return this.bookings.create({
+      ...input,
+      customerFullName: input.customerFullName.trim(),
+      customerEmail: input.customerEmail.trim().toLowerCase(),
+      startsAtUtc: startsAt.toISOString(),
+    });
   }
 }

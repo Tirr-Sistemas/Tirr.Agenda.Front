@@ -29,6 +29,17 @@ const EMPTY_SERVICE = {
 const EMPTY_CATEGORY = { id: "", name: "", description: "", isActive: true };
 
 /**
+ * @description Retorna uma descrição útil e ignora valores formados apenas por pontuação.
+ *
+ * @param description - Descrição cadastrada para o serviço.
+ * @returns Descrição legível para exibição no catálogo.
+ */
+const serviceDescription = (description: string | null): string => {
+  const value = description?.trim();
+  return value && /[\p{L}\p{N}]/u.test(value) ? value : "Sem descricao cadastrada";
+};
+
+/**
  * @description CRUD do catálogo de serviços e categorias do estabelecimento.
  *
  * @returns Elemento React renderizado pelo componente.
@@ -284,18 +295,18 @@ const CatalogPage = () => {
             <div className="tirr__service-grid">
               {servicesState.data.map((item) => (
                 <article className="tirr__admin__service-card" key={item.serviceId}>
-                  <header>
+                  <header className="tirr__admin__service-header">
                     <span className="tirr__service-symbol">
                       <Icon name="stars" />
                     </span>
+                    <div className="tirr__admin__service-copy">
+                      <p>{categoryName(item.serviceCategoryId)}</p>
+                      <h3>{item.name}</h3>
+                      <span>{serviceDescription(item.description)}</span>
+                    </div>
                     <StatusPill active={item.isActive} />
                   </header>
-                  <div>
-                    <small>{categoryName(item.serviceCategoryId)}</small>
-                    <h3>{item.name}</h3>
-                    <p>{item.description || "Sem descricao"}</p>
-                  </div>
-                  <dl>
+                  <dl className="tirr__admin__service-metrics">
                     <div>
                       <dt>Duracao</dt>
                       <dd>{item.durationInMinutes} min</dd>
@@ -309,11 +320,12 @@ const CatalogPage = () => {
                       <dd>{item.appointmentCount}</dd>
                     </div>
                   </dl>
-                  <footer>
+                  <footer className="tirr__admin__service-actions">
                     {permissions.includes("services.put") && (
                       <button
-                        className="btn btn-outline-secondary btn-sm"
+                        className="btn btn-outline-primary btn-sm"
                         onClick={() => void editService(item)}
+                        aria-label={`Editar ${item.name}`}
                       >
                         <Icon name="pencil" /> Editar
                       </button>
@@ -322,7 +334,7 @@ const CatalogPage = () => {
                       <button
                         className="tirr__admin__icon-button is-danger"
                         onClick={() => void removeService(item)}
-                        aria-label="Excluir"
+                        aria-label={`Excluir ${item.name}`}
                       >
                         <Icon name="trash" />
                       </button>

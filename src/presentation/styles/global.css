@@ -406,6 +406,7 @@ body {
 
 .tirr__admin__calendar-panel {
   min-height: 650px;
+  container-type: inline-size;
 }
 
 .tirr__admin__calendar {
@@ -422,6 +423,13 @@ body {
   justify-content: flex-end;
   gap: 12px;
   flex: 0 0 auto;
+}
+
+.tirr__admin__calendar-actions > .form-select,
+.tirr__admin__calendar-actions > .tirr__admin__view-switch,
+.tirr__admin__calendar-actions > .btn {
+  height: var(--control-height);
+  min-height: var(--control-height);
 }
 
 .tirr__admin__view-switch {
@@ -441,8 +449,9 @@ body {
 }
 
 .tirr__admin__view-switch button {
+  height: 100%;
   min-width: 64px;
-  height: 32px;
+  min-height: 0;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 12px;

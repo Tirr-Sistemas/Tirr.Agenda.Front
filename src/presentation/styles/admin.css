@@ -701,13 +701,31 @@
 
 .tirr__calendar-toolbar button {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid var(--color-gray-lighter);
   border-radius: 6px;
   background: var(--color-white);
   color: var(--color-text-dark);
+}
+
+@container (max-width: 720px) {
+  .tirr__admin__calendar-panel .tirr__admin__panel-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tirr__admin__calendar-panel .tirr__admin__panel-header > :first-child {
+    flex: 1 0 100%;
+    width: 100%;
+  }
+
+  .tirr__admin__calendar-panel .tirr__admin__calendar-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 
 .tirr__calendar-toolbar button:hover, .tirr__calendar-toolbar button:focus-visible {
@@ -716,12 +734,14 @@
   color: var(--color-primary-active);
 }
 
-.tirr__calendar-toolbar__today {
+.tirr__calendar-toolbar button.tirr__calendar-toolbar__today {
   justify-self: end;
   width: auto;
-  padding-inline: 12px;
+  min-width: 64px;
+  padding-inline: 14px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .tirr__admin__calendar .rbc-calendar {
@@ -815,19 +835,22 @@
 
 .tirr__booking-steps li::before {
   position: absolute;
+  z-index: 0;
   top: 15px;
   right: 50%;
   left: -50%;
   height: 1px;
   background: var(--color-gray-lighter);
   content: "";
+  pointer-events: none;
 }
 
 .tirr__booking-steps li:first-child::before {
   display: none;
 }
 
-.tirr__booking-steps i {
+.tirr__booking-steps li > span {
+  position: relative;
   z-index: 1;
   display: grid;
   width: 30px;
@@ -836,14 +859,14 @@
   border: 1px solid var(--color-gray-light);
   border-radius: 50%;
   background: var(--color-white);
-  font-style: normal;
 }
 
 .tirr__booking-steps li.active, .tirr__booking-steps li.done {
   color: var(--color-text-dark);
 }
 
-.tirr__booking-steps li.active i, .tirr__booking-steps li.done i {
+.tirr__booking-steps li.active > span,
+.tirr__booking-steps li.done > span {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -889,7 +912,7 @@
 
 .tirr__choice-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 10px;
 }
 
@@ -1050,7 +1073,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 58px;
 }
 
 .tirr__booking-business > div {
@@ -1171,11 +1194,16 @@
 
 .tirr__appointment-actions {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto minmax(260px, auto);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   align-items: end;
   gap: 18px;
   padding: 18px;
   margin-top: 14px;
+}
+
+.tirr__appointment-actions-header,
+.tirr__appointment-actions > .tirr__inline-alert {
+  grid-column: 1 / -1;
 }
 
 .tirr__appointment-actions h2 {
@@ -1217,7 +1245,8 @@
 
   .tirr__business-switcher > button {
     min-width: 0;
-    width: 48px;
+    width: 44px;
+    height: 44px;
     padding: 7px;
   }
 

@@ -339,13 +339,20 @@ const TeamPage = () => {
             />
             <div className="tirr__admin__data-list">
               {professionals.data.map((item) => (
-                <article className="tirr__admin__data-row" key={item.id}>
+                <article
+                  className="tirr__admin__data-row tirr__team-professional-row"
+                  key={item.id}
+                >
                   <span className="tirr__admin__client-avatar">
                     <Icon name="person" />
                   </span>
                   <div className="tirr__admin__data-main">
                     <h3>{item.displayName}</h3>
-                    <p>{item.businessMembershipId ? "Acesso vinculado" : "Sem acesso vinculado"}</p>
+                    <p>Profissional da equipe</p>
+                  </div>
+                  <div className="tirr__team-professional-meta">
+                    <small>Acesso</small>
+                    <span>{item.businessMembershipId ? "Vinculado" : "Sem acesso vinculado"}</span>
                   </div>
                   <StatusPill active={item.isActive} />
                   <div className="tirr__row-actions">
@@ -353,6 +360,7 @@ const TeamPage = () => {
                       className="tirr__admin__icon-button"
                       onClick={() => void openServices(item)}
                       title="Servicos"
+                      aria-label={`Gerenciar servicos de ${item.displayName}`}
                     >
                       <Icon name="scissors" />
                     </button>
@@ -361,6 +369,7 @@ const TeamPage = () => {
                         className="tirr__admin__icon-button"
                         onClick={() => void editProfessional(item)}
                         title="Editar"
+                        aria-label={`Editar ${item.displayName}`}
                       >
                         <Icon name="pencil" />
                       </button>
@@ -370,6 +379,7 @@ const TeamPage = () => {
                         className="tirr__admin__icon-button is-danger"
                         onClick={() => void removeProfessional(item)}
                         title="Excluir"
+                        aria-label={`Excluir ${item.displayName}`}
                       >
                         <Icon name="trash" />
                       </button>
@@ -386,8 +396,10 @@ const TeamPage = () => {
         {tab === "access" && (
           <div className="tirr__access-layout">
             <section>
-              <h3>Adicionar acesso</h3>
-              <p>Localize ou crie uma conta e atribua papeis nesta empresa.</p>
+              <div className="tirr__access-section-heading">
+                <h3>Adicionar acesso</h3>
+                <p>Localize ou crie uma conta e atribua papeis nesta empresa.</p>
+              </div>
               <form className="tirr__inline-form" onSubmit={findUser}>
                 <FormField
                   id="member-email"
@@ -428,7 +440,9 @@ const TeamPage = () => {
               )}
               {foundUser && (
                 <div className="tirr__member-candidate">
-                  <span className="tirr__admin__client-avatar">{foundUser.fullName[0]}</span>
+                  <span className="tirr__admin__client-avatar" aria-hidden="true">
+                    {foundUser.fullName.trim().charAt(0).toUpperCase()}
+                  </span>
                   <div>
                     <strong>{foundUser.fullName}</strong>
                     <small>{foundUser.email}</small>
@@ -464,8 +478,10 @@ const TeamPage = () => {
               </button>
             </section>
             <section>
-              <h3>Membros da empresa</h3>
-              <p>Acessos e papeis sao exclusivos deste estabelecimento.</p>
+              <div className="tirr__access-section-heading">
+                <h3>Membros da empresa</h3>
+                <p>Acessos e papeis sao exclusivos deste estabelecimento.</p>
+              </div>
               <PageFeedback
                 loading={members.loading}
                 error={members.error}
@@ -473,8 +489,10 @@ const TeamPage = () => {
               />
               {members.data.map((member) => (
                 <article key={member.identityUserId} className="tirr__member-row">
-                  <span className="tirr__admin__client-avatar">{member.fullName[0]}</span>
-                  <div>
+                  <span className="tirr__admin__client-avatar" aria-hidden="true">
+                    {member.fullName.trim().charAt(0).toUpperCase()}
+                  </span>
+                  <div className="tirr__member-copy">
                     <strong>{member.fullName}</strong>
                     <small>
                       {member.email} · {member.roles.join(" · ")}

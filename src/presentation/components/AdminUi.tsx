@@ -94,22 +94,57 @@ export const AdminDrawer = ({ title, description, open, onClose, onSubmit, busy,
  *
  * @returns Elemento React renderizado pelo componente.
  */
-export const AdminTabs = ({ value, onChange, items }: { value: string; onChange: (value: string) => void; items: { value: string; label: string; icon?: IconName; }[]; }) => {
+export const AdminTabs = ({
+  value,
+  onChange,
+  items,
+  label = "Secoes da pagina",
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  items: { value: string; label: string; icon?: IconName; }[];
+  label?: string;
+}) => {
   /**
    * @description Move o foco entre abas com as teclas de dire??o, respeitando a orienta??o do grupo.
    *
    * @param event - Evento disparado pela interface.
    */
   const navigateTabs = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
     const currentIndex = items.findIndex((item) => item.value === value);
     const direction = event.key === "ArrowRight" ? 1 : -1;
-    const next = items[(currentIndex + direction + items.length) % items.length];
+    const nextIndex = event.key === "Home"
+      ? 0
+      : event.key === "End"
+        ? items.length - 1
+        : (currentIndex + direction + items.length) % items.length;
+    const next = items[nextIndex];
     onChange(next.value);
-    event.currentTarget.querySelectorAll<HTMLElement>("[role='tab']")[items.indexOf(next)]?.focus();
+    event.currentTarget.querySelectorAll<HTMLElement>("[role='tab']")[nextIndex]?.focus();
   };
-  return <div className="tirr__admin-tabs" role="tablist" onKeyDown={navigateTabs}>{items.map((item) => <button key={item.value} type="button" role="tab" aria-selected={value === item.value} tabIndex={value === item.value ? 0 : -1} className={value === item.value ? "active" : ""} onClick={() => onChange(item.value)}>{item.icon && <Icon name={item.icon} size={17} />}{item.label}</button>)}</div>;
+  return (
+    <div className="tirr__admin-tabs" role="tablist" aria-label={label} onKeyDown={navigateTabs}>
+      {items.map((item) => {
+        const active = value === item.value;
+        return (
+          <button
+            key={item.value}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            tabIndex={active ? 0 : -1}
+            className={active ? "active" : ""}
+            onClick={() => onChange(item.value)}
+          >
+            {item.icon && <Icon name={item.icon} size={17} />}
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 
 /**

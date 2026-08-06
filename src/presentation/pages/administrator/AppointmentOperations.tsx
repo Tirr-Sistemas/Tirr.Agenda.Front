@@ -66,7 +66,7 @@ const AppointmentOperations = () => {
   if (!items.length)
     return (
       <section className="tirr__admin__panel tirr__appointment-actions">
-        <div>
+        <div className="tirr__appointment-actions-header">
           <p className="tirr__admin__overline">Acoes do dia</p>
           <h2>Gerenciar atendimento</h2>
         </div>
@@ -148,7 +148,7 @@ const AppointmentOperations = () => {
 
   return (
     <section className="tirr__admin__panel tirr__appointment-actions">
-      <div>
+      <div className="tirr__appointment-actions-header">
         <p className="tirr__admin__overline">Acoes do dia</p>
         <h2>Gerenciar atendimento</h2>
       </div>

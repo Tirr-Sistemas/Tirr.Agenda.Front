@@ -288,8 +288,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="tirr__admin__page">
-      <section className="tirr__admin__panel">
+    <div className="tirr__admin__page tirr__settings-page">
+      <section className="tirr__admin__panel tirr__settings-panel">
         <div className="tirr__admin__panel-header">
           <div>
             <p className="tirr__admin__overline">Preferencias e acesso</p>
@@ -330,7 +330,10 @@ const SettingsPage = () => {
               <div className="tirr__settings-grid">
                 <section>
                   <div className="tirr__section-heading">
-                    <h3>Dados da empresa</h3>
+                    <div className="tirr__settings-section-copy">
+                      <h3>Dados da empresa</h3>
+                      <p>Informacoes cadastrais e endereco publico da agenda.</p>
+                    </div>
                     <div className="tirr__section-actions">
                       <button
                         type="button"
@@ -378,7 +381,7 @@ const SettingsPage = () => {
                       <dd>
                         <StatusPill
                           active={profile.data.status === "active"}
-                          label={profile.data.status}
+                          label={profile.data.status === "active" ? "Ativo" : "Inativo"}
                         />
                       </dd>
                     </div>
@@ -386,7 +389,10 @@ const SettingsPage = () => {
                 </section>
                 <section>
                   <div className="tirr__section-heading">
-                    <h3>Horario de funcionamento</h3>
+                    <div className="tirr__settings-section-copy">
+                      <h3>Horario de funcionamento</h3>
+                      <p>Periodos em que os clientes podem encontrar disponibilidade.</p>
+                    </div>
                     {permissions.includes("availability.put") && (
                       <button
                         className="tirr__admin__icon-button"
@@ -395,6 +401,7 @@ const SettingsPage = () => {
                           setDrawer("hours");
                         }}
                         title="Editar"
+                        aria-label="Editar horario de funcionamento"
                       >
                         <Icon name="pencil" />
                       </button>
@@ -407,7 +414,7 @@ const SettingsPage = () => {
                           <strong>{DAY_LABEL[item.dayOfWeek]}</strong>
                           <span>
                             {item.isOperating
-                              ? `${item.opensAt?.slice(0, 5)} - ${item.closesAt?.slice(0, 5)}`
+                              ? `${item.opensAt?.slice(0, 5)} – ${item.closesAt?.slice(0, 5)}`
                               : "Fechado"}
                           </span>
                         </div>
@@ -428,14 +435,18 @@ const SettingsPage = () => {
         )}
         {tab === "security" && (
           <div className="tirr__settings-grid">
-            <form onSubmit={saveAccount}>
-              <h3>Perfil global</h3>
-              <div className="tirr__drawer-fields">
+            <form className="tirr__settings-card" onSubmit={saveAccount}>
+              <div className="tirr__settings-section-copy">
+                <h3>Perfil global</h3>
+                <p>Dados usados para identificar sua conta no Tirr Agenda.</p>
+              </div>
+              <div className="tirr__drawer-fields tirr__settings-form-fields">
                 <FormField
                   id="account-name"
                   label="Nome completo"
                   value={account.fullName}
                   onChange={(event) => setAccount({ ...account, fullName: event.target.value })}
+                  autoComplete="name"
                   required
                 />
                 <FormField
@@ -444,15 +455,24 @@ const SettingsPage = () => {
                   type="email"
                   value={account.email}
                   onChange={(event) => setAccount({ ...account, email: event.target.value })}
+                  autoComplete="email"
                   required
                 />
                 <div className="tirr__readonly-value">
                   <small>Papeis nesta empresa</small>
                   <strong>{roles.length ? roles.join(", ") : "Nenhum papel atribuido"}</strong>
                 </div>
+              </div>
+              <footer className="tirr__settings-form-actions">
                 <button className="btn btn-primary" disabled={busy}>
                   Salvar perfil
                 </button>
+              </footer>
+              <div className="tirr__settings-danger-zone">
+                <div>
+                  <strong>Seguranca da sessao</strong>
+                  <span>Desconecte sua conta de todos os navegadores e dispositivos.</span>
+                </div>
                 <button
                   type="button"
                   className="btn btn-outline-danger"
@@ -462,15 +482,19 @@ const SettingsPage = () => {
                 </button>
               </div>
             </form>
-            <form onSubmit={submitPassword}>
-              <h3>Alterar senha</h3>
-              <div className="tirr__drawer-fields">
+            <form className="tirr__settings-card" onSubmit={submitPassword}>
+              <div className="tirr__settings-section-copy">
+                <h3>Alterar senha</h3>
+                <p>Use uma senha exclusiva e diferente das utilizadas em outros servicos.</p>
+              </div>
+              <div className="tirr__drawer-fields tirr__settings-form-fields">
                 <FormField
                   id="current-password"
                   label="Senha atual"
                   type="password"
                   value={passwords.current}
                   onChange={(event) => setPasswords({ ...passwords, current: event.target.value })}
+                  autoComplete="current-password"
                   required
                 />
                 <FormField
@@ -479,6 +503,7 @@ const SettingsPage = () => {
                   type="password"
                   value={passwords.next}
                   onChange={(event) => setPasswords({ ...passwords, next: event.target.value })}
+                  autoComplete="new-password"
                   required
                 />
                 <FormField
@@ -487,12 +512,15 @@ const SettingsPage = () => {
                   type="password"
                   value={passwords.confirm}
                   onChange={(event) => setPasswords({ ...passwords, confirm: event.target.value })}
+                  autoComplete="new-password"
                   required
                 />
+              </div>
+              <footer className="tirr__settings-form-actions">
                 <button className="btn btn-primary" disabled={busy}>
                   Alterar senha
                 </button>
-              </div>
+              </footer>
             </form>
           </div>
         )}
@@ -503,7 +531,7 @@ const SettingsPage = () => {
               error={keys.error}
               onRetry={() => void keys.reload()}
             />
-            <div className="tirr__admin__data-list">
+            <div className="tirr__admin__data-list tirr__settings-list">
               {apiKeys.map((item) => (
                 <article className="tirr__admin__data-row" key={item.id}>
                   <span className="tirr__admin__client-avatar">
@@ -530,6 +558,7 @@ const SettingsPage = () => {
                         className="tirr__admin__icon-button"
                         onClick={() => void rotate(item)}
                         title="Rotacionar"
+                        aria-label={`Rotacionar chave ${item.name}`}
                       >
                         <Icon name="arrow-repeat" />
                       </button>
@@ -539,6 +568,7 @@ const SettingsPage = () => {
                         className="tirr__admin__icon-button is-danger"
                         onClick={() => void revoke(item)}
                         title="Revogar"
+                        aria-label={`Revogar chave ${item.name}`}
                       >
                         <Icon name="slash-circle" />
                       </button>

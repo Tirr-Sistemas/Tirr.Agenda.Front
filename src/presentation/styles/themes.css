@@ -596,8 +596,12 @@ button {
 }
 
 .tirr__calendar-event {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
   width: 100%;
   overflow: hidden;
+  padding-block: 4px;
   border: 0;
   background: transparent;
   color: inherit;
@@ -844,8 +848,8 @@ button {
   }
 
   .tirr__business-switcher > button {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
   }
 
   .tirr__business-mark {
@@ -876,6 +880,10 @@ button {
   .tirr__admin__calendar {
     height: min(500px, calc(100dvh - 210px));
     min-height: 420px;
+    overflow-x: auto;
+  }
+
+  .tirr__admin__calendar.is-day-view {
     overflow-x: hidden;
   }
 
@@ -943,7 +951,8 @@ button {
     padding: 14px;
   }
 
-  .tirr__calendar-toolbar__today {
-    padding-inline: 8px;
+  .tirr__calendar-toolbar button.tirr__calendar-toolbar__today {
+    min-width: 56px;
+    padding-inline: 10px;
   }
 }

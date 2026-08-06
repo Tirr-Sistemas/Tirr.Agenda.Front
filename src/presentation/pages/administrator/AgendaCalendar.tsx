@@ -312,7 +312,7 @@ const AgendaCalendar = () => {
   };
 
   return (
-    <div className="tirr__admin__page tirr__admin__agenda-page">
+    <>
       <section className="tirr__admin__stats">
         <article className="tirr__admin__stat-card">
           <span className="tirr__admin__stat-icon">
@@ -685,7 +685,7 @@ const AgendaCalendar = () => {
           />
         </div>
       </AdminDrawer>
-    </div>
+    </>
   );
 };
 
