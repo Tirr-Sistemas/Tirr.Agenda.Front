@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:5010',
+        target: process.env.VITE_API_PROXY_TARGET ?? 'http://agenda-backendapiagendamento-lz548l-8a58ac-187-77-2-83.sslip.io/',
         changeOrigin: true,
       },
     },
